@@ -115,7 +115,6 @@
 
         this.navigator.update(step); // update the sceen and its objects
 
-        //log(this.pixi.ticker.elapsedMS)
     };
 
     App.prototype.adjustCanvasPositionCentered = function (canvas) {
