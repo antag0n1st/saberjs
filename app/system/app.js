@@ -158,7 +158,7 @@
         for (var i = 0; i < this.navigator.screens.length; i++) {
             var screen = this.navigator.screens[i];
             // screen.set_size(this.width, this.height);
-            screen.onResize(this.width, this.height);
+            screen._onResize(this.width, this.height);
         }
 
 //TODO implement the rotate layer
