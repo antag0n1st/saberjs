@@ -13,6 +13,7 @@ ContentManager.addImage('item1','item1.png');
 ContentManager.addImage('item2','item2.png');
 ContentManager.addImage('item3','item3.png');
 ContentManager.addImage('item4','item4.png');
+ContentManager.addImage('item4','item4.png');
 
 ContentManager.addImage('keyboard_backspace','keyboard/keyboard_backspace.png');
 ContentManager.addImage('keyboard_capitalize','keyboard/keyboard_capitalize.png');
@@ -130,5 +131,7 @@ ContentManager.addFile('en','assets/localization/en.txt');
 
 
 ContentManager.addSound('click',['assets/sounds/effects/click.webm','assets/sounds/effects/click.mp3']);
+
+ContentManager.addSpine('character');
  
 };

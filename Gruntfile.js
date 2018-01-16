@@ -11,6 +11,11 @@ module.exports = function (grunt) {
                     'pixi.min.js': [
                         "lib/external/pixi.js"
                     ],
+                    
+                    'spine.min.js': [
+                        "lib/external/pixi-spine.js",
+                        "lib/display/spine_animation.js"
+                    ],
 
                     'lib.min.js': [
 
@@ -41,6 +46,8 @@ module.exports = function (grunt) {
                         "lib/display/h_navigator.js",
                         "lib/display/sprite.js",
                         "lib/display/h_screen.js",
+                        "lib/display/layer.js",
+                        
 
                         "lib/ui/label.js",
                         "lib/ui/popup.js",
