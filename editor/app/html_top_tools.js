@@ -17,13 +17,19 @@
 
         var that = this;
 
-//        this.labelBtn = document.getElementById('labelBtn');
-//        this.labelBtn.draggable = true;
-//        this.labelBtn.ondragstart = this.onLabelDragStart.bind(this);
 
         this.textUpdatePanel = document.getElementById('textUpdatePanel');
         this.textUpdateArea = document.getElementById('textUpdateArea');
         this.textUpdateArea.onkeyup = this.onTextareaKey.bind(this);
+
+        var size = app.device.windowSize();
+
+        var width = 300;
+        var height = 300;
+        var x = (size.width - 360) / 2 - width / 2;
+        var y = size.height / 2 - height / 2;
+        this.textUpdatePanel.style.left = x + 'px';
+        this.textUpdatePanel.style.top = y + 'px';
 
         this.textFontSize = document.getElementById('textFontSize');
         this.textFontFamily = document.getElementById('textFontFamily');
@@ -32,6 +38,8 @@
         this.textFontSize.onkeyup = this.onFontSizeKey.bind(this);
         this.textFontSize.onwheel = this.onFontSizeWheel.bind(this);
         this.textAlign.onchange = this.onTextAlignChange.bind(this);
+
+        this.textFontFamily.onchange = this.onFontFamily.bind(this);
 
         this.textColorPicker = $('#colorPicker').colorpicker({
             useAlpha: false,
@@ -51,12 +59,96 @@
                     callTop: false
                 }}
         });
-
         this.textColorPicker.on('changeColor', function (e) {
 
             that.onTextColorChange(e.color.toHex());
 
         });
+
+        /////////////////////
+
+        this.textStrokeThickness = document.getElementById('textStrokeThickness');
+        this.textStrokeThickness.onwheel = this.onStrokeThicknessWheel.bind(this);
+        this.textStrokeThickness.onkeyup = this.onStrokeThickness.bind(this);
+
+        this.textStrokeColorPicker = $('#strokeColorPicker').colorpicker({
+            useAlpha: false,
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 200,
+                    maxTop: 200
+                },
+                hue: {
+                    maxTop: 200
+                },
+                alpha: {
+                    maxLeft: 0,
+                    maxTop: 100,
+                    callLeft: false,
+                    callTop: false
+                }}
+        });
+        this.textStrokeColorPicker.on('changeColor', function (e) {
+
+            that.onStrokeColorChange(e.color.toHex());
+
+        });
+
+        ///////////////////////////////////////////////////////
+        // drop shadow
+
+
+        this.shadowDistance = document.getElementById('shadowDistance');
+        this.shadowDistance.onwheel = this.onShadowDistanceWheel.bind(this);
+        this.shadowDistance.onkeyup = this.onShadowDistance.bind(this);
+
+        this.shadowAngle = document.getElementById('shadowAngle');
+        this.shadowAngle.onkeyup = this.onShadowAngle.bind(this);
+
+        this.shadowColorPicker = $('#shadowColorPicker').colorpicker({
+            useAlpha: false,
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 200,
+                    maxTop: 200
+                },
+                hue: {
+                    maxTop: 200
+                },
+                alpha: {
+                    maxLeft: 0,
+                    maxTop: 100,
+                    callLeft: false,
+                    callTop: false
+                }}
+        });
+        this.shadowColorPicker.on('changeColor', function (e) {
+
+            that.onShadowColorChange(e.color.toHex());
+
+        });
+
+        ////////////////////
+
+        // get the font here , 
+        // set the fonts
+
+        this.textFontFamily.innerHTML = '<option value="Arial Black">Arial Black</option>';
+
+        for (var property in Fonts) {
+            if (Fonts.hasOwnProperty(property)) {
+                var font = Fonts[property];
+
+                var opt = document.createElement('option');
+                opt.value = font.fontFamily;
+                opt.innerHTML = font.fontFamily;
+                this.textFontFamily.appendChild(opt);
+
+            }
+        }
+
 
         // ZOOM
 
@@ -88,6 +180,49 @@
         }
     };
 
+    HtmlTopTools.prototype.onStrokeColorChange = function (colorHex) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            clickedObject.label.style.stroke = colorHex;
+        }
+    };
+
+    HtmlTopTools.prototype.onShadowColorChange = function (colorHex) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            clickedObject.label.style.dropShadowColor = colorHex;
+        }
+    };
+
+    HtmlTopTools.prototype.onStrokeThickness = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            clickedObject.label.style.strokeThickness = Math.round(this.textStrokeThickness.value);
+        }
+    };
+
+    HtmlTopTools.prototype.onShadowDistance = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            var value = Math.round(this.shadowDistance.value);
+            clickedObject.label.style.dropShadowDistance = value;
+            if (value) {
+                clickedObject.label.style.dropShadow = true;
+            } else {
+                clickedObject.label.style.dropShadow = false;
+            }
+        }
+    };
+
+    HtmlTopTools.prototype.onShadowAngle = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            var angle = Math.round(this.shadowAngle.value);
+            angle = Math.degreesToRadians(angle);
+            clickedObject.label.style.dropShadowAngle = angle;
+        }
+    };
+
     HtmlTopTools.prototype.onTextAlignChange = function (e) {
         var clickedObject = this.editor.selectedObjects[0];
         clickedObject.label.style.align = this.textAlign.value;
@@ -116,6 +251,42 @@
         this.textFontSize.value = fontSize;
     };
 
+    HtmlTopTools.prototype.onStrokeThicknessWheel = function (e) {
+
+        var value = Math.round(this.textStrokeThickness.value);
+        if (e.wheelDelta > 0) {
+            value += 1;
+        } else {
+            value -= 1;
+        }
+        var clickedObject = this.editor.selectedObjects[0];
+        clickedObject.label.style.strokeThickness = value;
+
+        this.textStrokeThickness.value = value;
+
+    }; // onStrokeThicknessWheel
+
+    HtmlTopTools.prototype.onShadowDistanceWheel = function (e) {
+
+        var value = Math.round(this.shadowDistance.value);
+        if (e.wheelDelta > 0) {
+            value += 1;
+        } else {
+            value -= 1;
+        }
+
+        var clickedObject = this.editor.selectedObjects[0];
+        clickedObject.label.style.dropShadowDistance = value;
+        if (value) {
+            clickedObject.label.style.dropShadow = true;
+        } else {
+            clickedObject.label.style.dropShadow = false;
+        }
+        this.shadowDistance.value = value;
+    };
+    //onShadowDistanceWheel
+
+
     HtmlTopTools.prototype.onFontSizeKey = function (e) {
 
         var fontSize = (this.textFontSize.value + '').replace('px', '');
@@ -126,6 +297,17 @@
         var clickedObject = this.editor.selectedObjects[0];
 
         clickedObject.label.style.fontSize = fontSize + 'px';
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onFontFamily = function (e) {
+
+        var clickedObject = this.editor.selectedObjects[0];
+
+        clickedObject.label.style.fontFamily = this.textFontFamily.value;
+
+        clickedObject.label.updateText();
         clickedObject.updateSize();
         clickedObject.updateFrame();
     };
@@ -146,28 +328,31 @@
     };
 
     HtmlTopTools.prototype.showTextEdit = function (object) {
-        var size = app.device.windowSize();
 
-        var width = 300;
-        var height = 300;
-        var x = (size.width - 360) / 2 - width / 2;
-        var y = size.height / 2 - height / 2;
-        this.textUpdatePanel.style.left = x + 'px';
-        this.textUpdatePanel.style.top = y + 'px';
         this.textUpdatePanel.style.display = 'block';
 
         this.textUpdateArea.value = object.label.txt;
         this.textFontSize.value = (object.label.style.fontSize + '').replace('px', '');
         this.textAlign.value = object.label.style.align;
         this.textColorPicker.colorpicker('setValue', object.label.style.fill);
+        this.textFontFamily.value = object.label.style.fontFamily;
+
+        this.textStrokeThickness.value = object.label.style.strokeThickness;
+        this.textStrokeColorPicker.colorpicker('setValue', object.label.style.stroke);
+
+        this.shadowAngle.value = Math.round(Math.radiansToDegrees(object.label.style.dropShadowAngle));
+        this.shadowDistance.value = object.label.style.dropShadowDistance;
+        this.shadowColorPicker.colorpicker('setValue', object.label.style.dropShadowColor);
 
         this.textUpdateArea.focus();
     };
 
+
+
     HtmlTopTools.prototype.hideTextEdit = function () {
         this.textUpdatePanel.style.display = 'none';
     };
-    
+
     /////////////////////////////////////////////////////////////////////////////
 
 

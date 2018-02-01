@@ -21,7 +21,7 @@
 
 
         this.centered();
-        
+
 
 
     };
@@ -48,7 +48,13 @@
             fontFamily: this.label.style.fontFamily,
             fontSize: this.label.style.fontSize,
             padding: 4,
-            align: this.label.style.align
+            align: this.label.style.align,
+            stroke: this.label.style.stroke,
+            strokeThickness: this.label.style.strokeThickness,
+            dropShadow: this.label.style.dropShadow,
+            dropShadowDistance: this.label.style.dropShadowDistance,
+            dropShadowAngle: this.label.style.dropShadowAngle,
+            dropShadowColor: this.label.style.dropShadowColor,
         };
 
         return o;
@@ -59,7 +65,7 @@
 
         if (data) {
             this.setBasicData(data);
-          //  this.setTexture(data.imageName);
+            //  this.setTexture(data.imageName);
             this.label.txt = data.txt;
 
 

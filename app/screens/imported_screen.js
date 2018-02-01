@@ -28,6 +28,9 @@
         btn.onMouseUp = function () {
             Sounds.click.play();
         };
+        
+        var r = this.findByTag(1);
+        log(r);
 
         
 

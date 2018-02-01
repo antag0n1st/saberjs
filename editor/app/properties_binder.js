@@ -55,10 +55,12 @@
         html += idControl.html;
         html += HtmlElements.createInput(opt1).html;
         html += HtmlElements.createInput(opt2).html;
-        html += HtmlElements.createInput(opt3).html;
-        html += HtmlElements.createInput(opt4).html;
+
         html += HtmlElements.createInput(opt5).html;
         html += HtmlElements.createInput(opt6).html;
+        html += HtmlElements.createInput(opt3).html;
+        html += HtmlElements.createInput(opt4).html;
+        
         html += HtmlElements.createInput(opt7).html;
         html += HtmlElements.createInput(opt8).html;
         html += HtmlElements.createInput(opt9).html;
@@ -134,7 +136,7 @@
             object.rotation = Math.degreesToRadians(Number(value) || 0);
         } else if (property === 'z-index') {
             object.zIndex = parseInt(value) || 0;
-            this.editor.sortObjectsPriority();
+         //   this.editor.sortObjectsPriority();
         } else if (property === 'anchorX') {
             object.anchor.x = Number(value) || 0;
         } else if (property === 'anchorY') {

@@ -3,6 +3,13 @@ App.prototype.loadAssets = function () {
 
 
 ContentManager.addFile('stage','assets/data/stage.json');
+ContentManager.addFile('stage_adjusted','assets/data/stage_adjusted.json');
+
+ContentManager.addFont('gotham_bold','assets/fonts/gotham_bold.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
+ContentManager.addFont('gotham_medium','assets/fonts/gotham_medium.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
+ContentManager.addFont('lato','assets/fonts/lato.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
+ContentManager.addFont('lato_black','assets/fonts/lato_black.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
+ContentManager.addFont('riffic_bold','assets/fonts/riffic_bold.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
 
 ContentManager.addImage('button','button.png');
 ContentManager.addImage('button_disabled','button_disabled.png');
@@ -12,7 +19,6 @@ ContentManager.addImage('favicon','favicon.png');
 ContentManager.addImage('item1','item1.png');
 ContentManager.addImage('item2','item2.png');
 ContentManager.addImage('item3','item3.png');
-ContentManager.addImage('item4','item4.png');
 ContentManager.addImage('item4','item4.png');
 
 ContentManager.addImage('keyboard_backspace','keyboard/keyboard_backspace.png');

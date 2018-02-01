@@ -128,6 +128,23 @@
         this.loadingBar.setPercent(0.2, true);
         this.addChild(this.loadingBar);
 
+        // layout
+
+        var items = [];
+
+        for (var i = 0; i < 20; i++) {
+            var item = new Sprite('white');
+            var w = Math.randomInt(10, 100);
+            var h = Math.randomInt(10, 100);
+            item.stretch(w, h)
+            item.setSensorSize(w, h);
+            items.push(item);
+            this.addChild(item);
+        }
+
+        Layout.hbox(items, 400, 1450, 600, 5, 'compact');
+
+
     };
 
     GuiScreen.prototype.update = function (dt) {

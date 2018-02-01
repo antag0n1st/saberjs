@@ -954,8 +954,8 @@ var windowIsDefined = (typeof window === "undefined" ? "undefined" : _typeof(win
 
             enable: function enable() {
                 this._state.enabled = true;
-                this.handle1.setAttribute("tabindex", 0);
-                this.handle2.setAttribute("tabindex", 0);
+                this.handle1.setAttribute("tabindex", -1);
+                this.handle2.setAttribute("tabindex", -1);
                 this._removeClass(this.sliderElem, 'slider-disabled');
                 this._trigger('slideEnabled');
 

@@ -40,7 +40,8 @@
         fontFamily: "Arial Black",
         fontSize: 50,
         background: "rounded",
-        padding: 4
+        padding: 4 ,
+        dropShadowDistance: 0
     };
     
     Style.MULTY_LINE_LABEL = {
@@ -58,7 +59,8 @@
     Style.DEFAULT_LABEL = {
         fill: "#999999",
         fontFamily: "Arial Black",
-        fontSize: 30
+        fontSize: 30 , 
+        dropShadowDistance: 0
     };
 
     Style.DEFAULT_BUTTON = {

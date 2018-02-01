@@ -16,6 +16,8 @@
         this.displayContainer = displayContainer;
 
         this.actionName = actionName;
+        
+        this.canDeleteObjects = false;
 
     };
 
@@ -59,19 +61,15 @@
             var file = files[i];
             if (file.children) {
                 children.push(this.createFolder(file));
-                //html += this.createFolder(file);
             } else {
                 children.push(this.createImage(file));
-                // html += this.createImage(file);
             }
 
         }
 
-        // this.htmlInterface.imageLibraryContent.innerHTML = '';
         this.displayContainer.innerHTML = '';
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-
             this.displayContainer.appendChild(child);
         }
 
@@ -94,15 +92,21 @@
     };
 
     HtmlLibrary.prototype.dragStart = function (ev) {
+ 
+        var data = ev.target.dataset;
         ev.dataTransfer.setData("id", ev.target.id);
         ev.dataTransfer.setData("action", this.actionName);
+
+        for (var property in data) {
+            if (data.hasOwnProperty(property)) {
+                var value = data[property];
+                ev.dataTransfer.setData(property, value);
+            }
+        }
+
     };
 
-
-
     HtmlLibrary.prototype.createImage = function (file) {
-
-        var container = document.createElement("div");
 
         var div = document.createElement("div");
         div.className = "libraryItem";
@@ -110,26 +114,62 @@
         var img = document.createElement("img");
         img.id = '_i_m_a_g_e_' + file.name;
         img.src = file.url;
-        //  img.className = "libraryItem";
+
+        if (file.data) {
+            for (var property in file.data) {
+                if (file.data.hasOwnProperty(property)) {
+                    var value = file.data[property];
+                    // do stuff
+                    img.setAttribute('data-' + property, value);
+                }
+            }
+        }
+
         img.draggable = true;
 
         div.appendChild(img);
+        
+        if(this.canDeleteObjects){
+            
+           // log(img.dataset)
+            
+           var deleteBtn = document.createElement("span");
+           deleteBtn.className = "btn btn-danger";
+         //  deleteBtn.innerHTML = '<i class="fa fa-trash"></i>';
+           deleteBtn.style.position = 'absolute';
+           deleteBtn.style.right = '0px';
+           deleteBtn.style.top = '0px';       
+           deleteBtn.onclick = this.onDeleteButton.bind(this);
+           
+           var icon = document.createElement("i");
+           icon.className = "fa fa-trash";
+           deleteBtn.appendChild(icon);
+         
+           for (var property in file.data) {
+                if (file.data.hasOwnProperty(property)) {
+                    var value = file.data[property];
+                    // do stuff
+                    deleteBtn.setAttribute('data-' + property, value);
+                    icon.setAttribute('data-' + property, value);
+                }
+            }
+           
+           div.appendChild(deleteBtn);
+        }
 
         return div;
 
-        container.appendChild(div);
-        return container.innerHTML;
+//        container.appendChild(div);
+//        return container.innerHTML;
 
     };
 
     HtmlLibrary.prototype.createFolder = function (file) {
 
-        var container = document.createElement("div");
+       // var container = document.createElement("div");
 
         var div = document.createElement("div");
         div.className = "libraryItem";
-
-
 
         var icon = document.createElement("img");
         icon.id = '_folder_' + file.name;
@@ -145,8 +185,8 @@
 
         return div;
 
-        container.appendChild(div);
-        return container.innerHTML;
+//        container.appendChild(div);
+//        return container.innerHTML;
 
     };
 
@@ -168,6 +208,14 @@
         return container.innerHTML;
 
     };
+    
+    HtmlLibrary.prototype.onDeleteButton = function (event) {
+       // log(event.target);
+       // you need to overwrite this one
+        this.build();
+    };
+    
+    
 
     HtmlLibrary.prototype.folderClick = function (event) {
         this.path.push(event.target['data-path']);

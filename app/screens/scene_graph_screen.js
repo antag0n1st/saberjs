@@ -25,7 +25,7 @@
             event.stopPropagation();
             log("item1");
         };
-        this.item1.scale.set(1.3);
+        this.item1.scale.set(0.4);
 
         this.content.addChild(this.item1);
 
@@ -55,12 +55,12 @@
         this.addTouchable(this.item1);
         this.addTouchable(this.item2);
 
-        this.content.scale.set(1.3);
+     //   this.content.scale.set(1.3);
         
         this.content.position.set(300, - 20);
 
-        this.item1.updateSensor();
-        this.item2.updateSensor();
+    //    this.item1.updateSensor();
+    //    this.item2.updateSensor();
 
     };
 

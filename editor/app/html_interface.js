@@ -16,18 +16,25 @@
         app.pixi.renderer.view.ondrop = this.canvasDrop.bind(this);
         app.pixi.renderer.view.ondragover = this.canvasAllowDrop.bind(this);
 
-        this.tabs = ['imageLibrary', 'commonProperties', 'settings', 'layers', 'properties', 'objectsGalery'];
+        this.tabs = ['imageLibrary', 'commonProperties', 'settings', 'layers', 'properties', 'prefabs', 'objectsGalery'];
 
         this.createTabs();
         this.bindHTML();
 
         this.htmlLibrary = new HtmlLibrary(this.imageLibraryContent, this.editor, 'dropImage');
+
         this.objectsGalery = new HtmlLibrary(this.objectsGaleryContent, this.editor, 'dropObject');
         this.objectsGalery.addFiles([
             {name: "LabelObject", url: 'assets/images/_text_icon.png'},
             {name: "ContainerObject", url: 'assets/images/_container.png'},
             {name: "GenericObject", url: 'assets/images/_cube.png'}
         ]);
+
+
+        this.prefabs = new HtmlLibrary(this.prefabsContent, this.editor, 'dropPrefab');
+        this.prefabs.canDeleteObjects = true;
+        this.prefabs.onDeleteButton = this.onDeletePrefab.bind(this);
+
         //TODO set data to objects galery
         this.tree = new LayersTree(this.editor, this);
 
@@ -71,17 +78,35 @@
         this.importJSONBtn = document.getElementById('importJSONBtn');
         this.importJSONBtn.onchange = this.onImportJSONBtn.bind(this);
 
+        // textUpdatePanel
+        this.dragElement(document.getElementById('textUpdatePanel'));
+
+
 
         // SETTINGS PANEL
 
-        this.saveContent = document.getElementById('saveContent');
-        this.saveContent.onclick = this.onSaveContent.bind(this);
+//        this.saveContent = document.getElementById('saveContent');
+//        this.saveContent.onclick = this.onSaveContent.bind(this);
 
         this.clearAll = document.getElementById('clearAll');
         this.clearAll.onclick = this.onClearAll.bind(this);
 
         this.exportBtn = document.getElementById('exportBtn');
         this.exportBtn.onclick = this.onExportBtn.bind(this);
+
+        this.selectJSON = document.getElementById('selectJSON');
+        this.selectJSON.onchange = this.onSelectJSON.bind(this);
+
+        var that = this;
+
+        ajaxGet(ContentManager.baseURL + 'app/php/json-files.php', function (response) {
+            var html = '<option value="0" >none</option>';
+            for (var i = 0; i < response.length; i++) {
+                var file = response[i];
+                html += '<option value="' + file.url + '" >' + file.name + '</option>';
+            }
+            that.selectJSON.innerHTML = html;
+        });
 
         // LAYERS
 
@@ -114,6 +139,8 @@
         } else if (action === 'dropObject') {
             var id = data.getData('id').replace('_i_m_a_g_e_', '');
             this.editor.onGalleryObjectDropped(id);
+        } else if (action === 'dropPrefab') {
+            this.editor.onPrefabDropped(data);
         }
 
     };
@@ -172,7 +199,63 @@
         this.objectsGalery.show();
     };
 
+    HtmlInterface.prototype.onPrefabs = function () {
+
+        // set files to the galery
+
+        var prefabs = store.get('prefabs');
+
+        if (prefabs) {
+            prefabs = JSON.parse(prefabs);
+
+            var files = [];
+
+            for (var i = 0; i < prefabs.length; i++) {
+                var prefab = prefabs[i];
+
+                if (prefab.type === "ImageObject") {
+                    var resource = Images[prefab.imageName];
+                    // it can also be a label
+                    var file = {name: "Image-" + i, url: resource.url, data: {
+                            index: i
+                        }};
+                } else {
+
+                }
+
+
+                files.push(file);
+            }
+
+            this.prefabs.addFiles(files);
+
+//            [
+//                {name: "LabelObject", url: 'assets/images/_text_icon.png'},
+//                {name: "ContainerObject", url: 'assets/images/_container.png'},
+//                {name: "GenericObject", url: 'assets/images/_cube.png'}
+//            ]
+
+            this.prefabs.show();
+
+        }
+
+
+    };
+
     ////////////////////////////////// BIND METHODS
+    HtmlInterface.prototype.onDeletePrefab = function (e) {        
+     
+       var index = e.target.dataset.index;
+       
+       var prefabs = store.get('prefabs');
+       prefabs = JSON.parse(prefabs);
+       prefabs.splice(index,1);
+       
+       var json = JSON.stringify(prefabs);
+       store.set('prefabs',json);
+       
+       this.onPrefabs();
+    };
 
     // called when the clear button in the settings panel is clicked
     HtmlInterface.prototype.onClearAll = function () {
@@ -189,10 +272,10 @@
         var data = this.editor.importer.export();
 
         var jsonString = JSON.stringify(data);
-        
+
         store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
 
-        toastr.success('The content was saved into browsers memory', "Local Save!");
+        /// toastr.success('The content was saved into browsers memory', "Local Save!");
 
     };
 
@@ -220,6 +303,8 @@
         ajaxPost('app/php/export.php', sendData, function (response) {
             toastr.success(response.message);
         });
+
+        this.onSaveContent();
 
     };
 
@@ -259,6 +344,24 @@
         }
     };
 
+    HtmlInterface.prototype.onSelectJSON = function () {
+        if (this.selectJSON.value) {
+
+            var importer = this.editor.importer;
+            importer.clearStage();
+
+
+            var editor = this.editor;
+            ajaxGet(this.selectJSON.value, function (response) {
+                if (response) {
+                    importer.import(response);
+                } else {
+                    editor.setDefaultLayer();
+                }
+            });
+        }
+    };
+
     HtmlInterface.prototype.onAddLayerBtn = function () {
         var name = document.getElementById('layerName').value;
         var factor = document.getElementById('layerFactor').value;
@@ -277,6 +380,45 @@
             document.getElementById('layerInputContent').checked = false;
         }
 
+    };
+
+    HtmlInterface.prototype.dragElement = function (elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "Header")) {
+            /* if present, the header is where you move the DIV from:*/
+            document.getElementById(elmnt.id + "Header").onmousedown = dragMouseDown;
+        } else {
+            /* otherwise, move the DIV from anywhere inside the DIV:*/
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            /* stop moving when mouse button is released:*/
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
     };
 
     /// align elements

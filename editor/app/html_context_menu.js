@@ -34,11 +34,18 @@
         html += '<span class="actionName">Convert To Btn</span>';
         html += '</a>';
         html += '</li>';
-        
+
         html += '<li role="presentation" data-action="convertToInput" >';
         html += '<a id="contextConvertToInput" href="#" role="menuitem">';
         html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
         html += '<span class="actionName">Convert To Input</span>';
+        html += '</a>';
+        html += '</li>';
+
+        html += '<li role="presentation" data-action="convertToInput" >';
+        html += '<a id="contextSaveAsPrefab" href="#" role="menuitem">';
+        html += '<i class="fa fa-fw fa-lg fa-cube"></i> ';
+        html += '<span class="actionName">Save as Prefab</span>';
         html += '</a>';
         html += '</li>';
 
@@ -61,9 +68,12 @@
 
         var contextConvertToButton = document.getElementById('contextConvertToButton');
         contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
-        
+
         var contextConvertToInput = document.getElementById('contextConvertToInput');
         contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
+
+        var contextSaveAsPrefab = document.getElementById('contextSaveAsPrefab');
+        contextSaveAsPrefab.onclick = this.onContextSaveAsPrefab.bind(this);
 
         this.htmlInterface.contextMenuHtml = document.getElementById('contextMenu');
 
@@ -135,14 +145,15 @@
         this.close();
 
         // only if the object is a label
-
-        this.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
+        if (this.editor.selectedObjects[0] && this.editor.selectedObjects[0].label) {
+            this.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
+        }
 
     };
 
     HtmlContextMenu.prototype.onContextConvertToBtn = function () {
         var object = this.editor.selectedObjects[0];
-        
+
         this.editor.deselectAllObjects();
 
         var imageName = object.imageName;
@@ -150,29 +161,29 @@
 
         var btn = new ButtonObject(imageName);
         btn.position = p;
-        
+
         btn.build();
 
         var batch = new CommandBatch();
 
         var deleteCommand = new CommandDelete(object, this.editor);
         var addCommand = new CommandAdd(btn, object.parent, this.editor);
-        
+
         batch.add(addCommand);
         batch.add(deleteCommand);
 
         this.editor.commands.add(batch);
-        
+
         this.editor.deselectAllObjects();
         this.editor.addObjectToSelection(btn);
 
         this.close();
 
     };
-    
+
     HtmlContextMenu.prototype.onContextConvertToInput = function () {
         var object = this.editor.selectedObjects[0];
-        
+
         this.editor.deselectAllObjects();
 
         var imageName = object.imageName;
@@ -180,26 +191,53 @@
 
         var input = new InputObject(imageName);
         input.position = p;
-        
+
         input.build();
 
         var batch = new CommandBatch();
 
         var deleteCommand = new CommandDelete(object, this.editor);
         var addCommand = new CommandAdd(input, object.parent, this.editor);
-        
+
         batch.add(addCommand);
         batch.add(deleteCommand);
 
         this.editor.commands.add(batch);
-        
+
         this.editor.deselectAllObjects();
         this.editor.addObjectToSelection(input);
 
         this.close();
     };
 
-    
+    HtmlContextMenu.prototype.onContextSaveAsPrefab = function () {
+
+        if (this.editor.selectedObjects.length === 1) {
+
+            var prefabs = store.get('prefabs');
+
+            if (prefabs) {
+                prefabs = JSON.parse(prefabs);
+            } else {
+                prefabs = [];
+            }
+
+            var object = this.editor.selectedObjects[0].export();
+            prefabs.push(object);
+            var json = JSON.stringify(prefabs);
+
+            store.set('prefabs', json);
+
+            toastr.success("Object was saved as Prefab.");
+            
+            this.editor.htmlInterface.onPrefabs();
+
+        } else {
+            toastr.error("Only one selected object can be saved as Prefabs.");
+        }
+
+        this.close();
+    };
 
     window.HtmlContextMenu = HtmlContextMenu;
 

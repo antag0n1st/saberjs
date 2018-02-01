@@ -31,6 +31,13 @@
         // Ctrl + Z
         this.commands = new Commands();
 
+        this.guideLines = [
+            {x: 0},
+            {y: 0},
+            {x: 450},
+            {x: 1460}
+        ];
+
         /////////
 
 
@@ -100,6 +107,34 @@
             this.placeObjectOnScreen(object);
         } else {
             console.warn("You need to define an object before droping it to the screen!");
+        }
+
+    };
+
+    MainScreen.prototype.onPrefabDropped = function (data) {
+
+        var index = data.getData('index');
+
+        var prefabs = store.get('prefabs');
+        prefabs = JSON.parse(prefabs);
+
+        var prefab = prefabs[index];
+
+
+        var cp = new V().copy(this.activeLayer.getGlobalPosition());
+        var p = V.substruction(app.input.point, cp);
+        p.scale(1 / this.activeLayer.scale.x);
+
+
+        prefab.position.x = p.x;
+        prefab.position.y = p.y;
+
+
+        var io = this.importer.importObjects([prefab], this.activeLayer);
+
+        this.deselectAllObjects();
+        for (var i = 0; i < io.length; i++) {
+            this.addObjectToSelection(io[i]);
         }
 
     };
@@ -212,13 +247,13 @@
 
     // check agianst the selection rectangle
     MainScreen.prototype.checkSelection = function (x, y, width, height, children) {
-        
-        if(this.activeLayer.visible){
+
+        if (this.activeLayer.visible) {
             children = children ? children : this.activeLayer.children;
         } else {
             children = children ? children : [];
         }
-        
+
 
         for (var i = children.length - 1; i >= 0; i--) {
             var object = children[i];
@@ -402,10 +437,10 @@
             return;
         } else if (this.shortcuts.isCtrlPressed) {
             var object = null;
-            if(this.activeLayer.visible){
+            if (this.activeLayer.visible) {
                 object = this.checkPointInChildren(this.activeLayer.children, event);
             }
-            
+
             if (object) {
 
                 var isSelected = false;
@@ -587,44 +622,96 @@
 
         if (this.selectedObjects.length) {
 
-            this.clipboard = [];
+            var clipboard = [];
 
             for (var i = 0; i < this.selectedObjects.length; i++) {
-                this.clipboard.push(this.selectedObjects[i]);
+                clipboard.push(this.selectedObjects[i].export());
             }
+
+            if (clipboard.length) {
+                var json = JSON.stringify(clipboard);
+                store.set('clipboard', json);
+            } else {
+                store.set('clipboard', null);
+            }
+
         }
 
     };
 
     MainScreen.prototype.paste = function () {
 
-        if (this.clipboard && this.clipboard.length) {
 
+        var json = store.get('clipboard');
 
-            var batch = new CommandBatch();
+        if (json) {
 
-            var copies = [];
+            var clipboard = JSON.parse(json);
 
-            for (var i = 0; i < this.clipboard.length; i++) {
-                var object = this.clipboard[i];
-                var jsonObject = object.export();
-                jsonObject.position.x += 30;
-                jsonObject.position.y += 30;
+            var contentLayer = this.activeLayer;
 
-                var obs = this.importer.importChildren(object.parent, [jsonObject], batch);
-                copies.push(obs[0]);
+            contentLayer = this.selectedObjects.length ? this.selectedObjects[0].parent : contentLayer;
+
+            // figure out the position
+
+            if (this.selectedObjects.length) {
+
+                // if there is selected object , then find its position 
+                // and then paste near it
+
+                var so = this.selectedObjects[0];
+                var co = clipboard[0];
+
+                if (Math.floor(so.position.x) === Math.floor(co.position.x)
+                        && Math.floor(so.position.y) === Math.floor(co.position.y)) {
+
+                    // this is the case (copy paste in place)
+
+                    for (var i = 0; i < clipboard.length; i++) {
+                        var o = clipboard[i];
+                        o.position.x += 30;
+                        o.position.y += 30;
+                    }
+
+                } else {
+
+                    // in case we are pasting when there is no selection object
+
+                    var dv = V.substruction(so.position, co.position);
+                    for (var i = 0; i < clipboard.length; i++) {
+                        var o = clipboard[i];
+                        o.position.x += dv.x + 30;
+                        o.position.y += dv.y + 30;
+                    }
+                }
+
+            } else {
+
+                var co = clipboard[0];
+
+                var p = contentLayer.getGlobalPosition();
+                p.x = app.width / 2 - p.x;
+                p.y = app.height / 2 - p.y;
+
+                var dv = V.substruction(p, co.position);
+
+                for (var i = 0; i < clipboard.length; i++) {
+                    var o = clipboard[i];
+                    o.position.x += dv.x;
+                    o.position.y += dv.y;
+                }
+
             }
 
 
-            this.commands.add(batch);
+            var io = this.importer.importObjects(clipboard, contentLayer);
 
             this.deselectAllObjects();
-
-            for (var i = 0; i < copies.length; i++) {
-                var co = copies[i];
-                this.addObjectToSelection(co);
-                this.copySelection();
+            for (var i = 0; i < io.length; i++) {
+                this.addObjectToSelection(io[i]);
             }
+
+            this.copySelection();
 
         }
 
@@ -710,23 +797,17 @@
     };
 
     MainScreen.prototype.update = function (dt) {
-        this.infoLabel.txt = 'x: ' + Math.round(app.input.point.x) + ' y: ' + Math.round(app.input.point.y);
+
+        var x = app.input.point.x - this._screenPosition.x;
+        var y = app.input.point.y - this._screenPosition.y;
+
+        this.infoLabel.txt = 'x: ' + Math.round(x) + ' y: ' + Math.round(y);
 
         this.graphics.clear();
 
         // draw coordinate System
+        this.drawGuideLines();
 
-        var p = this._screenPosition;
-        //var p = new V();
-
-        this.graphics.lineStyle(1, 0x0000FF, 1);
-        this.graphics.beginFill(0xFF700B, 1);
-        this.graphics.moveTo(-2000 + p.x, p.y);
-        this.graphics.lineTo(2000 + p.x, p.y);
-        this.graphics.moveTo(p.x, p.y - 2000);
-        this.graphics.lineTo(p.x, p.y + 2000);
-
-        this.graphics.endFill();
 
         if (this.selectionRectangle) {
             // render the selection
@@ -747,6 +828,40 @@
         }
 
 
+    };
+
+    MainScreen.prototype.drawGuideLines = function () {
+        var p = this._screenPosition;
+
+        for (var i = 0; i < this.guideLines.length; i++) {
+            var l = this.guideLines[i];
+
+            if (l.x === 0 || l.y === 0) {
+                this.graphics.lineStyle(1, 0x0000FF, 1);
+            } else {
+                this.graphics.lineStyle(3, 0xff0000, 1);
+            }
+
+            if (l.x !== undefined) {
+                var x = p.x + l.x;
+
+                if (x > 0 && x < app.width) {
+                    this.graphics.moveTo(x, 0);
+                    this.graphics.lineTo(x, app.height);
+                }
+
+            } else if (l.y !== undefined) {
+                var y = p.y + l.y;
+
+                if (y > 0 && y < app.height) {
+                    this.graphics.moveTo(0, y);
+                    this.graphics.lineTo(app.width, y);
+                }
+            }
+
+        }
+
+        this.graphics.endFill();
     };
 
     MainScreen.prototype.onResize = function (width, height) {

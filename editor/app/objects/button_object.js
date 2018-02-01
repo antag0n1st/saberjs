@@ -39,7 +39,8 @@
             offsetY: 0,
             sensorWidth: 0,
             sensorHeight: 0,
-            labelRotation: 0
+            labelRotation: 0,
+            isNineSlice: 1
         };
 
     };
@@ -160,12 +161,22 @@
 
         var opt7 = {name: 'labelRotation', value: Math.roundDecimal(this.properties.labelRotation, 2), class: 'big', method: method, displayName: 'Rotation'};
 
-        html += HtmlElements.createInput(opt0).html;
-        html += HtmlElements.createInput(opt1).html;
+        var opt8 = {name: 'isNineSlice', checked: this.properties.isNineSlice, method: method, displayName: 'Is Sliced'};
 
-        var padding = HtmlElements.createInput(opt2);
 
-        html += padding.html;
+        html += HtmlElements.createCheckbox(opt8).html;
+
+        if (this.properties.isNineSlice) {
+            html += HtmlElements.createInput(opt0).html;
+            html += HtmlElements.createInput(opt1).html;
+
+            var padding = HtmlElements.createInput(opt2);
+
+            html += padding.html;
+        }
+
+
+
         html += HtmlElements.createSection('Label').html;
         html += HtmlElements.createInput(opt3).html;
         html += HtmlElements.createInput(opt4).html;
@@ -174,10 +185,15 @@
         html += HtmlElements.createInput(opt5).html;
         html += HtmlElements.createInput(opt6).html;
 
+
+
         editor.htmlInterface.propertiesContent.innerHTML = html;
 
-        // adjust feedback
-        HtmlElements.setFeedback(padding.feedbackID, this.isPaddingValid());
+        if (this.properties.isNineSlice) {
+            // adjust feedback
+            HtmlElements.setFeedback(padding.feedbackID, this.isPaddingValid());
+        }
+
 
     };
 
@@ -190,14 +206,24 @@
             value = Math.clamp(value, -100, 100);
         } else if (property === 'labelRotation') {
             value = Math.roundDecimal(value, 2) || 0;
+        } else if (property === 'isNineSlice') {
+            value = element.checked;
         }
-
-
 
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
 
-            this.background.padding = this.properties.padding;
-            this.background.setSize(this.properties.width, this.properties.height);
+            if (this.properties.isNineSlice) {
+                this.background.padding = this.properties.padding;
+                this.background.setSize(this.properties.width, this.properties.height);
+                this.canResize = true;
+            } else {
+                this.properties.width = Images[this.background.imageName].texture.width;
+                this.properties.height = Images[this.background.imageName].texture.height;
+                
+                this.background.padding = '2';
+                this.canResize = false;
+                this.background.setSize(this.properties.width, this.properties.height);
+            }
 
             this.label.position.set(this.properties.offsetX, this.properties.offsetY);
             this.label.rotation = this.properties.labelRotation;
@@ -209,6 +235,11 @@
         }, this);
 
         editor.commands.add(command);
+
+        if (property === 'isNineSlice') {
+            // update the properties
+            this.bindProperties(editor);
+        }
 
     };
 

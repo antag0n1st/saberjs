@@ -160,6 +160,7 @@
     
     Shortcuts.prototype.onEsc = function () {
         this.editor.deselectAllObjects();
+        this.editor.htmlInterface.htmlTopTools.hideTextEdit();
     };
 
     window.Shortcuts = Shortcuts;

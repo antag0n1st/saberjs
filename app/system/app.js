@@ -16,6 +16,12 @@
         this.windowHeight = 0;
 
         this.device = new Device(this);
+        
+        var useCanvas = false;
+        
+        if(this.device.isIE){
+            useCanvas = true;
+        }
 
         var settings = {
             clearBeforeRender: Config.should_clear_stage,
@@ -23,7 +29,8 @@
             resolution: 1,
             width: this.width,
             height: this.height,
-            backgroundColor: Config.background_color
+            backgroundColor: Config.background_color ,
+            forceCanvas : useCanvas
         };
 
         this.pixi = new PIXI.Application(settings);

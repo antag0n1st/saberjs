@@ -39,32 +39,43 @@
         this.input = new Input(this, this.pixi.renderer.view);
 
         this.navigator = new HNavigator(this);
-        
+
         this.libraryImages = [];
 
         this.initialLoad(function () {
 
             this.loadAssets();
-            
-            ajaxGet('app/php/library.php', function (resources) {
-                
-                app.libraryImages = resources;
-                
-                app.addToLoader(resources);
-                                
-                ContentManager.downloadResources(function () {
-                    
-                    app.navigator.currentScreen.loadingBar.setPercent(1, false);
-                    
-                    var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
-                    
-                    timeout(function(){
-                        app.navigator.add(screen);
-                    },200);                    
 
-                }, this);
 
+            ajaxGet(ContentManager.baseURL + 'app/php/fonts.php', function (response) {
+                
+                for (var i = 0; i < response.length; i++) {
+                    var font = response[i];
+                    ContentManager.addFont(font.name, font.url);
+                }
+
+                ajaxGet('app/php/library.php', function (resources) {
+
+                    app.libraryImages = resources;
+
+                    app.addToLoader(resources);
+
+                    ContentManager.downloadResources(function () {
+
+                        app.navigator.currentScreen.loadingBar.setPercent(1, false);
+
+                        var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
+
+                        timeout(function () {
+                            app.navigator.add(screen);
+                        }, 200);
+
+                    }, this);
+
+                });
             });
+
+
 
 
         });
@@ -72,20 +83,20 @@
 
 
     };
-    
+
     App.prototype.addToLoader = function (resources) {
-        
+
         for (var i = 0; i < resources.length; i++) {
             var resource = resources[i];
-            
-            if(resource.children){
+
+            if (resource.children) {
                 this.addToLoader(resource.children);
-            } else if(resource.url) {
-                ContentManager.addImage(resource.name, ContentManager.baseURL+resource.url);
+            } else if (resource.url) {
+                ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
             }
-            
+
         }
-        
+
     };
 
     App.prototype.initialLoad = function (callback) {

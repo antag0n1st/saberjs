@@ -88,13 +88,13 @@
                 <label style="margin-right: 10px;">Zoom</label>
                 <input style="display: none;" id="zoomSlider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
             </div>
-            
+
             <div id="alignButtons" style="display: inline;margin-left: 20px;">
-               
+
             </div>
-            
+
             <div id="zIndexButtons" style="display: inline;margin-left: 20px;">
-               
+
             </div>
         </div>
 
@@ -103,9 +103,10 @@
             <div id="side-toolbar-navigation">
                 <div id="commonPropertiesTab" class="nav-bar-btn fa fa-file fa-2x "></div>
                 <div id="propertiesTab" class="nav-bar-btn fa fa-list fa-2x"></div>
-                <div id="objectsGaleryTab" class="nav-bar-btn fa fa-cube fa-2x"></div>
-                <div id="layersTab" class="nav-bar-btn fa fa-clone fa-2x"></div>                
+                <div id="layersTab" class="nav-bar-btn fa fa-clone fa-2x"></div>
+                <div id="objectsGaleryTab" class="nav-bar-btn fa fa-cube fa-2x"></div>                                
                 <div id="imageLibraryTab" class="nav-bar-btn fa fa-image fa-2x"></div>
+                <div id="prefabsTab" class="nav-bar-btn fa fa-copy fa-2x"></div>
                 <div id="settingsTab" class="nav-bar-btn fa fa-cog fa-2x"></div>
             </div>
 
@@ -120,27 +121,25 @@
                                 Export
                             </div>
                         </div>
-                        <div class="big">
-                            <div id="saveContent" class="btn btn-success">
-                                <i class="fa fa-floppy-o"></i>
-                                Save
-                            </div>
-                            <div id="clearAll" class="btn btn-danger">
-                                <i class="fa fa-trash"></i>
-                                Clear All
-                            </div>
-                        </div>
-                        
+
+
                         <div class="big" style="display: block;">
                             <label>Import</label>
                             <input id="importJSONBtn" type="file" class="form-control" />                            
                         </div>
-                        
+
                         <div class="big" >
                             <label>Import:</label>
                             <select id="selectJSON" class="form-control">
-                                
+
                             </select>                            
+                        </div>
+                        <div class="big">
+
+                            <div id="clearAll" class="btn btn-danger">
+                                <i class="fa fa-trash"></i>
+                                Clear All
+                            </div>
                         </div>
 
                     </div>
@@ -153,15 +152,21 @@
 
                     </div>
                 </div>
-                
+
                 <div id="propertiesPanel" class="form-inline none">
                     <div id="propertiesContent" class="content">
 
                     </div>
                 </div>
-                
+
                 <div id="objectsGaleryPanel" class="form-inline none">
                     <div id="objectsGaleryContent" class="libraryContent">
+
+                    </div>
+                </div>
+                
+                <div id="prefabsPanel" class="form-inline none">
+                    <div id="prefabsContent" class="libraryContent">
 
                     </div>
                 </div>
@@ -188,13 +193,13 @@
         </div>
 
         <div id="textUpdatePanel" class="panel">
+            <div id="textUpdatePanelHeader" class="panel-heading" style="cursor: move;"></div>
             <textarea id="textUpdateArea" class="form-control"></textarea>
             <div class="form-group  form-inline" style="padding-top: 5px;">
 
                 <input id="textFontSize" class="form-control" style="width: 60px;">
                 <select id="textFontFamily" class="form-control" style="width: 100px; display: inline;">
-                    <option>Arial</option>
-                    <option>Sans</option>
+                    <option>Arial Black</option>
                 </select>
                 <select id="textAlign" class="form-control" style="width: 100px; display: inline;">
                     <option value="left">Left</option>
@@ -203,11 +208,36 @@
                 </select>
 
                 <br />
+                <div style="margin-top: 10px;">
+                    <label>Text Color</label>
+                    <div id="colorPicker" class="input-group colorpicker-component" style="width: 165px;">
 
-                <div id="colorPicker" class="input-group colorpicker-component" style="margin-top: 10px; width: 165px;">
-                    <input type="text" class="form-control" value="#DD0F20"/>
-                    <span class="input-group-addon"><i></i></span>
+                        <input type="text" class="form-control" value="#DD0F20"/>
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
                 </div>
+                <br />
+                <div style="margin-top: 10px;">
+                    <label>Stroke</label>
+                    <input id="textStrokeThickness" class="form-control" style="width: 60px;">
+                    <div id="strokeColorPicker" class="input-group colorpicker-component" style="width: 165px;">
+
+                        <input type="text" class="form-control" value="#171616"/>
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label>Shadow</label>
+                    <input id="shadowDistance" class="form-control" style="width: 40px;">
+                    <input id="shadowAngle" class="form-control" style="width: 60px;">
+                    <div id="shadowColorPicker" class="input-group colorpicker-component" style="width: 110px;">
+
+                        <input type="text" class="form-control" value="#171616"/>
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
+                </div>
+
 
             </div>
         </div>
@@ -225,7 +255,7 @@
                         <div class="form-group">
                             <input type="number" id="layerFactor" class="form-control" Placeholder="Factor Number (Normal Value)"/>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="layerInputContent" style="cursor: pointer;">
                                 Is Input Content
