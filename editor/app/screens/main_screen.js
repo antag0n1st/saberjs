@@ -76,10 +76,8 @@
         this.infoLabel.txt = 'Info';
         this.infoLabel.position.set(10, app.height - 40);
         this.addChild(this.infoLabel);
-
+      
         this.addTouchable(this); // let the screen be a touchable
-
-
 
         // IMPORTING STUFF
         this.htmlInterface.htmlLibrary.addFiles(app.libraryImages);
@@ -172,7 +170,6 @@
         this.deselectAllObjects();
         this.addObjectToSelection(object);
 
-        object.updateSensor();
         object.updateFrame();
 
 
@@ -907,7 +904,6 @@
         for (var i = children.length - 1; i >= 0; i--) {
             var object = children[i];
             if (object.export) {
-                object.updateSensor();
                 object.updateFrame();
                 this.updateAllSensors(object.children);
             }

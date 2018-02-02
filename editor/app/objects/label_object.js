@@ -33,7 +33,11 @@
 
 
     LabelObject.prototype.update = function (dt) {
-
+        
+        if(this.anchor.x !== this.label.anchor.x || this.anchor.y !== this.label.anchor.y ){
+            this.label.anchor.x = this.anchor.x;
+            this.label.anchor.y = this.anchor.y;
+        }
 
     };
 

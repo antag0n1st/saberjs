@@ -249,7 +249,6 @@
         var scale = distance / this.initialSize;
 
         this.scale.set(scale, scale);
-        this.updateSensor();
         this.updateFrame();
     };
 
@@ -263,7 +262,6 @@
         r = this.snapTo(r, values, Math.degreesToRadians(5));
 
         this.rotation = r;
-        this.updateSensor();
         this.updateFrame();
     };
 
@@ -282,7 +280,6 @@
         var nR = this.rotation;
         this.rotation = this.originalRotation;
         var command = new CommandProperty(this, 'rotation', nR, function () {
-            this.updateSensor();
             this.updateFrame();
         }, this);
         editor.commands.add(command);

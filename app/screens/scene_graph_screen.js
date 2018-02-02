@@ -10,7 +10,7 @@
     SceneGraphScreen.prototype.initialize = function () {
 
         this.screenInitialize();
-        
+
         this.content = new Sprite();
         this.addChild(this.content);
 
@@ -18,22 +18,27 @@
 
         this.item1 = new Sprite('item1');
         this.item1.position.set(300, 300);
-        this.item1.anchor.set(0.5, 0.5);
+
         this.item1.priority = 2;
+
         this.item1.enableSensor();
+
+
         this.item1.onMouseDown = function (event) {
             event.stopPropagation();
             log("item1");
         };
-        this.item1.scale.set(0.4);
+
 
         this.content.addChild(this.item1);
 
         this.item2 = new Sprite('item2');
         this.item2.position.set(300, 300);
+
         this.item2.enableSensor();
-        this.item2.anchor.set(0.5, 0.5);
-        this.item2.scale.set(1.5);
+
+
+
         this.item2.priority = 2;
         this.item2.onMouseDown = function (event) {
             event.stopPropagation();
@@ -55,18 +60,46 @@
         this.addTouchable(this.item1);
         this.addTouchable(this.item2);
 
-     //   this.content.scale.set(1.3);
-        
-        this.content.position.set(300, - 20);
 
-    //    this.item1.updateSensor();
-    //    this.item2.updateSensor();
+         new TweenScale(this.item1,0.8,null,3000).delay().run();
+        
+        this.item1.rotation = Math.degreesToRadians(10);
+
+        this.item1.anchor.set(0.5, 0.5);
+
+        this.item2.getSensor();
+        
+        
+        
+        timeout(function () {
+            this.item2.anchor.set(1, 0);
+        }, 600, this);
+
+        timeout(function () {
+            this.item2.scale.set(1.6);
+        }, 1000, this);
+
+        timeout(function () {
+            this.item2.anchor.set(0.5, 0.5);           
+        }, 1600, this);
+
+        timeout(function () {
+            this.content.scale.set(1.6);
+        }, 2000, this);
+
+        timeout(function () {
+            this.item2.scale.set(1);
+            this.content.scale.set(1);
+            this.item2.anchor.set(0.5, 0.5);
+        }, 2500, this);
 
     };
 
     SceneGraphScreen.prototype.update = function (dt) {
 
         this.item1.rotation += 0.0001 * dt;
+
+        // return;
 
         this.graphics.clear();
 
@@ -83,6 +116,8 @@
 
             this.graphics.beginFill(0xFF3300, 0);
             this.graphics.lineStyle(4, 0xffd900, 1);
+
+            this.graphics.drawCircle(p.x, p.y, 2);
 
             for (var j = 0; j < points.length; j++) {
                 // var point = points[j];
@@ -122,7 +157,7 @@
     };
 
     SceneGraphScreen.prototype.onMouseDown = function (event, element) {
-       
+
     };
 
     SceneGraphScreen.prototype.onMouseMove = function (event, element) {
@@ -130,7 +165,7 @@
     };
 
     SceneGraphScreen.prototype.onMouseUp = function (event, element) {
-         log("screen up")
+        log("screen up")
     };
 
     SceneGraphScreen.prototype.onMouseCancel = function (element) {

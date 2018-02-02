@@ -21,7 +21,6 @@
     CommandScale.prototype.execute = function () {
         if (!this.isExecuted) {
             this.object.scale.set(this.scaleX, this.scaleY);
-            this.object.updateSensor();
             this.object.updateFrame();
             this.isExecuted = true;
         }
@@ -30,7 +29,6 @@
     CommandScale.prototype.undo = function () {
         if (this.isExecuted) {
             this.object.scale.set(this.oldScaleX, this.oldScaleY);
-            this.object.updateSensor();
             this.object.updateFrame();
             this.isExecuted = false;
         }

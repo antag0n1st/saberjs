@@ -79,7 +79,6 @@
         // this.scale.set(scale, scale);
 
         this.updateSize();
-        this.updateSensor();
         this.updateFrame();
 
         this.bindProperties(editor);
@@ -229,7 +228,6 @@
             this.label.rotation = this.properties.labelRotation;
 
             this.updateSize();
-            this.updateSensor();
             this.updateFrame();
 
         }, this);

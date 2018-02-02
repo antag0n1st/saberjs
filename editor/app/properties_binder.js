@@ -173,7 +173,6 @@
         if (object.updateSize) {
             object.updateSize();
         }
-        object.updateSensor();
         object.updateFrame();
 
     };

@@ -25,7 +25,6 @@
         
         this.enableSensor();
         this.createFrame(20, 16);
-        this.updateSensor();
         this.updateFrame();
 
         this.deselect();

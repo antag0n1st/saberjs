@@ -80,7 +80,6 @@
         // this.scale.set(scale, scale);
 
         this.updateSize();
-        this.updateSensor();
         this.updateFrame();
 
         this.bindProperties(editor);
@@ -213,7 +212,6 @@
             this.background.setSize(this.properties.width, this.properties.height);
 
             this.updateSize();
-            this.updateSensor();
             this.updateFrame();
 
         }, this);
