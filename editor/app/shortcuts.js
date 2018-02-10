@@ -14,6 +14,7 @@
 
         this.isSpacePressed = false;
         this.isCtrlPressed = false;
+        this.isAltPressed = false;
 
         var that = this;
         this.kibo.up('ctrl z', function () {
@@ -62,6 +63,14 @@
         this.kibo.up('ctrl', function () {
             that.isCtrlPressed = false;
         });
+        
+        this.kibo.down('alt', function () {
+            that.isAltPressed = true;
+        });
+
+        this.kibo.up('alt', function () {
+            that.isAltPressed = false;
+        });
 
         this.kibo.down('left', function () {
             if (!editor.isInputActive()) {
@@ -81,14 +90,14 @@
             if (!editor.isInputActive()) {
                 that.moveSelectionBy(new V(0, -1));
             }
-            
+
         });
 
         this.kibo.down('down', function () {
             if (!editor.isInputActive()) {
                 that.moveSelectionBy(new V(0, 1));
             }
-            
+
         });
 
         this.kibo.down('ctrl c', function () {
@@ -103,6 +112,13 @@
                 editor.paste();
             }
         });
+        
+        this.kibo.down('ctrl s', function () {
+            if (!editor.isInputActive()) {
+                editor.htmlInterface.saveCurrentContent();
+            }
+            return false;
+        });
 
         this.kibo.down('ctrl up', function () {
             editor.htmlInterface.htmlTopTools.moveItemsUp();
@@ -111,7 +127,7 @@
         this.kibo.down('ctrl down', function () {
             editor.htmlInterface.htmlTopTools.moveItemsDown();
         });
-        
+
         this.kibo.down('esc', function () {
             that.onEsc();
         });
@@ -157,10 +173,11 @@
         this.editor.htmlInterface.tree.build();
 
     };
-    
+
     Shortcuts.prototype.onEsc = function () {
         this.editor.deselectAllObjects();
         this.editor.htmlInterface.htmlTopTools.hideTextEdit();
+        this.editor.setMode(MainScreen.MODE_SELECT);
     };
 
     window.Shortcuts = Shortcuts;

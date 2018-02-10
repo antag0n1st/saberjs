@@ -35,6 +35,8 @@ ContentManager.addImage('align_left','icons/align_left.png');
 ContentManager.addImage('align_right','icons/align_right.png');
 ContentManager.addImage('align_top','icons/align_top.png');
 
+ContentManager.addImage('_icon_polygon','icons/_icon_polygon.png');
+
 
 ContentManager.addImage('keyboard_backspace','keyboard/keyboard_backspace.png');
 ContentManager.addImage('keyboard_capitalize','keyboard/keyboard_capitalize.png');

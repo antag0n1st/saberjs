@@ -5,6 +5,10 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         uglify: {
+			options: {
+				//beautify: true,
+				//mangle: false
+			},
             js: {
                 files: {
 

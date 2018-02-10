@@ -161,12 +161,12 @@
         }
     };
 
-    HtmlInterface.prototype.activateTab = function (name) {
+    HtmlInterface.prototype.activateTab = function (name, callback) {
         this.deactiveAllTabs();
         this.hideAllPanels();
         this[name + 'Tab'].className += ' active';
         this[name + 'Panel'].style.display = 'block';
-        this['on' + name.capitalize()]();
+        this['on' + name.capitalize()](callback);
     };
 
     HtmlInterface.prototype.onImageLibrary = function () {
@@ -190,9 +190,9 @@
 
     };
 
-    HtmlInterface.prototype.onLayers = function () {
+    HtmlInterface.prototype.onLayers = function (callback) {
         // create layers tree
-        this.tree.build();
+        this.tree.build(callback);
     };
 
     HtmlInterface.prototype.onObjectsGalery = function () {
@@ -213,27 +213,16 @@
             for (var i = 0; i < prefabs.length; i++) {
                 var prefab = prefabs[i];
 
-                if (prefab.type === "ImageObject") {
-                    var resource = Images[prefab.imageName];
-                    // it can also be a label
-                    var file = {name: "Image-" + i, url: resource.url, data: {
-                            index: i
-                        }};
-                } else {
+                var url = prefab.prefabPreviewImageURL;
 
-                }
-
+                var file = {name: prefab.type + "-" + i, url: url, data: {
+                        index: i
+                    }};
 
                 files.push(file);
             }
 
             this.prefabs.addFiles(files);
-
-//            [
-//                {name: "LabelObject", url: 'assets/images/_text_icon.png'},
-//                {name: "ContainerObject", url: 'assets/images/_container.png'},
-//                {name: "GenericObject", url: 'assets/images/_cube.png'}
-//            ]
 
             this.prefabs.show();
 
@@ -243,18 +232,18 @@
     };
 
     ////////////////////////////////// BIND METHODS
-    HtmlInterface.prototype.onDeletePrefab = function (e) {        
-     
-       var index = e.target.dataset.index;
-       
-       var prefabs = store.get('prefabs');
-       prefabs = JSON.parse(prefabs);
-       prefabs.splice(index,1);
-       
-       var json = JSON.stringify(prefabs);
-       store.set('prefabs',json);
-       
-       this.onPrefabs();
+    HtmlInterface.prototype.onDeletePrefab = function (e) {
+
+        var index = e.target.dataset.index;
+
+        var prefabs = store.get('prefabs');
+        prefabs = JSON.parse(prefabs);
+        prefabs.splice(index, 1);
+
+        var json = JSON.stringify(prefabs);
+        store.set('prefabs', json);
+
+        this.onPrefabs();
     };
 
     // called when the clear button in the settings panel is clicked
@@ -280,12 +269,18 @@
     };
 
     HtmlInterface.prototype.onExportBtn = function () {
+        this.saveCurrentContent();
+
+    };
+
+    HtmlInterface.prototype.saveCurrentContent = function () {
         var data = this.editor.importer.export();
 
         var fileName = document.getElementById('exportFileName').value;
 
         if (!fileName) {
             toastr.error("Please specify a file name");
+            this.activateTab('settings');
             return;
         }
 
@@ -301,11 +296,17 @@
         };
 
         ajaxPost('app/php/export.php', sendData, function (response) {
-            toastr.success(response.message);
+           var msg = response.message;
+
+            ajaxGet('../tools/assets.php', function (response) {              
+                toastr.success(msg);
+            });
+
         });
 
-        this.onSaveContent();
 
+
+        this.onSaveContent();
     };
 
     HtmlInterface.prototype.onLocalFileLoaderBtn = function (e) {

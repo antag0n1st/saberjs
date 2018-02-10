@@ -17,6 +17,9 @@
     CommandDelete.prototype.execute = function () {
 
         if (!this.isExecuted) {
+            if(this.object._onDelete){
+                this.object._onDelete();
+            }
             this.object.removeFromParent();
             this.object.isSelected = false;
             this.isExecuted = true;

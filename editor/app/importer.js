@@ -68,7 +68,8 @@
         for (var i = 0; i < objects.length; i++) {
             var o = objects[i];
             var object = new window[o.type]();
-            object.build(o);
+            object.graphics = this.editor.graphics;
+            object.build(o);            
 
             var command = new CommandAdd(object, contentLayer, this.editor);
             batch.add(command);
@@ -85,8 +86,6 @@
         
         return importedObjects;
 
-        //this.editor.commands.add(batch);
-
     };
 
     Importer.prototype.importChildren = function (parent, children, batch) {
@@ -95,6 +94,7 @@
             var o = children[i];
 
             var object = new window[o.type]();
+            object.graphics = this.editor.graphics;
             object.build(o);
 
             var command = new CommandAdd(object, parent, this.editor);

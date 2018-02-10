@@ -35,7 +35,7 @@
 
         this.constraintX = null;
         this.constraintY = null;
-        
+
         this.className = '';
 
 
@@ -68,11 +68,15 @@
     };
 
     Entity.prototype.dragBy = function (position) {
-        this.position.set(this.originalPosition.x + position.x, this.originalPosition.y + position.y);
+        var p = new V().copy(position);
+        var angle = this.sumAllAngles();
+        p.rotate(-angle  +this.rotation);
+        this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
     };
 
     Entity.prototype.select = function () {
         this.isSelected = true;
+        this.updateFrame();
     };
 
     Entity.prototype.deselect = function () {
@@ -86,6 +90,8 @@
         }
 
         var p = this.getGlobalPosition();
+
+        var rotation = this.sumAllAngles();
 
         // DRAW FRAME
         graphics.lineStyle(2, 000000, 1);
@@ -103,6 +109,7 @@
             for (var i = 0; i < this.frameSensors.length; i++) {
 
                 var s = this.frameSensors[i];
+                //  log(s)
                 graphics.drawCircle(p.x + s.pos.x, p.y + s.pos.y, s.r);
 
             }
@@ -120,7 +127,7 @@
 
         var st = new V();
         st.setLength(d);
-        st.setAngle(this.rotation + Math.degreesToRadians(90));
+        st.setAngle(rotation + Math.degreesToRadians(90));
 
         graphics.moveTo(p.x + st.x, p.y + st.y);
         graphics.lineTo(rhp.x, rhp.y);
@@ -154,16 +161,18 @@
         var pp = new V(); // padding point
         pp.setLength(this.padding);
 
+        var rotation = this.sumAllAngles();
+
         for (var i = 0; i < this.frameSensors.length; i++) {
 
             if (i === 0) {
-                pp.setAngle(this.rotation + Math.degreesToRadians(225));
+                pp.setAngle(rotation + Math.degreesToRadians(225));
             } else if (i === 1) {
-                pp.setAngle(this.rotation + Math.degreesToRadians(315));
+                pp.setAngle(rotation + Math.degreesToRadians(315));
             } else if (i === 2) {
-                pp.setAngle(this.rotation + Math.degreesToRadians(45));
+                pp.setAngle(rotation + Math.degreesToRadians(45));
             } else if (i === 3) {
-                pp.setAngle(this.rotation + Math.degreesToRadians(135));
+                pp.setAngle(rotation + Math.degreesToRadians(135));
             }
 
             var cp = sensor.points[i]; // the points of the rectangle
@@ -176,7 +185,7 @@
         var d = Math.getDistance(this.frameSensors[0].pos, this.frameSensors[3].pos) - this.scale.y * this._height * this.anchor.y;
 
         rh.setLength(d + this.rotationHandleDistance);
-        rh.setAngle(this.rotation + Math.degreesToRadians(90));
+        rh.setAngle(rotation + Math.degreesToRadians(90));
 
         this.rotationHandle.pos.set(rh.x, rh.y);
 
@@ -255,7 +264,9 @@
     Entity.prototype._moveRotate = function (event, editor) {
         var gp = this.getGlobalPosition();
 
-        var r = Math.getAngle(event.point, gp) + Math.degreesToRadians(90);
+        var rotation = this.sumAllAngles();
+
+        var r = Math.getAngle(event.point, gp) + Math.degreesToRadians(90) - rotation + this.rotation;
 
         var values = [Math.degreesToRadians(0), Math.degreesToRadians(90), Math.degreesToRadians(180), Math.degreesToRadians(270)];
 
@@ -404,14 +415,17 @@
 
     Entity.prototype._onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
         // it will be overwritten
-        if(this.onPropertyChange){
+        if (this.onPropertyChange) {
             this.onPropertyChange(editor, property, value, element, inputType, feedbackID);
         }
         
-        if(this.constraintX || this.constraintY){
+//        log(this.constraintX);
+//        log(this.constraintY);
+
+        if (this.constraintX || this.constraintY) {
             editor.constraints.applyValues();
         }
-        
+
     };
 
     Entity.prototype.export = function () {

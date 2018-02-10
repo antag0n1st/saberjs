@@ -2,8 +2,11 @@ App.prototype.loadAssets = function () {
 
 
 
+ContentManager.addFile('sample','assets/data/sample.json');
 ContentManager.addFile('stage','assets/data/stage.json');
+ContentManager.addFile('stage_adjdusted','assets/data/stage_adjdusted.json');
 ContentManager.addFile('stage_adjusted','assets/data/stage_adjusted.json');
+ContentManager.addFile('stage_ajdusted','assets/data/stage_ajdusted.json');
 
 ContentManager.addFont('gotham_bold','assets/fonts/gotham_bold.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
 ContentManager.addFont('gotham_medium','assets/fonts/gotham_medium.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});

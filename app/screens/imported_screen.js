@@ -29,8 +29,13 @@
             Sounds.click.play();
         };
         
-        var r = this.findByTag(1);
-        log(r);
+
+//        var object = this.findById('my-colider');
+//        object.onMouseUp = function(event,sender){
+//            log("mother fucker");
+//        };
+//        
+//        this.addTouchable(object);
 
         
 

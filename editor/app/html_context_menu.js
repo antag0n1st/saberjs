@@ -28,6 +28,13 @@
         html += '</a>';
         html += '</li>';
 
+        html += '<li role="presentation" data-action="findInTree" >';
+        html += '<a id="contextFindInTree" href="#" role="menuitem">';
+        html += '<i class="fa fa-fw fa-lg fa-search"></i> ';
+        html += '<span class="actionName">Find In Tree</span>';
+        html += '</a>';
+        html += '</li>';
+
         html += '<li role="presentation" data-action="convertToButton" >';
         html += '<a id="contextConvertToButton" href="#" role="menuitem">';
         html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
@@ -68,6 +75,9 @@
 
         var contextConvertToButton = document.getElementById('contextConvertToButton');
         contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
+
+        var contextFindInTree = document.getElementById('contextFindInTree');
+        contextFindInTree.onclick = this.onContextFindInTree.bind(this);
 
         var contextConvertToInput = document.getElementById('contextConvertToInput');
         contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
@@ -151,6 +161,23 @@
 
     };
 
+    HtmlContextMenu.prototype.onContextFindInTree = function () {
+        this.close();
+
+        var tree = this.editor.htmlInterface.tree;
+        var object = this.editor.selectedObjects[0];
+
+        if (this.editor.htmlInterface[ 'layersPanel'].style.display !== 'block') {
+            this.editor.htmlInterface.activateTab('layers', function () {
+              
+                tree.selectNode(object, true);
+            });
+        } else {
+             tree.selectNode(object, true);
+        }
+
+    };
+
     HtmlContextMenu.prototype.onContextConvertToBtn = function () {
         var object = this.editor.selectedObjects[0];
 
@@ -222,14 +249,48 @@
                 prefabs = [];
             }
 
+            var sampleObject = this.editor.selectedObjects[0];
+
+            if (sampleObject instanceof PolygonObject) {
+                var graphics = new PIXI.Graphics();
+                sampleObject.draw(graphics);
+                sampleObject = graphics;
+            }
+
+////////////////////////////////
+
+
             var object = this.editor.selectedObjects[0].export();
+
+            var bounds = sampleObject.getBounds();
+            var renderTexture = PIXI.RenderTexture.create(bounds.width, bounds.height);
+
+            var localP = new V().copy(sampleObject.position);
+            var p = new V().copy(sampleObject.getGlobalPosition());
+
+            var dx = -bounds.left + p.x;
+            var dy = -bounds.top + p.y;
+
+            sampleObject.position.set(dx, dy);
+            app.pixi.renderer.render(sampleObject, renderTexture);
+            sampleObject.position.set(localP.x, localP.y);
+
+            var url = app.pixi.renderer.plugins.extract.base64(renderTexture);
+
+            renderTexture.destroy(true);
+
+            /////////////////////////////////////////////////////////
+
+
+            object.prefabPreviewImageURL = url;
+
             prefabs.push(object);
             var json = JSON.stringify(prefabs);
 
             store.set('prefabs', json);
 
             toastr.success("Object was saved as Prefab.");
-            
+
             this.editor.htmlInterface.onPrefabs();
 
         } else {

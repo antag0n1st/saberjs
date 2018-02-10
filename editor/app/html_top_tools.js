@@ -149,6 +149,8 @@
             }
         }
 
+        this.saveButton = document.getElementById('saveButton');
+        this.saveButton.onclick = this.onSaveBtn.bind(this);
 
         // ZOOM
 
@@ -166,6 +168,9 @@
         this.zoomSlider.on('change', this.onZoomSlider, this);
 
         /////
+
+        this.editorModes = document.getElementById('editorModes');
+        this.showEditorModes();
 
         this.alignButtons = document.getElementById('alignButtons');
         this.zIndexButtons = document.getElementById('zIndexButtons');
@@ -355,6 +360,9 @@
 
     /////////////////////////////////////////////////////////////////////////////
 
+    HtmlTopTools.prototype.onSaveBtn = function () {
+        this.editor.htmlInterface.saveCurrentContent();
+    };
 
     // This method is inivoked when the zoom slider is moved
     HtmlTopTools.prototype.onZoomSlider = function (data) {
@@ -442,6 +450,8 @@
 
     HtmlTopTools.prototype.hideAlignButtons = function (objects) {
         this.alignButtons.innerHTML = '';
+
+        this.showEditorModes(objects);
     };
 
     HtmlTopTools.prototype.showAlignButtons = function (objects) {
@@ -460,6 +470,49 @@
         html += HtmlElements.createInput(opt2).html;
 
         this.alignButtons.innerHTML = html;
+
+        this.hideEditorModes(objects);
+
+    };
+
+    HtmlTopTools.prototype.showEditorModes = function () {
+        // (imageName, method, argsString, className, tooltip)
+
+        var a1 = "";
+        var a2 = "";
+        var a3 = "";
+        var a4 = "";
+        var a5 = "";
+
+        if (this.editor.mode === MainScreen.MODE_SELECT) {
+            a1 = "active";
+        } else if (this.editor.mode === MainScreen.MODE_POLYGON) {
+            a2 = "active";
+        } else if (this.editor.mode === MainScreen.MODE_POINTS) {
+            a3 = "active";
+        } else if (this.editor.mode === MainScreen.MODE_LINES) {
+            a4 = "active";
+        } else if (this.editor.mode === MainScreen.MODE_BEZIER) {
+            a5 = "active";
+        }
+
+        var html = HtmlElements.createImageButton('_icon_select', 'htmlInterface.htmlTopTools.onModeChange', "0", 'image-button ' + a1, 'Select Mode').html;
+        html += HtmlElements.createImageButton('_icon_polygon', 'htmlInterface.htmlTopTools.onModeChange', "1", 'image-button ' + a2, 'Polygon Mode').html;
+        html += HtmlElements.createImageButton('_icon_points', 'htmlInterface.htmlTopTools.onModeChange', "2", 'image-button ' + a3, 'Points Mode').html;
+        html += HtmlElements.createImageButton('_icon_lines', 'htmlInterface.htmlTopTools.onModeChange', "3", 'image-button ' + a4, 'Lines Mode').html;
+        html += HtmlElements.createImageButton('_icon_bezier', 'htmlInterface.htmlTopTools.onModeChange', "4", 'image-button ' + a5, 'Bezier Mode').html;
+
+
+        this.editorModes.innerHTML = html;
+    };
+
+    HtmlTopTools.prototype.hideEditorModes = function (objects) {
+        this.editorModes.innerHTML = "";
+    };
+
+    HtmlTopTools.prototype.onModeChange = function (mode) {
+        this.editor.setMode(mode);
+
 
     };
 

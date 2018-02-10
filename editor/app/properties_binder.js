@@ -60,7 +60,7 @@
         html += HtmlElements.createInput(opt6).html;
         html += HtmlElements.createInput(opt3).html;
         html += HtmlElements.createInput(opt4).html;
-        
+
         html += HtmlElements.createInput(opt7).html;
         html += HtmlElements.createInput(opt8).html;
         html += HtmlElements.createInput(opt9).html;
@@ -136,7 +136,7 @@
             object.rotation = Math.degreesToRadians(Number(value) || 0);
         } else if (property === 'z-index') {
             object.zIndex = parseInt(value) || 0;
-         //   this.editor.sortObjectsPriority();
+            //   this.editor.sortObjectsPriority();
         } else if (property === 'anchorX') {
             object.anchor.x = Number(value) || 0;
         } else if (property === 'anchorY') {
@@ -147,6 +147,10 @@
             HtmlElements.setFeedback(feedbackID, constraint.isValid);
             object.constraintX = constraint;
 
+//            if (constraint.isValid) {
+//                this.editor.constraints.applyValues();
+//            }
+
         } else if (property === 'constraintY') {
 
             var constraint = new Constraint(object, 'y', value);
@@ -155,7 +159,11 @@
 
         } else if (property === 'className') {
             object.className = value.trim() || '';
-        } else if (property === 'constraintY' || property === 'constraintX') {
+        } 
+        
+        
+        
+        if (property === 'constraintY' || property === 'constraintX') {
 
             if (constraint.isValid) {
                 this.editor.constraints.add(constraint);
@@ -166,9 +174,6 @@
             this.editor.constraints.rebuildDependencyTree();
             this.editor.constraints.applyValues();
         }
-
-        //   clickedObject.updateSize();
-        // clickedObject.updateFrame();
 
         if (object.updateSize) {
             object.updateSize();

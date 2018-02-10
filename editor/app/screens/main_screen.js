@@ -7,6 +7,12 @@
     MainScreen.prototype = new HScreen();
     MainScreen.prototype.screen_initialize = MainScreen.prototype.initialize;
 
+    MainScreen.MODE_SELECT = 0;
+    MainScreen.MODE_POLYGON = 1;
+    MainScreen.MODE_POINTS = 2;
+    MainScreen.MODE_LINES = 3;
+    MainScreen.MODE_BEZIER = 4;
+    // make sure to map them to the position in the array
 
     MainScreen.prototype.initialize = function () {
 
@@ -17,6 +23,15 @@
 
         this.content = new Sprite();
         this.addChild(this.content);
+
+        this.mode = MainScreen.MODE_SELECT;
+        this.modes = [
+            new ModeSelect(this),
+            new ModePolygon(this),
+            new ModePoints(this),
+            new ModeLines(this),
+            new ModeBezier(this)
+        ];
 
         var texture = PIXI.Sprite.prototype.findTexture('repeatable_chess_pattern');
         this.repatable = new PIXI.extras.TilingSprite(texture, app.width, app.height);
@@ -76,7 +91,7 @@
         this.infoLabel.txt = 'Info';
         this.infoLabel.position.set(10, app.height - 40);
         this.addChild(this.infoLabel);
-      
+
         this.addTouchable(this); // let the screen be a touchable
 
         // IMPORTING STUFF
@@ -84,6 +99,16 @@
         this.htmlInterface.activateTab('imageLibrary');
         this.importSavedData();
         this.setDefaultLayer();
+
+
+//        var path = new PathObject();
+//        path.addPoint(new OV(100, 100));
+//        path.addPoint(new OV(300, 500));
+//        path.addPoint(new OV(500, 500));
+//        path.addPoint(new OV(800, 400));
+//        path.position.set(0, 0);
+//        path.build();
+//        this.activeLayer.addChild(path);
 
     };
 
@@ -99,7 +124,6 @@
             var object = new ContainerObject();
             object.build();
         }
-
 
         if (object) {
             this.placeObjectOnScreen(object);
@@ -339,9 +363,42 @@
         return false;
     };
 
+    MainScreen.prototype.checkPointPaths = function (children, event, methodName) {
 
+        for (var i = children.length - 1; i >= 0; i--) {
+
+            var object = children[i];
+
+            if (!object.export || !object.visible) {
+                continue;
+            }
+
+            var hasInteraction = this.checkPointPaths(object.children, event, methodName);
+
+            if(hasInteraction){
+                return true;
+            }
+
+            // check if the object is clicked
+
+            if (object.type === "PathObject") {
+                object.isCtrl = this.shortcuts.isCtrlPressed;
+                object.isAlt = this.shortcuts.isAltPressed;
+
+                hasInteraction = object[methodName](event, null);
+
+                if (hasInteraction) {
+                    return true;
+                }
+            }
+
+        }
+
+    };
 
     MainScreen.prototype.onMouseDown = function (event, sender) {
+
+
 
         if (this.shortcuts.isSpacePressed) {
             var pp = event.point.clone();
@@ -350,77 +407,11 @@
             return;
         }
 
-        // first reset the values
-        this.didDrag = false;
-        this.isClickedInsideObject = false;
-        this.isClickedInsideSameObject = false;
-        this.isSelectionStarted = false;
-        this.mouseDownPosition.copy(event.point);
-        this.handlesClickedObject = null;
-        this.clickedObject = null;
-
-        this.htmlInterface.contextMenu.close();
-
-        // check if we are touching a handle of the selected objects
-        if (this.checkSelectedObjects(this.selectedObjects, event)) {
+        if(this.checkPointPaths(this.activeLayer.children, event, 'onMouseDown')){
             return;
         }
 
-        var object = null;
-        // recursivly check if an object was clicked down
-        if (this.activeLayer.visible) {
-            object = this.checkPointInChildren(this.activeLayer.children, event);
-        }
-
-        if (object) {
-
-            if (this.shortcuts.isCtrlPressed) {
-
-                if (object.isSelected) {
-                    this.deselectObject(object);
-                } else {
-                    if (this.selectedObjects.length && this.selectedObjects[0].parent.id !== object.parent.id) {
-
-                    } else {
-                        this.addObjectToSelection(object);
-                    }
-                }
-
-            } else {
-                var isOneOfUs = false;
-
-                for (var i = 0; i < this.selectedObjects.length; i++) {
-                    var o = this.selectedObjects[i];
-                    o.save();
-                    if (o.id === object.id) {
-                        isOneOfUs = true;
-                        this.isClickedInsideObject = true;
-                        this.clickedObject = object;
-                    }
-
-                }
-
-                if (!isOneOfUs) {
-
-                    this.deselectAllObjects();
-                    object.save();
-
-                    if (this.clickedObject && object.id === this.clickedObject.id) {
-                        this.isClickedInsideSameObject = true;
-                    } else {
-
-                    }
-                    this.isClickedInsideObject = true;
-                    this.clickedObject = object;
-                }
-            }
-
-        } else {
-            // for ctrl select more object this will need to change
-            this.deselectAllObjects();
-        }
-
-
+        this.modes[this.mode].onMouseDown(event, sender);
     };
 
     MainScreen.prototype.onMouseMove = function (event, sender) {
@@ -432,188 +423,79 @@
             var p = V.addition(offset, pp);
             this.moveScreenTo(p);
             return;
-        } else if (this.shortcuts.isCtrlPressed) {
-            var object = null;
-            if (this.activeLayer.visible) {
-                object = this.checkPointInChildren(this.activeLayer.children, event);
-            }
-
-            if (object) {
-
-                var isSelected = false;
-                for (var i = 0; i < this.selectedObjects.length; i++) {
-                    if (object.id === this.selectedObjects[i].id) {
-                        isSelected = true;
-                    }
-                }
-
-                if (!isSelected) {
-                    this.targetDropObject = object;
-                    app.input.setCursor('cell');
-                } else if (this.targetDropObject) {
-                    this.targetDropObject = null;
-                }
-
-
-            } else {
-                if (this.targetDropObject) {
-                    this.targetDropObject = null;
-                }
-                app.input.restoreCursor();
-            }
+        }
+        
+        if(this.checkPointPaths(this.activeLayer.children, event, 'onMouseMove')){
             return;
-        } else if (this.handlesClickedObject) {
-            this.handlesClickedObject.onHandleMove(event, this);
-        } else if (this.selectedObjects.length) {
-
-            if (!this.isSelectionStarted) {
-
-                // dragging
-
-                this.didDrag = true;
-
-
-
-                var dragBy = V.substruction(event.point, this.mouseDownPosition);
-                dragBy.scale(1 / this.activeLayer.scale.x);
-
-                for (var i = 0; i < this.selectedObjects.length; i++) {
-                    var object = this.selectedObjects[i];
-                    object.dragBy(dragBy);
-                }
-
-            }
-
-        } else {
-            this.isSelectionStarted = true;
-
         }
 
-
-
-        if (this.isSelectionStarted) {
-
-            // making a selection
-
-            var width = event.point.x - this.mouseDownPosition.x;
-            var height = event.point.y - this.mouseDownPosition.y;
-
-            // quick! , start dragging this object
-            this.selectionRectangle = new SAT.Box(new V(this.mouseDownPosition.x, this.mouseDownPosition.y), width, height).toPolygon();
-            this.checkSelection(this.mouseDownPosition.x, this.mouseDownPosition.y, width, height);
-
-        }
-
-        this.propertiesBinder.bindSelected();
-
+        this.modes[this.mode].onMouseMove(event, sender);
     };
 
     MainScreen.prototype.onMouseUp = function (event, sender) {
+        this.modes[this.mode].onMouseUp(event, sender);
+    };
 
 
-        app.input.restoreCursor();
+    MainScreen.prototype.onRightMouseDown = function (event, sender) {
 
-        if (this.shortcuts.isCtrlPressed) {
-            if (this.targetDropObject) {
+        this.htmlInterface.contextMenu.close();
 
-                var targetAP = this.targetDropObject.getGlobalPosition();
+        if (this.shortcuts.isSpacePressed) {
+            var pp = event.point.clone();
+            pp.scale(1 / this.activeLayer.factor * 5);
+            this.screenMouseOffset = V.substruction(this._screenPosition, pp);
 
-                for (var i = 0; i < this.selectedObjects.length; i++) {
-                    var object = this.selectedObjects[i];
-
-                    var objectAP = object.getGlobalPosition();
-
-                    object.removeFromParent();
-                    this.targetDropObject.addChild(object);
-
-                    var p = V.substruction(objectAP, targetAP);
-                    object.position.set(p.x, p.y);
-                }
-
-                this.deselectAllObjects();
-
-            }
-
-
-            this.targetDropObject = null;
+            return;
         }
 
+    };
+
+
+    MainScreen.prototype.onRightMouseMove = function (event, sender) {
+        if (this.shortcuts.isSpacePressed && !this.selectionRectangle) {
+            var offset = new V().copy(this.screenMouseOffset);
+            var pp = event.point.clone();
+            pp.scale(1 / this.activeLayer.factor * 5);
+            var p = V.addition(offset, pp);
+            this.moveScreenTo(p);
+            return;
+        }
+    };
+
+    MainScreen.prototype.onRightMouseUp = function (event, sender) {
 
         if (this.shortcuts.isSpacePressed && !this.selectionRectangle) {
             return;
         }
 
-        var dt = app.pixi.ticker.lastTime - this.lastCickTime;
-
-        if (dt < 300 && this.isClickedInsideObject) {
-
-            // double click
-
-            var object = this.selectedObjects[0];
-            if (object.properties) {
-                this.htmlInterface.activateTab('properties');
-            } else {
-                this.htmlInterface.activateTab('commonProperties');
-            }
-
-        } else {
-            this.htmlInterface.htmlTopTools.hideTextEdit();
-        }
-
-        if (this.handlesClickedObject) {
-            this.handlesClickedObject.onHandleUp(event, this);
-        } else if (this.isClickedInsideObject) {
-
-
-            // it can be selection if dragging did not take place
-            if (!this.didDrag) {
-
-                if (this.shortcuts.isCtrlPressed) {
-
-                } else if (!this.selectionRectangle) {
-                    this.deselectAllObjects();
-                    //lets add the object to the selection
-                    this.addObjectToSelection(this.clickedObject);
-
-                }
-
-
-            } else {
-
-
-
-                var batch = new CommandBatch();
-                for (var i = 0; i < this.selectedObjects.length; i++) {
-                    var so = this.selectedObjects[i];
-                    var x = so.position.x;
-                    var y = so.position.y;
-                    so.position = so.originalPosition;
-
-                    var mc = new CommandMove(so, x, y);
-                    batch.add(mc);
-                }
-                this.commands.add(batch);
-            }
+        if (this.selectedObjects.length) {
+            this.htmlInterface.contextMenu.open(event.point);
         } else {
 
-            if (!this.isSelectionStarted) {
-
-                //this.checkPointInChildren(this.activeLayer.children, event);
-
-                // this.deselectAllObjects();
-            }
-
         }
-
-        this.selectionRectangle = null;
-
-        this.propertiesBinder.bindSelected();
-
-        this.lastCickTime = app.pixi.ticker.lastTime;
-
-
 
     };
+
+    MainScreen.prototype.onWheel = function (event, sender) {
+
+        var scale = 0.1;
+        if (event.point.y < 0) {
+            scale = -0.1;
+        }
+        var p = new V(app.input.point.x, app.input.point.y);
+
+        var toScale = this._zoom + scale;
+
+        this.htmlInterface.htmlTopTools.zoomSlider.setValue(toScale);
+
+        this.htmlInterface.htmlTopTools.zoomInAt(toScale, p, 200);
+    };
+
+    MainScreen.prototype.onMouseCancel = function (event, sender) {
+        this.selectionRectangle = null;
+    };
+
 
     MainScreen.prototype.copySelection = function () {
 
@@ -714,64 +596,6 @@
 
     };
 
-    MainScreen.prototype.onRightMouseDown = function (event, sender) {
-
-        this.htmlInterface.contextMenu.close();
-
-        if (this.shortcuts.isSpacePressed) {
-            var pp = event.point.clone();
-            pp.scale(1 / this.activeLayer.factor * 5);
-            this.screenMouseOffset = V.substruction(this._screenPosition, pp);
-
-            return;
-        }
-
-    };
-
-
-    MainScreen.prototype.onRightMouseMove = function (event, sender) {
-        if (this.shortcuts.isSpacePressed && !this.selectionRectangle) {
-            var offset = new V().copy(this.screenMouseOffset);
-            var pp = event.point.clone();
-            pp.scale(1 / this.activeLayer.factor * 5);
-            var p = V.addition(offset, pp);
-            this.moveScreenTo(p);
-            return;
-        }
-    };
-
-    MainScreen.prototype.onRightMouseUp = function (event, sender) {
-
-        if (this.shortcuts.isSpacePressed && !this.selectionRectangle) {
-            return;
-        }
-
-        if (this.selectedObjects.length) {
-            this.htmlInterface.contextMenu.open(event.point);
-        } else {
-
-        }
-
-    };
-
-    MainScreen.prototype.onWheel = function (event, sender) {
-
-        var scale = 0.1;
-        if (event.point.y < 0) {
-            scale = -0.1;
-        }
-        var p = new V(app.input.point.x, app.input.point.y);
-
-        var toScale = this._zoom + scale;
-
-        this.htmlInterface.htmlTopTools.zoomSlider.setValue(toScale);
-
-        this.htmlInterface.htmlTopTools.zoomInAt(toScale, p, 200);
-    };
-
-    MainScreen.prototype.onMouseCancel = function (event, sender) {
-        this.selectionRectangle = null;
-    };
 
     MainScreen.prototype.onShow = function () {
 
@@ -1093,6 +917,14 @@
         }
     };
 
+    MainScreen.prototype.setMode = function (mode) {
+        this.modes[this.mode].onModeEnd();
+
+        this.mode = mode;
+        this.modes[this.mode].onModeStart();
+
+        this.htmlInterface.htmlTopTools.showEditorModes();
+    };
 
 
     MainScreen.prototype.blank = function () {

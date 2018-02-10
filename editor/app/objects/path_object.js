@@ -1,15 +1,14 @@
 (function (window, undefined) {
 
-    function Path() {
+    function PathObject() {
         this.initialize();
     }
 
-    Path.prototype = Object.create(PIXI.Container.prototype);
-    Path.prototype.screenInitialize = Path;
+    PathObject.prototype = new Entity();
+    PathObject.prototype.entityInitialize = PathObject.prototype.initialize;
 
-
-    Path.prototype.initialize = function () {
-        PIXI.Container.call(this);
+    PathObject.prototype.initialize = function () {
+        this.entityInitialize(null);
 
         this.graphics = new PIXI.Graphics();
         this.addChild(this.graphics);
@@ -27,14 +26,27 @@
 
         this.isAlt = false;
         this.isCtrl = false;
-        
-//        this.callback = function(){};
-//        this.context = this;
 
+        this.type = 'PathObject';
 
     };
 
-    Path.prototype.get = function (t) {
+    PathObject.prototype.build = function () {
+        this.canResize = false;
+        this.hasFrame = false;
+
+        this.enableSensor();
+    };
+
+    PathObject.prototype.export = function () {
+
+        var o = this.basicExport();
+
+        return o;
+
+    };
+
+    PathObject.prototype.get = function (t) {
 
         var totalLength = this.curve.length();
         var x = Math.lerp(t, 0, totalLength);
@@ -44,7 +56,7 @@
         var c = null;
 
         for (var i = 0; i < this.curves.length; i++) {
-            
+
             c = this.curves[i];
             var len = c.length();
             xx -= len;
@@ -60,15 +72,15 @@
 
     };
 
-    Path.prototype.animate = function (time,callback,context) {
-        
+    PathObject.prototype.animate = function (time, callback, context) {
+
         time = time || 2000;
 
         new Stepper(function (step, data, dt) {
             var p = path.get(step);
 
             this.render();
-            
+
             this.graphics.clear();
 
 
@@ -79,15 +91,15 @@
 
             this.graphics.endFill();
 
-        }, time, null, null, function(){
-            if(callback){
-                callback.call(context,this);
+        }, time, null, null, function () {
+            if (callback) {
+                callback.call(context, this);
             }
         }, this).run();
 
     };
 
-    Path.prototype.addPoint = function (point) {
+    PathObject.prototype.addPoint = function (point) {
 
         point.basePoint = null;
         point.handles = [];
@@ -108,7 +120,7 @@
 
             a2.basePoint = this.lastPoint;
             a3.basePoint = point;
-            
+
             a2.curves = [];
             a3.curves = [];
 
@@ -146,7 +158,7 @@
 
     };
 
-    Path.prototype.createSensor = function (point, enabled) {
+    PathObject.prototype.createSensor = function (point, enabled) {
 
         point.callback = this.onHandleMove;
         point.context = this;
@@ -159,20 +171,19 @@
         return circle;
     };
 
-    Path.prototype.render = function () {
+    PathObject.prototype.render = function () {
         this.graphics.clear();
-
 
         for (var i = 0; i < this.curves.length; i++) {
             var curve = this.curves[i];
-            this.renderPath(curve, this.graphics);
+            this.renderPathObject(curve, this.graphics);
         }
 
         this.renderHandles(this.graphics);
     };
 
 
-    Path.prototype.renderPath = function (bezier, graphics) {
+    PathObject.prototype.renderPathObject = function (bezier, graphics) {
 
         graphics.beginFill(0xffffff, 0);
         graphics.lineStyle(4, 0x1c19e8, 1);
@@ -196,7 +207,7 @@
 
         // let render the handles now
 
-        graphics.lineStyle(1, 0x42f4f1, 1);
+        graphics.lineStyle(1, 0x222222, 1);
         var points = bezier.points;
         graphics.moveTo(points[0].x, points[0].y);
         graphics.lineTo(points[1].x, points[1].y);
@@ -209,7 +220,7 @@
 
     };
 
-    Path.prototype.renderHandles = function (graphics) {
+    PathObject.prototype.renderHandles = function (graphics) {
 
         //  this.graphics.clear();
 
@@ -224,7 +235,7 @@
         graphics.endFill();
     };
 
-    Path.prototype.moveHandleTo = function (point) {
+    PathObject.prototype.moveHandleTo = function (point) {
         if (this.selectedHandle) {
             this.selectedHandle.pos.x = point.x;
             this.selectedHandle.pos.y = point.y;
@@ -232,10 +243,8 @@
         this.render();
     };
 
-    Path.prototype.onMouseDown = function (event, sender) {
+    PathObject.prototype.onMouseDown = function (event, sender) {
         this.selectedHandle = null;
-
-
 
         var point = V.substruction(event.point, this.getGlobalPosition());
         for (var i = 0; i < this.sensors.length; i++) {
@@ -263,19 +272,23 @@
                     break;
                 }
             }
-
-
         }
+        
+        return this.selectedHandle;
     };
 
-    Path.prototype.onMouseMove = function (event, element) {
+    PathObject.prototype.onMouseMove = function (event, element) {
         if (this.selectedHandle) {
             var point = V.substruction(event.point, this.getGlobalPosition());
             this.moveHandleTo(point);
+            
+            return true;
         }
+        
+        return false;
     };
 
-    Path.prototype.onHandleMove = function (point) {
+    PathObject.prototype.onHandleMove = function (point) {
 
         if (point.basePoint) {
 
@@ -304,19 +317,19 @@
                 }
             }
         }
-        
+
         for (var i = 0; i < point.curves.length; i++) {
             var curve = point.curves[i];
-             curve.update();
+            curve.update();
         }
-        
-       
-    };
 
-    Path.prototype.update = function () {
 
     };
 
-    window.Path = Path; // make it available in the main scope
+    PathObject.prototype.update = function () {
+
+    };
+
+    window.PathObject = PathObject; // make it available in the main scope
 
 }(window));

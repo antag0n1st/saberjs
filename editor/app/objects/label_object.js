@@ -22,6 +22,10 @@
 
         this.centered();
 
+        this.properties = {
+            width: 0
+        };
+
 
 
     };
@@ -33,8 +37,8 @@
 
 
     LabelObject.prototype.update = function (dt) {
-        
-        if(this.anchor.x !== this.label.anchor.x || this.anchor.y !== this.label.anchor.y ){
+
+        if (this.anchor.x !== this.label.anchor.x || this.anchor.y !== this.label.anchor.y) {
             this.label.anchor.x = this.anchor.x;
             this.label.anchor.y = this.anchor.y;
         }
@@ -59,6 +63,8 @@
             dropShadowDistance: this.label.style.dropShadowDistance,
             dropShadowAngle: this.label.style.dropShadowAngle,
             dropShadowColor: this.label.style.dropShadowColor,
+            wordWrap: this.label.style.wordWrap,
+            wordWrapWidth: this.label.style.wordWrapWidth
         };
 
         return o;
@@ -92,6 +98,56 @@
         this.canResize = false;
 
         this.deselect();
+    };
+
+    LabelObject.prototype.bindProperties = function (editor) {
+
+        var html = '';
+
+        var method = 'onSelectedObjectPropertyChange';
+
+        var opt0 = {name: 'width', value: Math.round(this.properties.width), method: method};
+
+
+        html += HtmlElements.createInput(opt0).html;
+
+
+
+
+        editor.htmlInterface.propertiesContent.innerHTML = html;
+
+
+
+    };
+
+    LabelObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
+
+        if (property === "width") {
+            if (value <= 0) {
+                this.label.style.wordWrap = false;
+            } else {
+                this.label.style.wordWrap = true;
+                this.label.style.wordWrapWidth = value;
+            }
+
+            //   this.build();
+
+        }
+
+
+
+        var command = new CommandProperty(this, 'properties.' + property, value, function () {
+
+            //   this.background.padding = this.properties.padding;
+            //  this.background.setSize(this.properties.width, this.properties.height);
+
+            this.updateSize();
+            this.updateFrame();
+
+        }, this);
+
+        editor.commands.add(command);
+
     };
 
     window.LabelObject = LabelObject;

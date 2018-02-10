@@ -288,6 +288,14 @@ body{
     margin-left: 10px;
 }
 
+.image-button.active{
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    margin-left: 10px;
+    background-color: #9282ef;
+}
+
 .image-button:hover{
     background-color: #cccccc;
 }

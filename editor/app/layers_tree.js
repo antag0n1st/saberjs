@@ -29,7 +29,7 @@
 
     };
 
-    LayersTree.prototype.build = function () {
+    LayersTree.prototype.build = function (callback) {
 
         this.data = this.getStructure();
         var contextmenu = this.createContexMenu();
@@ -75,6 +75,12 @@
                 },
                 GenericObject: {
                     icon: 'fa fa-cube'
+                },
+                PolygonObject: {
+                    icon: 'fa fa-object-ungroup'
+                },
+                GenericPoint: {
+                    icon: 'fa fa-circle-o'
                 }
             }
 
@@ -183,6 +189,10 @@
 
             }
 
+        }).bind("ready.jstree", function (evt, data) {
+            if (callback) {
+                callback();
+            }
         });
 
         var size = app.device.windowSize();
@@ -293,7 +303,7 @@
         element.className = element.className.replace('fa fa-low-vision', '');
 
         element.className += object.visible ? "fa fa-eye" : "fa fa-low-vision";
-        
+
         this.editor.deselectAllObjects();
 
         return false;
@@ -302,9 +312,9 @@
     LayersTree.prototype.parseChildren = function (object) {
 
         var name = object.name || object.imageName || object.type;
-        
-        if(!object.id.startsWith('_change_it_before_use')){
-           name = object.id; 
+
+        if (!object.id.startsWith('_change_it_before_use')) {
+            name = object.id;
         }
 
         var visibility = '';
@@ -320,7 +330,8 @@
             type: object.type,
             data: {
                 id: object.id
-            }
+            },
+            id: object.id
         };
 
         if (object.type === "Layer") {
@@ -347,6 +358,26 @@
         }
 
         return data;
+    };
+
+    LayersTree.prototype.selectNode = function (object) {
+
+        var tree = $.jstree.reference(this.tree);
+
+        tree.deselect_all(true);
+        tree.select_node(object.id, true);
+
+        var container = $('#layersTree');
+        var scrollTo = $('#' + object.id);
+
+        container.scrollTop(
+                scrollTo.offset().top - container.offset().top + container.scrollTop()
+                );
+
+        container.animate({
+            scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+        });
+
     };
 
     LayersTree.prototype.getStructure = function () {
