@@ -102,19 +102,18 @@
 
     LabelObject.prototype.bindProperties = function (editor) {
 
+        var eHTML = Entity.prototype.bindProperties.call(this, editor);
+
         var html = '';
 
         var method = 'onSelectedObjectPropertyChange';
 
         var opt0 = {name: 'width', value: Math.round(this.properties.width), method: method};
 
-
+        html += HtmlElements.createSection('Multiline').html;
         html += HtmlElements.createInput(opt0).html;
 
-
-
-
-        editor.htmlInterface.propertiesContent.innerHTML = html;
+        editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
 
 

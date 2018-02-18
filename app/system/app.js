@@ -16,10 +16,15 @@
         this.windowHeight = 0;
 
         this.device = new Device(this);
-        
+
+        if (Config.window_mode_mobile !== null && (this.device.isMobile.phone || this.device.isMobile.tablet)) {
+            Config.window_mode = Config.window_mode_mobile;
+            this.device.calculateSizes();
+        }
+
         var useCanvas = false;
-        
-        if(this.device.isIE){
+
+        if (this.device.isIE) {
             useCanvas = true;
         }
 
@@ -29,8 +34,8 @@
             resolution: 1,
             width: this.width,
             height: this.height,
-            backgroundColor: Config.background_color ,
-            forceCanvas : useCanvas
+            backgroundColor: Config.background_color,
+            forceCanvas: useCanvas
         };
 
         this.pixi = new PIXI.Application(settings);
@@ -58,7 +63,7 @@
                     var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
                     app.navigator.add(screen);
                 } else {
-                    throw Config.initialScreen+' - is not Defined';
+                    throw Config.initialScreen + ' - is not Defined';
                 }
 
 
@@ -67,7 +72,15 @@
 
         });
 
+        if (Config.debug) {
+            this.debugLayer = new PIXI.Graphics();
+            this.debugLayer.zIndex = 100;
+            this.stage.addChild(this.debugLayer);
+        }
 
+        Visibility.change(function (e, state) {
+            app.handleVisibility(state === "visible");
+        });
 
     };
 
@@ -108,6 +121,47 @@
         }
     };
 
+    App.prototype.debugStage = function (children) {
+
+        children = children || this.stage.children;
+
+        for (var i = 0; i < children.length; i++) {
+            var c = children[i];
+            this.drawItem(c, this.debugLayer);
+            if (c.children) {
+                this.debugStage(c.children);
+            }
+        }
+    };
+
+    App.prototype.drawItem = function (item, graphics) {
+
+        var s = item.getSensor();
+
+        if (!s) {
+            return;
+        }
+
+        var p = s.pos;
+        var points = s.points;
+
+        graphics.beginFill(0x000000);
+        graphics.lineStyle(1, 0x000000);
+
+        graphics.drawCircle(p.x, p.y, 2);
+
+        for (var j = 0; j < points.length; j++) {
+            graphics.moveTo(p.x + points[j].x, p.y + points[j].y);
+            if (j === points.length - 1) {
+                graphics.lineTo(p.x + points[0].x, p.y + points[0].y);
+            } else {
+                graphics.lineTo(p.x + points[j + 1].x, p.y + points[j + 1].y);
+            }
+        }
+
+        graphics.endFill();
+    };
+
     App.prototype.tick = function (deltaTime) {
 
         // elapsedMS
@@ -121,6 +175,12 @@
         Actions.update(step); // update tweens
 
         this.navigator.update(step); // update the sceen and its objects
+
+        if (Config.debug) {
+            this.debugLayer.clear();
+            this.debugStage();
+        }
+
 
     };
 
@@ -144,8 +204,20 @@
     };
 
 
-    App.prototype.handleVisibility = function () {
+    App.prototype.handleVisibility = function (isVisible) {
+        
+        if (app.navigator.currentScreen) {
+            app.navigator.currentScreen.onVisibilityChange(isVisible);
+        }
 
+        if (isVisible) {
+            if(Config.is_sound_on){
+                Howler.mute(false);
+            }            
+        } else {
+            Howler.mute(true);
+        }
+        
     };
 
     App.prototype.resize = function () {

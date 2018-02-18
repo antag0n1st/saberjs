@@ -50,6 +50,12 @@
 
         var opt13 = {name: 'className', value: object.className, class: 'big', displayName: 'Class'};
 
+        
+
+        var opt14 = {name: 'tint', displayName: 'Tint', value: PIXI.utils.hex2string(object.tint)};
+
+        var colorPicker = HtmlElements.createColorPicker(opt14);
+
         var idControl = HtmlElements.createInput(opt0);
 
         html += idControl.html;
@@ -61,10 +67,14 @@
         html += HtmlElements.createInput(opt3).html;
         html += HtmlElements.createInput(opt4).html;
 
+
+
         html += HtmlElements.createInput(opt7).html;
+        html += colorPicker.html;
         html += HtmlElements.createInput(opt8).html;
         html += HtmlElements.createInput(opt9).html;
         html += HtmlElements.createInput(opt10).html;
+
         html += HtmlElements.createInput(opt13).html;
         html += HtmlElements.createSection('Constraints').html;
 
@@ -91,6 +101,7 @@
             isValid = false;
         }
         HtmlElements.setFeedback(idControl.feedbackID, isValid);
+        HtmlElements.activateColorPicker(colorPicker);
 
         //   }
 
@@ -147,10 +158,6 @@
             HtmlElements.setFeedback(feedbackID, constraint.isValid);
             object.constraintX = constraint;
 
-//            if (constraint.isValid) {
-//                this.editor.constraints.applyValues();
-//            }
-
         } else if (property === 'constraintY') {
 
             var constraint = new Constraint(object, 'y', value);
@@ -159,10 +166,11 @@
 
         } else if (property === 'className') {
             object.className = value.trim() || '';
-        } 
-        
-        
-        
+        } else if (property === 'tint') {
+            object.tint = PIXI.utils.string2hex(value);
+        }
+
+
         if (property === 'constraintY' || property === 'constraintX') {
 
             if (constraint.isValid) {

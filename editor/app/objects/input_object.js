@@ -152,6 +152,8 @@
     };
 
     InputObject.prototype.bindProperties = function (editor) {
+        
+        var eHTML = Entity.prototype.bindProperties.call(this,editor);
 
         var html = '';
 
@@ -185,7 +187,7 @@
         html += HtmlElements.createInput(opt5).html;
         html += HtmlElements.createInput(opt6).html;
 
-        editor.htmlInterface.propertiesContent.innerHTML = html;
+        editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
         // adjust feedback
         HtmlElements.setFeedback(padding.feedbackID, this.isPaddingValid());

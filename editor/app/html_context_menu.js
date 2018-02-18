@@ -16,40 +16,49 @@
 
 
 
+        var object = objects[0];
+
         var html = '';
 
         html += '<div id="contextMenu" class="dropdown bootstrapMenu">';
         html += '<ul class="dropdown-menu" style="position:static;display:block;font-size:0.9em;">';
 
-        html += '<li role="presentation" data-action="editName" >';
-        html += '<a id="contextEdit" href="#" role="menuitem">';
-        html += '<i class="fa fa-fw fa-lg fa-pencil"></i> ';
-        html += '<span class="actionName">Edit</span>';
-        html += '</a>';
-        html += '</li>';
+        if (object instanceof LabelObject || object instanceof ButtonObject) {
+            html += '<li role="presentation" >';
+            html += '<a id="contextEdit" href="#" role="menuitem">';
+            html += '<i class="fa fa-fw fa-lg fa-pencil"></i> ';
+            html += '<span class="actionName">Edit Text</span>';
+            html += '</a>';
+            html += '</li>';
+        }
 
-        html += '<li role="presentation" data-action="findInTree" >';
+
+        html += '<li role="presentation"  >';
         html += '<a id="contextFindInTree" href="#" role="menuitem">';
         html += '<i class="fa fa-fw fa-lg fa-search"></i> ';
         html += '<span class="actionName">Find In Tree</span>';
         html += '</a>';
         html += '</li>';
 
-        html += '<li role="presentation" data-action="convertToButton" >';
-        html += '<a id="contextConvertToButton" href="#" role="menuitem">';
-        html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
-        html += '<span class="actionName">Convert To Btn</span>';
-        html += '</a>';
-        html += '</li>';
+        if (object instanceof ImageObject) {
 
-        html += '<li role="presentation" data-action="convertToInput" >';
-        html += '<a id="contextConvertToInput" href="#" role="menuitem">';
-        html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
-        html += '<span class="actionName">Convert To Input</span>';
-        html += '</a>';
-        html += '</li>';
+            html += '<li role="presentation" >';
+            html += '<a id="contextConvertToButton" href="#" role="menuitem">';
+            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
+            html += '<span class="actionName">Convert To Btn</span>';
+            html += '</a>';
+            html += '</li>';
 
-        html += '<li role="presentation" data-action="convertToInput" >';
+            html += '<li role="presentation" >';
+            html += '<a id="contextConvertToInput" href="#" role="menuitem">';
+            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
+            html += '<span class="actionName">Convert To Input</span>';
+            html += '</a>';
+            html += '</li>';
+
+        }
+
+        html += '<li role="presentation"  >';
         html += '<a id="contextSaveAsPrefab" href="#" role="menuitem">';
         html += '<i class="fa fa-fw fa-lg fa-cube"></i> ';
         html += '<span class="actionName">Save as Prefab</span>';
@@ -69,18 +78,23 @@
         document.body.appendChild(cm);
 
         // bind events here
+        if (object instanceof LabelObject || object instanceof ButtonObject) {
+            var contextEdit = document.getElementById('contextEdit');
+            contextEdit.onclick = this.onContextEditBtn.bind(this);
+        }
 
-        var contextEdit = document.getElementById('contextEdit');
-        contextEdit.onclick = this.onContextEditBtn.bind(this);
+        if (object instanceof ImageObject) {
 
-        var contextConvertToButton = document.getElementById('contextConvertToButton');
-        contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
+            var contextConvertToButton = document.getElementById('contextConvertToButton');
+            contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
+
+            var contextConvertToInput = document.getElementById('contextConvertToInput');
+            contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
+
+        }
 
         var contextFindInTree = document.getElementById('contextFindInTree');
         contextFindInTree.onclick = this.onContextFindInTree.bind(this);
-
-        var contextConvertToInput = document.getElementById('contextConvertToInput');
-        contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
 
         var contextSaveAsPrefab = document.getElementById('contextSaveAsPrefab');
         contextSaveAsPrefab.onclick = this.onContextSaveAsPrefab.bind(this);
@@ -126,6 +140,10 @@
 
         //TODO do the math to show it properly on the screen
 
+        if (this.editor.selectedObjects.length !== 1) {
+            return;
+        }
+
         this.build(this.editor.selectedObjects);
 
         var size = app.device.windowSize();
@@ -169,11 +187,11 @@
 
         if (this.editor.htmlInterface[ 'layersPanel'].style.display !== 'block') {
             this.editor.htmlInterface.activateTab('layers', function () {
-              
+
                 tree.selectNode(object, true);
             });
         } else {
-             tree.selectNode(object, true);
+            tree.selectNode(object, true);
         }
 
     };
@@ -241,7 +259,7 @@
 
         if (this.editor.selectedObjects.length === 1) {
 
-            var prefabs = store.get('prefabs');
+            var prefabs = store.get('prefabs-' + ContentManager.baseURL);
 
             if (prefabs) {
                 prefabs = JSON.parse(prefabs);
@@ -287,7 +305,7 @@
             prefabs.push(object);
             var json = JSON.stringify(prefabs);
 
-            store.set('prefabs', json);
+            store.set('prefabs-' + ContentManager.baseURL, json);
 
             toastr.success("Object was saved as Prefab.");
 

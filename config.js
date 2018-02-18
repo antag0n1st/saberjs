@@ -20,7 +20,7 @@ Config.canvas_padding = '50 50 50 50'; // top - right - bottom - left
 
 Config.is_sound_on = true; // switch the sound on/off
 Config.debug_info = true;
-Config.debug = false;
+Config.debug = true;
 Config.should_clear_stage = true;
 Config.slow_motion_factor = 1;
 Config.is_game_paused = false;

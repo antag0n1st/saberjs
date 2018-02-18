@@ -110,6 +110,8 @@
 //        path.build();
 //        this.activeLayer.addChild(path);
 
+    
+
     };
 
     MainScreen.prototype.onGalleryObjectDropped = function (id) {
@@ -137,7 +139,7 @@
 
         var index = data.getData('index');
 
-        var prefabs = store.get('prefabs');
+        var prefabs = store.get('prefabs-' + ContentManager.baseURL);
         prefabs = JSON.parse(prefabs);
 
         var prefab = prefabs[index];
@@ -375,7 +377,7 @@
 
             var hasInteraction = this.checkPointPaths(object.children, event, methodName);
 
-            if(hasInteraction){
+            if (hasInteraction) {
                 return true;
             }
 
@@ -407,7 +409,7 @@
             return;
         }
 
-        if(this.checkPointPaths(this.activeLayer.children, event, 'onMouseDown')){
+        if (this.checkPointPaths(this.activeLayer.children, event, 'onMouseDown')) {
             return;
         }
 
@@ -424,8 +426,8 @@
             this.moveScreenTo(p);
             return;
         }
-        
-        if(this.checkPointPaths(this.activeLayer.children, event, 'onMouseMove')){
+
+        if (this.checkPointPaths(this.activeLayer.children, event, 'onMouseMove')) {
             return;
         }
 
@@ -883,6 +885,10 @@
         return isInputFocused || isAreaFocused;
     };
 
+    MainScreen.prototype.focusOnCanvas = function () {
+        document.activeElement.blur();
+    };
+
     MainScreen.prototype.isIdUnique = function (id, children, count) {
 
         children = children || this.content.children;
@@ -926,6 +932,25 @@
         this.htmlInterface.htmlTopTools.showEditorModes();
     };
 
+    MainScreen.prototype._changeCustomProperty = function (property, value, element, inputType, feedbackID) {
+
+        if (this.selectedObjects.length === 1) {
+            this.selectedObjects[0].changeCustomProperty(this, property, value, element, inputType, feedbackID);
+        }
+
+    };
+    
+    MainScreen.prototype.addCustomProperty = function () {
+        $("#addCustomPropertyModal").modal('show');
+    };
+    
+    MainScreen.prototype.onCustomPropertyDelete = function (property) {
+      
+      if (this.selectedObjects.length === 1) {
+            this.selectedObjects[0].onCustomPropertyDelete(this, property);
+        }
+      
+    };
 
     MainScreen.prototype.blank = function () {
         // used to call it , and do nothing

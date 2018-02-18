@@ -115,6 +115,7 @@
                     target.addChild(object);
 
                     var p = V.substruction(objectAP, targetAP);
+                    p.scale(1 / editor.activeLayer.scale.x);
                     object.position.set(p.x, p.y);
 
                 }

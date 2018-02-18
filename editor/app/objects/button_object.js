@@ -145,6 +145,8 @@
     };
 
     ButtonObject.prototype.bindProperties = function (editor) {
+        
+        var eHTML = Entity.prototype.bindProperties.call(this,editor);
 
         var html = '';
 
@@ -186,7 +188,7 @@
 
 
 
-        editor.htmlInterface.propertiesContent.innerHTML = html;
+        editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
         if (this.properties.isNineSlice) {
             // adjust feedback

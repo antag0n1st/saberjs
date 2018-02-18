@@ -182,6 +182,9 @@
                     this.editor.targetDropObject.addChild(object);
 
                     var p = V.substruction(objectAP, targetAP);
+                    
+                    p.scale(1 / this.editor.activeLayer.scale.x);
+                    
                     object.position.set(p.x, p.y);
                 }
 
@@ -200,16 +203,16 @@
 
         var dt = app.pixi.ticker.lastTime - this.editor.lastCickTime;
 
-        if (dt < 300 && this.editor.isClickedInsideObject) {
+        if (dt < 300 && this.editor.isClickedInsideObject && this.editor.selectedObjects.length === 1) { // 
 
             // double click
 
             var object = this.editor.selectedObjects[0];
-            if (object.properties) {
-                this.editor.htmlInterface.activateTab('properties');
-            } else {
+         //   if (object.properties) {
+          //      this.editor.htmlInterface.activateTab('properties');
+          //  } else {
                 this.editor.htmlInterface.activateTab('commonProperties');
-            }
+          //  }
 
         } else {
             this.editor.htmlInterface.htmlTopTools.hideTextEdit();

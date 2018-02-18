@@ -20,7 +20,9 @@
         tooltip: '',
         method: '',
         feedback: false,
-        inputType: HtmlElements.INPUT_TYPE_ALL
+        inputType: HtmlElements.INPUT_TYPE_ALL,
+        buttonClass: '',
+        buttonAction: ''
     };
     HtmlElements.createInput = function (options) {
 
@@ -48,11 +50,13 @@
         var id = "htmlElementId-" + PIXI.utils.uid();
         var feedbackID = "feedbackElementId-" + PIXI.utils.uid();
 
-        var html = '<div class="' + className + ' ' + (options.feedback ? 'has-feedback' : '') + '">';
+        var html = '<div class="' + className + ' ' + (options.feedback ? 'has-feedback' : '') + ' ' + (options.buttonAction ? 'input-group m-bot15' : '') + '">';
         html += options.feedback ? '<i id="' + feedbackID + '" style="color:orange;" class="fa fa-warning form-control-feedback"></i>' : '';
         html += '<label ';
         html += tooltip ? 'title="' + tooltip + '"' : '';
         html += '>';
+
+
         html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
         html += ' class="form-control" ';
@@ -61,7 +65,17 @@
         html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';
         html += ' />';
 
+        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\')" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
+
+
         html += '</div>';
+
+        //  <div class="input-group m-bot15">
+        //                                        <span class="input-group-btn">
+        //                                          <button class="btn btn-white" type="button">Go!</button>
+        //                                        </span>
+        //                                        <input type="text" class="form-control">
+        //                                    </div>
 
         return {html: html, id: id, feedbackID: feedbackID};
 
@@ -256,7 +270,7 @@
     };
 
     HtmlElements.activateColorPicker = function (picker) {
-        
+
 
         var colorPicker = $('#' + picker.id).colorpicker({
             useAlpha: false,
@@ -279,9 +293,9 @@
 
         colorPicker.on('changeColor', function (e) {
             'use strict';
-            
-           var value = e.color.toHex()
-            
+
+            var value = e.color.toHex();
+
             eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,null,null);');
             //  
             // that.onTextColorChange(e.color.toHex());

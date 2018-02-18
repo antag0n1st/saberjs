@@ -23,7 +23,8 @@
 
         this.moveScreenTo(ContentManager.jsons.stage.screenPosition);
 
-        var btn = this.findById('myButton');
+        var btn = this.findById('blue');
+        this.addTouchable(btn);
 
         btn.onMouseUp = function () {
             Sounds.click.play();

@@ -38,6 +38,8 @@
 
         this.className = '';
 
+        this.properties = {};
+
 
     };
 
@@ -70,7 +72,7 @@
     Entity.prototype.dragBy = function (position) {
         var p = new V().copy(position);
         var angle = this.sumAllAngles();
-        p.rotate(-angle  +this.rotation);
+        p.rotate(-angle + this.rotation);
         this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
     };
 
@@ -348,6 +350,7 @@
         o.id = this.id;
         o.className = this.className;
         o.visible = this.visible;
+        o.tint = this.tint;
 
         if (this.properties) {
             o.properties = this.properties;
@@ -383,7 +386,7 @@
         this.alpha = data.alpha;
         this.type = data.type;
         this.className = data.className || '';
-        this.visible = (data.visible === undefined) ? true : data.visible;
+        this.tint = data.tint || 0xffffff;
 
         if (data.properties) {
 
@@ -410,7 +413,72 @@
     };
 
     Entity.prototype.bindProperties = function (editor) {
-        // it will be overwritten
+
+
+        var html = '';
+
+        var method = '_changeCustomProperty';
+
+        if (!this.properties) {
+            this.properties = {};
+        }
+
+        if (!this.properties._custom) {
+            this.properties._custom = [];
+        }
+
+        html += HtmlElements.createSection('Properties').html;
+
+        for (var i = 0; i < this.properties._custom.length; i++) {
+            var prop = this.properties._custom[i];
+            var opt0 = {displayName: prop.key+' ', name: prop.key, value: prop.value, method: method, class: 'big', buttonClass: 'btn-danger fa fa-trash', buttonAction: 'onCustomPropertyDelete'};
+            html += HtmlElements.createInput(opt0).html;
+        }
+
+        var buttonOpt = {
+            name: 'add-property',
+            displayName: 'Add Property',
+            class: 'btn-info big',
+            icon: '',
+            tooltip: '',
+            method: 'addCustomProperty',
+            style: ''
+        };
+
+
+        html += HtmlElements.createButton(buttonOpt).html;
+
+        editor.htmlInterface.propertiesContent.innerHTML = html;
+
+        return html;
+
+    };
+
+    Entity.prototype.onCustomPropertyDelete = function (editor, property) {
+
+        for (var i = 0; i < this.properties._custom.length; i++) {
+            var prop = this.properties._custom[i];
+            if (prop.key === property) {
+                this.properties._custom.removeElement(prop);
+                this.bindProperties(editor);
+                break;
+            }
+        }
+
+    };
+
+    Entity.prototype.changeCustomProperty = function (editor, property, value, element, inputType, feedbackID) {
+
+        for (var i = 0; i < this.properties._custom.length; i++) {
+            var prop = this.properties._custom[i];
+            if (prop.key === property) {
+
+                prop.value = value;
+
+                break;
+            }
+        }
+
     };
 
     Entity.prototype._onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
@@ -418,9 +486,6 @@
         if (this.onPropertyChange) {
             this.onPropertyChange(editor, property, value, element, inputType, feedbackID);
         }
-        
-//        log(this.constraintX);
-//        log(this.constraintY);
 
         if (this.constraintX || this.constraintY) {
             editor.constraints.applyValues();

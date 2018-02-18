@@ -115,6 +115,38 @@
         this.renderPolygon(sensor, graphics);
     };
     
+    PolygonObject.prototype.bindProperties = function (editor) {
+
+        var eHTML = Entity.prototype.bindProperties.call(this, editor);
+
+        var html = '';
+
+        var method = 'onSelectedObjectPropertyChange';
+      
+        var opt0 = {name: 'isCustomSensor', checked: this.properties.isCustomSensor, method: method, displayName: 'Is Sensor'};
+
+        html += HtmlElements.createCheckbox(opt0).html;
+
+        editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
+
+
+
+    };
+
+    PolygonObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
+
+        if (property === "isCustomSensor") {
+             value = element.checked;
+        }
+
+        var command = new CommandProperty(this, 'properties.' + property, value, undefined, this);
+
+        editor.commands.add(command);
+
+    };
+    
+
+    
     PolygonObject.prototype.export = function () {
 
         var points = [];

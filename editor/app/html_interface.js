@@ -113,6 +113,9 @@
         this.addLayerBtn = document.getElementById('addLayerBtn');
         this.addLayerBtn.onclick = this.onAddLayerBtn.bind(this);
 
+        this.addCustomPropertyBtn = document.getElementById('addCustomPropertyBtn');
+        this.addCustomPropertyBtn.onclick = this.onAddCustomPropertyBtn.bind(this);
+
     };
 
     ////////////////////////////////// DRAG & DROP /////////////////////////////
@@ -203,7 +206,7 @@
 
         // set files to the galery
 
-        var prefabs = store.get('prefabs');
+        var prefabs = store.get('prefabs-' + ContentManager.baseURL);
 
         if (prefabs) {
             prefabs = JSON.parse(prefabs);
@@ -236,12 +239,12 @@
 
         var index = e.target.dataset.index;
 
-        var prefabs = store.get('prefabs');
+        var prefabs = store.get('prefabs-' + ContentManager.baseURL);
         prefabs = JSON.parse(prefabs);
         prefabs.splice(index, 1);
 
         var json = JSON.stringify(prefabs);
-        store.set('prefabs', json);
+        store.set('prefabs-' + ContentManager.baseURL, json);
 
         this.onPrefabs();
     };
@@ -296,9 +299,9 @@
         };
 
         ajaxPost('app/php/export.php', sendData, function (response) {
-           var msg = response.message;
+            var msg = response.message;
 
-            ajaxGet('../tools/assets.php', function (response) {              
+            ajaxGet('../tools/assets.php', function (response) {
                 toastr.success(msg);
             });
 
@@ -345,7 +348,7 @@
         }
     };
 
-    HtmlInterface.prototype.onSelectJSON = function () {
+    HtmlInterface.prototype.onSelectJSON = function (e) {
         if (this.selectJSON.value) {
 
             var importer = this.editor.importer;
@@ -359,8 +362,12 @@
                 } else {
                     editor.setDefaultLayer();
                 }
+
             });
         }
+
+        e.target.blur();
+
     };
 
     HtmlInterface.prototype.onAddLayerBtn = function () {
@@ -382,6 +389,40 @@
         }
 
     };
+
+    HtmlInterface.prototype.onAddCustomPropertyBtn = function () {
+
+
+        var key = document.getElementById('customPropertyKey').value;
+        var value = document.getElementById('customPropertyValue').value;
+
+        if (this.editor.selectedObjects.length === 1) {
+
+            // check if that property exists
+            
+            for (var i = 0; i < this.editor.selectedObjects[0].properties._custom.length; i++) {
+                var prop = this.editor.selectedObjects[0].properties._custom[i];
+                if(prop.key === key){
+                    toastr.error('There is already a property with the same Key.');
+                    return;
+                }
+            }
+
+            var o = {
+                key: key,
+                value: value
+            };
+            this.editor.selectedObjects[0].properties._custom.push(o);
+
+            this.editor.selectedObjects[0].bindProperties(this.editor);
+        }
+
+        document.getElementById('customPropertyKey').value = '';
+        document.getElementById('customPropertyValue').value = '';
+
+        $("#addCustomPropertyModal").modal('hide');
+    };
+
 
     HtmlInterface.prototype.dragElement = function (elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
