@@ -22,14 +22,25 @@
         this.importer.importObjects(ContentManager.jsons.stage.objects, this.content);
 
         this.moveScreenTo(ContentManager.jsons.stage.screenPosition);
+       
+//        var data = this.importer.findDataByType('LabelObject');
+//
+//        for (var i = 0; i < 20; i++) {
+//            var a = this.importer.dataToObject(data[3]);
+//            a.position.set(Math.randomInt(0, 1000), Math.randomInt(100, 800));
+//
+//            this.content.addChild(a);
+//        }
 
-        var btn = this.findById('blue');
-        this.addTouchable(btn);
 
-        btn.onMouseUp = function () {
-            Sounds.click.play();
-        };
-        
+
+//        var btn = this.findById('blue');
+//        this.addTouchable(btn);
+//
+//        btn.onMouseUp = function () {
+//            Sounds.click.play();
+//        };
+
 
 //        var object = this.findById('my-colider');
 //        object.onMouseUp = function(event,sender){
@@ -38,7 +49,7 @@
 //        
 //        this.addTouchable(object);
 
-        
+
 
     };
 
@@ -46,13 +57,13 @@
 
         var dp = V.substruction(p, this._screenPosition);
         this._screenPosition.copy(p);
-       
+
         // adjust the layers acording to their factor
 
         for (var i = 0; i < this.content.children.length; i++) {
             var layer = this.content.children[i];
             var np = new V().copy(dp).scale(layer.factor * layer.scale.x);
-          
+
             this.adjustLayerPosition(layer, np);
         }
 

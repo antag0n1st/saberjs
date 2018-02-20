@@ -105,8 +105,6 @@
         ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
         ContentManager.addImage('white', 'initial/white.png');
         ContentManager.addImage('black', 'initial/black.png');
-        ContentManager.addImage('rotate_device_to_landscape', 'initial/rotate_device_to_landscape.png');
-        ContentManager.addImage('rotate_device_to_portrait', 'initial/rotate_device_to_portrait.png');
 
         ContentManager.downloadResources(function () {
             var screen = new LoadingScreen();

@@ -387,6 +387,7 @@
         this.type = data.type;
         this.className = data.className || '';
         this.tint = data.tint || 0xffffff;
+        this.visible = data.visible;
 
         if (data.properties) {
 

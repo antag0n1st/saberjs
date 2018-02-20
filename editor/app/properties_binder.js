@@ -50,7 +50,7 @@
 
         var opt13 = {name: 'className', value: object.className, class: 'big', displayName: 'Class'};
 
-        
+
 
         var opt14 = {name: 'tint', displayName: 'Tint', value: PIXI.utils.hex2string(object.tint)};
 
@@ -70,7 +70,10 @@
 
 
         html += HtmlElements.createInput(opt7).html;
-        html += colorPicker.html;
+        if (object instanceof ImageObject) {
+            html += colorPicker.html; // tint
+        }
+
         html += HtmlElements.createInput(opt8).html;
         html += HtmlElements.createInput(opt9).html;
         html += HtmlElements.createInput(opt10).html;

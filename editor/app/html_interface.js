@@ -75,8 +75,7 @@
         this.localFileLoaderBtn = document.getElementById('localFileLoaderBtn');
         this.localFileLoaderBtn.onchange = this.onLocalFileLoaderBtn.bind(this);
 
-        this.importJSONBtn = document.getElementById('importJSONBtn');
-        this.importJSONBtn.onchange = this.onImportJSONBtn.bind(this);
+
 
         // textUpdatePanel
         this.dragElement(document.getElementById('textUpdatePanel'));
@@ -88,25 +87,7 @@
 //        this.saveContent = document.getElementById('saveContent');
 //        this.saveContent.onclick = this.onSaveContent.bind(this);
 
-        this.clearAll = document.getElementById('clearAll');
-        this.clearAll.onclick = this.onClearAll.bind(this);
 
-        this.exportBtn = document.getElementById('exportBtn');
-        this.exportBtn.onclick = this.onExportBtn.bind(this);
-
-        this.selectJSON = document.getElementById('selectJSON');
-        this.selectJSON.onchange = this.onSelectJSON.bind(this);
-
-        var that = this;
-
-        ajaxGet(ContentManager.baseURL + 'app/php/json-files.php', function (response) {
-            var html = '<option value="0" >none</option>';
-            for (var i = 0; i < response.length; i++) {
-                var file = response[i];
-                html += '<option value="' + file.url + '" >' + file.name + '</option>';
-            }
-            that.selectJSON.innerHTML = html;
-        });
 
         // LAYERS
 
@@ -115,6 +96,11 @@
 
         this.addCustomPropertyBtn = document.getElementById('addCustomPropertyBtn');
         this.addCustomPropertyBtn.onclick = this.onAddCustomPropertyBtn.bind(this);
+
+        this.addGuideLineBtn = document.getElementById('addGuideLineBtn');
+        this.addGuideLineBtn.onclick = this.onAddGuideLineBtn.bind(this);
+
+
 
     };
 
@@ -193,6 +179,101 @@
 
     };
 
+    HtmlInterface.prototype.onSettings = function () {
+
+
+        var html = '';
+
+        html += '<div class="big">';
+        html += '<input id="exportFileName" type="text" class="form-control" />';
+        html += '<div id="exportBtn" class="btn btn-info"><i class="fa fa-arrow-up"></i>Export</div>';
+        html += '</div>';
+
+        html += ' <div class="big" style="display: block;">';
+        html += '<label>Import</label>';
+        html += '<input id="importJSONBtn" type="file" class="form-control" />';
+        html += '</div>';
+
+        html += '<div class="big" >';
+        html += '<label>Import:</label>';
+        html += '<select id="selectJSON" class="form-control">';
+        html += '</select>';
+        html += '</div>';
+
+        html += '<div class="big">';
+        html += '<div id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i>Clear All</div>';
+        html += '</div>';
+
+
+
+        html += HtmlElements.createSection('Editor').html;
+
+        var tintColor = store.get('tint-' + ContentManager.baseURL) || 0xffffff;
+        var colorPickerOpt = {
+            name: 'background-tint',
+            displayName: 'Bg. Color',
+            class: 'big',
+            value: PIXI.utils.hex2string(tintColor),
+            method: 'onBackgroundTintChanged'
+        };
+
+        var colorPicker = HtmlElements.createColorPicker(colorPickerOpt);
+
+        html += colorPicker.html;
+
+        html += HtmlElements.createSection('Guides').html;
+
+        for (var i = 0; i < this.editor.guideLines.length; i++) {
+            var guide = this.editor.guideLines[i];
+
+            for (var key in guide) {
+                if (guide[key]) {
+                    var opt0 = {displayName: key + ' ', name: key, value: guide[key], method: 'blank', class: 'big', isDisabled: true, buttonClass: 'btn-danger fa fa-trash', buttonAction: 'onGuideLineDelete'};
+                    html += HtmlElements.createInput(opt0).html;
+                }
+            }
+
+        }
+
+        var buttonOpt = {name: 'add-guide', displayName: 'Add Guide', class: 'btn-info big', method: 'addGuideLine', icon: 'fa fa-plus'};
+        html += HtmlElements.createButton(buttonOpt).html;
+
+        document.getElementById('settingsContent').innerHTML = html;
+
+        HtmlElements.activateColorPicker(colorPicker);
+
+        var that = this;
+        this.clearAll = document.getElementById('clearAll');
+        this.clearAll.onclick = this.onClearAll.bind(this);
+
+        this.exportBtn = document.getElementById('exportBtn');
+        this.exportBtn.onclick = this.onExportBtn.bind(this);
+
+        this.selectJSON = document.getElementById('selectJSON');
+        this.selectJSON.onchange = this.onSelectJSON.bind(this);
+
+        var fileName = this.editor.importer.fileName || '';
+        document.getElementById('exportFileName').value = fileName;
+
+        fileName = fileName.replace('.json', '');
+
+        ajaxGet(ContentManager.baseURL + 'app/php/json-files.php', function (response) {
+            var html = '<option value="0" >none</option>';
+            for (var i = 0; i < response.length; i++) {
+                var file = response[i];
+                var selected = '';
+                if (fileName === file.name) {
+                    selected = 'selected="selected"';
+                }
+                html += '<option ' + selected + ' value="' + file.url + '" >' + file.name + '</option>';
+            }
+            that.selectJSON.innerHTML = html;
+        });
+
+
+
+    };
+
     HtmlInterface.prototype.onLayers = function (callback) {
         // create layers tree
         this.tree.build(callback);
@@ -255,6 +336,7 @@
         if (r === true) {
             this.editor.importer.clearStage();
             this.editor.setDefaultLayer();
+            document.getElementById('exportFileName').value = '';
         }
     };
 
@@ -263,9 +345,15 @@
 
         var data = this.editor.importer.export();
 
-        var jsonString = JSON.stringify(data);
+        if (!data) {
+            toastr.error("Can't save this. You have a missing image.");
+        } else {
+            var jsonString = JSON.stringify(data);
 
-        store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
+            store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
+        }
+
+
 
         /// toastr.success('The content was saved into browsers memory', "Local Save!");
 
@@ -277,9 +365,21 @@
     };
 
     HtmlInterface.prototype.saveCurrentContent = function () {
+
         var data = this.editor.importer.export();
 
-        var fileName = document.getElementById('exportFileName').value;
+        if (!data) {
+            toastr.error("Can't save this. You have a missing image.");
+            return;
+        }
+
+        var fileName = '';
+
+        if (document.getElementById('exportFileName') && document.getElementById('exportFileName').value) {
+            fileName = document.getElementById('exportFileName').value;
+        } else {
+            fileName = this.editor.importer.fileName;
+        }
 
         if (!fileName) {
             toastr.error("Please specify a file name");
@@ -289,7 +389,11 @@
 
         if (!fileName.endsWith('.json')) {
             fileName += '.json';
-            document.getElementById('exportFileName').value = fileName;
+
+            this.editor.importer.fileName = fileName;
+            if (document.getElementById('exportFileName')) {
+                document.getElementById('exportFileName').value = fileName;
+            }
         }
 
         var sendData = {
@@ -354,16 +458,23 @@
             var importer = this.editor.importer;
             importer.clearStage();
 
+            document.getElementById('exportFileName').value = '';
 
-            var editor = this.editor;
-            ajaxGet(this.selectJSON.value, function (response) {
-                if (response) {
-                    importer.import(response);
-                } else {
-                    editor.setDefaultLayer();
-                }
+            if (this.selectJSON.value != 0) {
+                var editor = this.editor;
+                ajaxGet(this.selectJSON.value, function (response) {
+                    if (response) {
+                        importer.import(response);
+                        document.getElementById('exportFileName').value = importer.data.fileName;
+                    } else {
+                        editor.setDefaultLayer();
+                    }
 
-            });
+                });
+            } else {
+                this.editor.setDefaultLayer();
+            }
+
         }
 
         e.target.blur();
@@ -399,10 +510,10 @@
         if (this.editor.selectedObjects.length === 1) {
 
             // check if that property exists
-            
+
             for (var i = 0; i < this.editor.selectedObjects[0].properties._custom.length; i++) {
                 var prop = this.editor.selectedObjects[0].properties._custom[i];
-                if(prop.key === key){
+                if (prop.key === key) {
                     toastr.error('There is already a property with the same Key.');
                     return;
                 }
@@ -423,6 +534,46 @@
         $("#addCustomPropertyModal").modal('hide');
     };
 
+    HtmlInterface.prototype.onAddGuideLineBtn = function () {
+
+        // guideLineAxis
+        // guideLineValue
+
+        var orientation = document.getElementById('guideLineAxis').value;
+        var value = document.getElementById('guideLineValue').value;
+        value = Math.round(value);
+
+        if (value) {
+            var guide = {};
+            guide[orientation] = value;
+
+            // add the guide
+
+            for (var i = 0; i < this.editor.guideLines.length; i++) {
+                var g = this.editor.guideLines[i];
+                if (g[orientation] === value) {
+                    toastr.error('Duplicate Guide Line value');
+                    return;
+                }
+            }
+
+            this.editor.guideLines.push(guide);
+
+            document.getElementById('guideLineValue').value = '';
+
+            $("#addGuidesModal").modal('hide');
+
+            this.activateTab('settings');
+
+            var json = JSON.stringify(this.editor.guideLines);
+            store.set('guideLines-' + ContentManager.baseURL, json);
+
+        } else {
+            toastr.error('Invalid Guide Line value');
+        }
+
+
+    };
 
     HtmlInterface.prototype.dragElement = function (elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;

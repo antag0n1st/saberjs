@@ -19,8 +19,8 @@ Config.window_mode_mobile = null; // if you need special mode for mobile devices
 Config.canvas_padding = '50 50 50 50'; // top - right - bottom - left
 
 Config.is_sound_on = true; // switch the sound on/off
-Config.debug_info = true;
-Config.debug = true;
+Config.debug_info = false;
+Config.debug = false;
 Config.should_clear_stage = true;
 Config.slow_motion_factor = 1;
 Config.is_game_paused = false;

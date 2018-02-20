@@ -113,6 +113,7 @@
 
         var img = document.createElement("img");
         img.id = '_i_m_a_g_e_' + file.name;
+        img.title = file.name;
         img.src = file.url;
 
         if (file.data) {

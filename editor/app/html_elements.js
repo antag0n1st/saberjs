@@ -65,17 +65,10 @@
         html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';
         html += ' />';
 
-        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\')" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
+        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\''+id+'\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
 
 
         html += '</div>';
-
-        //  <div class="input-group m-bot15">
-        //                                        <span class="input-group-btn">
-        //                                          <button class="btn btn-white" type="button">Go!</button>
-        //                                        </span>
-        //                                        <input type="text" class="form-control">
-        //                                    </div>
 
         return {html: html, id: id, feedbackID: feedbackID};
 
@@ -227,7 +220,8 @@
         name: '',
         displayName: '',
         class: '',
-        value: ''
+        value: '',
+        method: ''
     };
 
     HtmlElements.createColorPicker = function (options) {

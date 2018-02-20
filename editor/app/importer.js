@@ -10,6 +10,9 @@
         // this.parentInitialize();
 
         this.editor = editor;
+
+        this.data = null;
+        this.fileName = '';
     };
 
     Importer.prototype.clearStage = function () {
@@ -24,13 +27,13 @@
         this.editor.deselectAllObjects();
         this.editor.selectedObjects = [];
         this.editor.activeLayer = null;
-        document.getElementById('exportFileName').value = '';
-
-        // this.editor.setDefaultLayer();
 
         this.editor.moveScreenTo(new V());
 
         this.editor.constraints.clear();
+
+        this.data = null;
+        this.fileName = '';
 
     };
 
@@ -44,8 +47,6 @@
 
         }
 
-        document.getElementById('exportFileName').value = data.fileName;
-
         this.editor.moveScreenTo(data.screenPosition);
 
         this.editor.constraints.clear();
@@ -55,6 +56,9 @@
 
         this.editor.setDefaultLayer();
 
+        this.data = data;
+        this.fileName = data.fileName;
+
     };
 
     Importer.prototype.importObjects = function (objects, contentLayer) {
@@ -62,14 +66,16 @@
         var batch = new CommandBatch();
 
         contentLayer = (contentLayer === undefined) ? this.editor.content : contentLayer;
-        
+
         var importedObjects = [];
 
         for (var i = 0; i < objects.length; i++) {
             var o = objects[i];
+
+
             var object = new window[o.type]();
             object.graphics = this.editor.graphics;
-            object.build(o);            
+            object.build(o);
 
             var command = new CommandAdd(object, contentLayer, this.editor);
             batch.add(command);
@@ -77,13 +83,13 @@
             if (o.children.length) {
                 this.importChildren(object, o.children, batch)
             }
-            
+
             importedObjects.push(object);
 
         }
 
         batch.execute();
-        
+
         return importedObjects;
 
     };
@@ -92,6 +98,10 @@
         var unwrappedObjects = [];
         for (var i = 0; i < children.length; i++) {
             var o = children[i];
+
+            if (o.imageName && !Images[o.imageName]) {
+                o.imageName = '_missing_image';
+            }
 
             var object = new window[o.type]();
             object.graphics = this.editor.graphics;
@@ -115,14 +125,38 @@
         var data = {};
 
         data.objects = this.exportObjects();
+        
+        if(this.hasMissingImage(data.objects)){
+            return false;
+        };
+        
         data.screenPosition = {
             x: this.editor._screenPosition.x,
             y: this.editor._screenPosition.y
         };
-        data.fileName = document.getElementById('exportFileName').value;
+        data.fileName = this.fileName;
 
         return data;
 
+    };
+
+    Importer.prototype.hasMissingImage = function (objects) {
+        for (var i = 0; i < objects.length; i++) {
+            var object = objects[i];
+            if (object.imageName === "_missing_image") {
+                return true;
+            }
+            if (object.children) {
+                var has = this.hasMissingImage(object.children);
+                if (has) {
+                    return true;
+                }
+            }
+
+
+        }
+
+        return false;
     };
 
     Importer.prototype.exportObjects = function () {

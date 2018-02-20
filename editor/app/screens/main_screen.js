@@ -37,6 +37,8 @@
         this.repatable = new PIXI.extras.TilingSprite(texture, app.width, app.height);
         this.repatable.zIndex = -1;
         this.addChild(this.repatable);
+        
+        this.repatable.tint = store.get('tint-' + ContentManager.baseURL) || 0xffffff;
 
         this.graphics = new PIXI.Graphics();
         this.graphics.zIndex = 10;
@@ -48,10 +50,13 @@
 
         this.guideLines = [
             {x: 0},
-            {y: 0},
-            {x: 450},
-            {x: 1460}
+            {y: 0}
         ];
+
+        var lines = store.get('guideLines-' + ContentManager.baseURL);
+        if (lines) {
+            this.guideLines = JSON.parse(lines);
+        }
 
         /////////
 
@@ -110,7 +115,7 @@
 //        path.build();
 //        this.activeLayer.addChild(path);
 
-    
+        this.shortcuts.isCtrlPressed = false;
 
     };
 
@@ -939,18 +944,49 @@
         }
 
     };
-    
+
     MainScreen.prototype.addCustomProperty = function () {
         $("#addCustomPropertyModal").modal('show');
     };
-    
+
     MainScreen.prototype.onCustomPropertyDelete = function (property) {
-      
-      if (this.selectedObjects.length === 1) {
+
+        if (this.selectedObjects.length === 1) {
             this.selectedObjects[0].onCustomPropertyDelete(this, property);
         }
-      
+
     };
+
+    MainScreen.prototype.addGuideLine = function () {
+        // display it
+        $("#addGuidesModal").modal("show");
+    };
+
+    MainScreen.prototype.onGuideLineDelete = function (property, value) {
+
+        value = Math.round(value);
+
+        for (var i = 0; i < this.guideLines.length; i++) {
+            var g = this.guideLines[i];
+
+            if (g[property] === value) {
+                this.guideLines.removeElement(g);
+                this.htmlInterface.activateTab('settings');
+                break;
+            }
+        }
+
+        var json = JSON.stringify(this.guideLines);
+        store.set('guideLines-' + ContentManager.baseURL, json);
+
+    };
+    
+     MainScreen.prototype.onBackgroundTintChanged = function (property,value) {
+       var tint = PIXI.utils.string2hex(value);
+       this.repatable.tint = tint;
+       store.set('tint-' + ContentManager.baseURL, tint);
+    };
+
 
     MainScreen.prototype.blank = function () {
         // used to call it , and do nothing
