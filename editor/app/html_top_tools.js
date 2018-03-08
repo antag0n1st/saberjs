@@ -8,6 +8,8 @@
     HtmlTopTools.prototype.initialize = function (editor) {
 
         this.editor = editor;
+        
+        
 
     };
 
@@ -683,10 +685,11 @@
         if (!this.editor._zoomPoint) {
             this.editor._zoomPoint = new V().copy(zoomPoint);
         }
-
+        
         Actions.stopByTag('zoom');
         var zoom = this.editor._zoom;
         scale = scale - zoom;
+        
         new Stepper(function (step) {
             for (var i = 0; i < this.editor.content.children.length; i++) {
                 var layer = this.editor.content.children[i];

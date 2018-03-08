@@ -205,6 +205,8 @@
         var p = new V().copy(object.position);
 
         var btn = new ButtonObject(imageName);
+        btn.id = object.id;
+      
         btn.position = p;
 
         btn.build();
@@ -235,6 +237,7 @@
         var p = new V().copy(object.position);
 
         var input = new InputObject(imageName);
+        input.id = object.id;
         input.position = p;
 
         input.build();

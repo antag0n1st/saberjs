@@ -102,6 +102,10 @@
             if (o.imageName && !Images[o.imageName]) {
                 o.imageName = '_missing_image';
             }
+            
+            if (o.backgroundName && !Images[o.backgroundName]) {
+                o.backgroundName = '_missing_image';
+            }
 
             var object = new window[o.type]();
             object.graphics = this.editor.graphics;

@@ -176,11 +176,11 @@
 
         if (property === 'constraintY' || property === 'constraintX') {
 
+           this.editor.constraints.remove(constraint);
+
             if (constraint.isValid) {
                 this.editor.constraints.add(constraint);
-            } else {
-                this.editor.constraints.remove(constraint);
-            }
+            } 
 
             this.editor.constraints.rebuildDependencyTree();
             this.editor.constraints.applyValues();

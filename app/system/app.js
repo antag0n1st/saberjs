@@ -142,24 +142,35 @@
             return;
         }
 
-        var p = s.pos;
-        var points = s.points;
+        if (s instanceof SAT.Circle) {
+            
+            var p = s.pos;
+            graphics.beginFill(0x000000,0.3);
+            graphics.lineStyle(2, 0x000000);
+            graphics.drawCircle(p.x, p.y, s.r);
+            graphics.endFill();
+            
+        } else {
+            var p = s.pos;
+            var points = s.points;
 
-        graphics.beginFill(0x000000);
-        graphics.lineStyle(1, 0x000000);
+            graphics.beginFill(0x000000);
+            graphics.lineStyle(1, 0x000000);
 
-        graphics.drawCircle(p.x, p.y, 2);
+            graphics.drawCircle(p.x, p.y, 2);
 
-        for (var j = 0; j < points.length; j++) {
-            graphics.moveTo(p.x + points[j].x, p.y + points[j].y);
-            if (j === points.length - 1) {
-                graphics.lineTo(p.x + points[0].x, p.y + points[0].y);
-            } else {
-                graphics.lineTo(p.x + points[j + 1].x, p.y + points[j + 1].y);
+            for (var j = 0; j < points.length; j++) {
+                graphics.moveTo(p.x + points[j].x, p.y + points[j].y);
+                if (j === points.length - 1) {
+                    graphics.lineTo(p.x + points[0].x, p.y + points[0].y);
+                } else {
+                    graphics.lineTo(p.x + points[j + 1].x, p.y + points[j + 1].y);
+                }
             }
+
+            graphics.endFill();
         }
 
-        graphics.endFill();
     };
 
     App.prototype.tick = function (deltaTime) {

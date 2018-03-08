@@ -4,13 +4,13 @@
     function ModeSelect(editor) {
         this.initialize(editor);
     }
-    
+
     ModeSelect.prototype.initialize = function (editor) {
         this.editor = editor;
     };
 
     ModeSelect.prototype.onMouseDown = function (event, sender) {
-      
+
         // first reset the values
         this.editor.didDrag = false;
         this.editor.isClickedInsideObject = false;
@@ -153,9 +153,12 @@
             var width = event.point.x - this.editor.mouseDownPosition.x;
             var height = event.point.y - this.editor.mouseDownPosition.y;
 
-            // quick! , start dragging this object
-            this.editor.selectionRectangle = new SAT.Box(new V(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y), width, height).toPolygon();
-            this.editor.checkSelection(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y, width, height);
+            if (width > 4 || height > 4) { // a safty zone
+                this.editor.selectionRectangle = new SAT.Box(new V(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y), width, height).toPolygon();
+                this.editor.checkSelection(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y, width, height);
+
+            }
+
 
         }
 
@@ -182,9 +185,9 @@
                     this.editor.targetDropObject.addChild(object);
 
                     var p = V.substruction(objectAP, targetAP);
-                    
+
                     p.scale(1 / this.editor.activeLayer.scale.x);
-                    
+
                     object.position.set(p.x, p.y);
                 }
 
@@ -208,11 +211,11 @@
             // double click
 
             var object = this.editor.selectedObjects[0];
-         //   if (object.properties) {
-          //      this.editor.htmlInterface.activateTab('properties');
-          //  } else {
-                this.editor.htmlInterface.activateTab('commonProperties');
-          //  }
+            //   if (object.properties) {
+            //      this.editor.htmlInterface.activateTab('properties');
+            //  } else {
+            this.editor.htmlInterface.activateTab('commonProperties');
+            //  }
 
         } else {
             this.editor.htmlInterface.htmlTopTools.hideTextEdit();
@@ -272,13 +275,13 @@
 
 
     };
-    
+
     ModeSelect.prototype.onModeStart = function () {
-        
+
     };
-    
+
     ModeSelect.prototype.onModeEnd = function () {
-        
+
     };
 
     window.ModeSelect = ModeSelect;

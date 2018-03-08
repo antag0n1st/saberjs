@@ -37,7 +37,7 @@
         this.repatable = new PIXI.extras.TilingSprite(texture, app.width, app.height);
         this.repatable.zIndex = -1;
         this.addChild(this.repatable);
-        
+
         this.repatable.tint = store.get('tint-' + ContentManager.baseURL) || 0xffffff;
 
         this.graphics = new PIXI.Graphics();
@@ -75,6 +75,7 @@
         this.lastCickTime = 0;
         this._zoom = 0;
         this._zoomPoint = null;
+        this._toZoomScale = 0;
         this._screenPosition = new V();
         this.targetDropObject = null; // the object in which we are going to drop the children.
         this.clipboard = null;
@@ -409,7 +410,7 @@
 
         if (this.shortcuts.isSpacePressed) {
             var pp = event.point.clone();
-            pp.scale(1 / this.activeLayer.factor);
+            pp.scale(1 / (this.activeLayer.factor + this._zoom));
             this.screenMouseOffset = V.substruction(this._screenPosition, pp);
             return;
         }
@@ -426,7 +427,7 @@
         if (this.shortcuts.isSpacePressed && !this.selectionRectangle) {
             var offset = new V().copy(this.screenMouseOffset);
             var pp = event.point.clone();
-            pp.scale(1 / this.activeLayer.factor);
+            pp.scale(1 / (this.activeLayer.factor + this._zoom));
             var p = V.addition(offset, pp);
             this.moveScreenTo(p);
             return;
@@ -491,8 +492,14 @@
             scale = -0.1;
         }
         var p = new V(app.input.point.x, app.input.point.y);
+        
+        if (Actions.isRunning('zoom')) {
+            this._zoom = Math.roundDecimal(this._toZoomScale,1);
+        }
 
         var toScale = this._zoom + scale;
+
+        this._toZoomScale = toScale;
 
         this.htmlInterface.htmlTopTools.zoomSlider.setValue(toScale);
 
@@ -980,11 +987,11 @@
         store.set('guideLines-' + ContentManager.baseURL, json);
 
     };
-    
-     MainScreen.prototype.onBackgroundTintChanged = function (property,value) {
-       var tint = PIXI.utils.string2hex(value);
-       this.repatable.tint = tint;
-       store.set('tint-' + ContentManager.baseURL, tint);
+
+    MainScreen.prototype.onBackgroundTintChanged = function (property, value) {
+        var tint = PIXI.utils.string2hex(value);
+        this.repatable.tint = tint;
+        store.set('tint-' + ContentManager.baseURL, tint);
     };
 
 

@@ -341,23 +341,23 @@
     };
 
     // called when the save button is clicked
-    HtmlInterface.prototype.onSaveContent = function () {
-
-        var data = this.editor.importer.export();
-
-        if (!data) {
-            toastr.error("Can't save this. You have a missing image.");
-        } else {
-            var jsonString = JSON.stringify(data);
-
-            store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
-        }
-
-
-
-        /// toastr.success('The content was saved into browsers memory', "Local Save!");
-
-    };
+//    HtmlInterface.prototype.onSaveContent = function () {
+//
+//        var data = this.editor.importer.export();
+//
+//        if (!data) {
+//            toastr.error("Can't save this. You have a missing image.");
+//        } else {
+//            var jsonString = JSON.stringify(data);
+//
+//            store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
+//        }
+//
+//
+//
+//        /// toastr.success('The content was saved into browsers memory', "Local Save!");
+//
+//    };
 
     HtmlInterface.prototype.onExportBtn = function () {
         this.saveCurrentContent();
@@ -395,12 +395,17 @@
                 document.getElementById('exportFileName').value = fileName;
             }
         }
+        
+        this.editor.importer.fileName = fileName;
+        data.fileName = fileName;
 
         var sendData = {
             file_name: fileName,
             data: JSON.stringify(data)
 
         };
+        
+        
 
         ajaxPost('app/php/export.php', sendData, function (response) {
             var msg = response.message;
@@ -411,9 +416,9 @@
 
         });
 
+        var jsonString = JSON.stringify(data);
 
-
-        this.onSaveContent();
+        store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
     };
 
     HtmlInterface.prototype.onLocalFileLoaderBtn = function (e) {
