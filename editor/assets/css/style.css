@@ -191,7 +191,7 @@ body{
 }
 
 #textUpdatePanel textarea{
-    width: 300px;
+    width: 500px;
     height: 100px;
     resize: none;
     overflow-x: hidden;

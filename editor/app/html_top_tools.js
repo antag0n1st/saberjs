@@ -8,8 +8,8 @@
     HtmlTopTools.prototype.initialize = function (editor) {
 
         this.editor = editor;
-        
-        
+
+
 
     };
 
@@ -131,6 +131,15 @@
             that.onShadowColorChange(e.color.toHex());
 
         });
+
+        this.letterSpacing = document.getElementById('letterSpacing');
+        this.letterSpacing.onkeyup = this.onLetterSpacing.bind(this);
+
+        this.lineHeight = document.getElementById('lineHeight');
+        this.lineHeight.onkeyup = this.onLineHeight.bind(this);
+
+        this.texturePadding = document.getElementById('texturePadding');
+        this.texturePadding.onkeyup = this.onTexturePadding.bind(this);
 
         ////////////////////
 
@@ -319,6 +328,43 @@
         clickedObject.updateFrame();
     };
 
+
+    HtmlTopTools.prototype.onLetterSpacing = function () {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        var value = Math.round(this.letterSpacing.value);
+        value = Math.clamp(value, -100, 100) || 0;
+
+        clickedObject.label.style.letterSpacing = value;
+
+        clickedObject.label.updateText();
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onLineHeight = function () {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        clickedObject.label.style.lineHeight = Math.round(this.lineHeight.value);
+
+        clickedObject.label.updateText();
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onTexturePadding = function () {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        clickedObject.label.style.padding = Math.round(this.texturePadding.value);
+
+        clickedObject.label.updateText();
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+
+
+
     HtmlTopTools.prototype.onTextareaKey = function (e) {
 
         var clickedObject = this.editor.selectedObjects[0];
@@ -350,6 +396,10 @@
         this.shadowAngle.value = Math.round(Math.radiansToDegrees(object.label.style.dropShadowAngle));
         this.shadowDistance.value = object.label.style.dropShadowDistance;
         this.shadowColorPicker.colorpicker('setValue', object.label.style.dropShadowColor);
+
+        this.lineHeight.value = object.label.style.lineHeight;
+        this.letterSpacing.value = object.label.style.letterSpacing;
+        this.texturePadding.value = object.label.style.padding;
 
         this.textUpdateArea.focus();
     };
@@ -685,11 +735,11 @@
         if (!this.editor._zoomPoint) {
             this.editor._zoomPoint = new V().copy(zoomPoint);
         }
-        
+
         Actions.stopByTag('zoom');
         var zoom = this.editor._zoom;
         scale = scale - zoom;
-        
+
         new Stepper(function (step) {
             for (var i = 0; i < this.editor.content.children.length; i++) {
                 var layer = this.editor.content.children[i];

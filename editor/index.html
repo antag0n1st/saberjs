@@ -132,7 +132,7 @@
 
                 <div id="settingsPanel" class="form-inline none">
                     <div id="settingsContent" class="content">  
-                        
+
                     </div>
                 </div>
 
@@ -185,26 +185,21 @@
             <div id="textUpdatePanelHeader" class="panel-heading" style="cursor: move;"></div>
             <textarea id="textUpdateArea" class="form-control"></textarea>
             <div class="form-group  form-inline" style="padding-top: 5px;">
-
+                <label>Font</label>
                 <input id="textFontSize" class="form-control" style="width: 60px;">
-                <select id="textFontFamily" class="form-control" style="width: 100px; display: inline;">
+                <select id="textFontFamily" class="form-control" style="width: 165px; display: inline;">
                     <option>Arial Black</option>
                 </select>
-                <select id="textAlign" class="form-control" style="width: 100px; display: inline;">
+                <div id="colorPicker" class="input-group colorpicker-component" style="width: 140px;">
+                    <input type="text" class="form-control" value="#DD0F20"/>
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <select id="textAlign" class="form-control" style="width: 90px; display: inline;">
                     <option value="left">Left</option>
                     <option value="center">Center</option>
                     <option value="right">Right</option>
                 </select>
 
-                <br />
-                <div style="margin-top: 10px;">
-                    <label>Text Color</label>
-                    <div id="colorPicker" class="input-group colorpicker-component" style="width: 165px;">
-
-                        <input type="text" class="form-control" value="#DD0F20"/>
-                        <span class="input-group-addon"><i></i></span>
-                    </div>
-                </div>
                 <br />
                 <div style="margin-top: 10px;">
                     <label>Stroke</label>
@@ -220,11 +215,21 @@
                     <label>Shadow</label>
                     <input id="shadowDistance" class="form-control" style="width: 40px;">
                     <input id="shadowAngle" class="form-control" style="width: 60px;">
-                    <div id="shadowColorPicker" class="input-group colorpicker-component" style="width: 110px;">
+                    <div id="shadowColorPicker" class="input-group colorpicker-component" style="width: 165px;">
 
                         <input type="text" class="form-control" value="#171616"/>
                         <span class="input-group-addon"><i></i></span>
                     </div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label>Letter Spacing</label>
+                    <input id="letterSpacing" class="form-control" style="width: 60px;">
+                    <label> Line Height</label>
+                    <input id="lineHeight" class="form-control" style="width: 60px;">
+                    <label> Texture Padding</label>
+                    <input id="texturePadding" class="form-control" style="width: 60px;">
+
                 </div>
 
 
@@ -260,8 +265,8 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div id="addCustomPropertyModal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
@@ -284,7 +289,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="addGuidesModal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
