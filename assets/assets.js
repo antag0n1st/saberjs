@@ -2,17 +2,9 @@ App.prototype.loadAssets = function () {
 
 
 
-ContentManager.addFile('check','assets/data/check.json');
-ContentManager.addFile('gaga','assets/data/gaga.json');
 ContentManager.addFile('sample','assets/data/sample.json');
 ContentManager.addFile('stage','assets/data/stage.json');
-ContentManager.addFile('stage_ajdusted','assets/data/stage_ajdusted.json');
 
-ContentManager.addFont('gotham_bold','assets/fonts/gotham_bold.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
-ContentManager.addFont('gotham_medium','assets/fonts/gotham_medium.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
-ContentManager.addFont('lato','assets/fonts/lato.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
-ContentManager.addFont('lato_black','assets/fonts/lato_black.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
-ContentManager.addFont('riffic_bold','assets/fonts/riffic_bold.ttf',{ xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.DOCUMENT});
 
 ContentManager.addImage('button','button.png');
 ContentManager.addImage('button_disabled','button_disabled.png');

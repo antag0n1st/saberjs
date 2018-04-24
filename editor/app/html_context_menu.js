@@ -23,7 +23,7 @@
         html += '<div id="contextMenu" class="dropdown bootstrapMenu">';
         html += '<ul class="dropdown-menu" style="position:static;display:block;font-size:0.9em;">';
 
-        if (object instanceof LabelObject || object instanceof ButtonObject) {
+        if (object instanceof LabelObject || object instanceof ButtonObject || object instanceof InputObject) {
             html += '<li role="presentation" >';
             html += '<a id="contextEdit" href="#" role="menuitem">';
             html += '<i class="fa fa-fw fa-lg fa-pencil"></i> ';
@@ -78,7 +78,7 @@
         document.body.appendChild(cm);
 
         // bind events here
-        if (object instanceof LabelObject || object instanceof ButtonObject) {
+        if (object instanceof LabelObject || object instanceof ButtonObject || object instanceof InputObject) {
             var contextEdit = document.getElementById('contextEdit');
             contextEdit.onclick = this.onContextEditBtn.bind(this);
         }

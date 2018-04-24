@@ -38,13 +38,15 @@
         this.content.addChild(multyLineLabel);
 
         var button = new Button('button', Style.DEFAULT_BUTTON);
-        button.setSensorSize(220, 100);
+    //    button.setSensorSize(220, 100);
         button.onMouseDown = function () {
             log("btn clicked")
         };
         button.position.set(100 + (button.background.width / 2), 450);
         this.content.addChild(button);
         this.addTouchable(button);
+        
+       // button.imageNormal = 'item1';
 
         var button2 = new Button("STRETCHED BUTTON", Style.ROUNDED_BUTTON, Button.TYPE_NINE_SLICE);
         button2.background.setSize(500, 100);

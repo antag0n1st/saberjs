@@ -3,7 +3,7 @@
     function MainScreen() {
         this.initialize();
     }
-
+ 
     MainScreen.prototype = new HScreen();
     MainScreen.prototype.screen_initialize = MainScreen.prototype.initialize;
 
@@ -39,9 +39,14 @@
         this.addChild(tweenBtn);
         this.addTouchable(tweenBtn);
 
+
     };
 
-    MainScreen.prototype.onShow = function () {
+    /**
+     * The desc
+     * @param Number someData 
+     */
+    MainScreen.prototype.onShow = function (someData) {
 
     };
 

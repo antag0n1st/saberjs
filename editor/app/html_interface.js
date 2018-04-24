@@ -411,7 +411,9 @@
             var msg = response.message;
 
             ajaxGet('../tools/assets.php', function (response) {
-                toastr.success(msg);
+                ajaxGet('../tools/fonts.php', function (response) {
+                    toastr.success(msg);
+                });
             });
 
         });

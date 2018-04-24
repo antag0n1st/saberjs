@@ -66,6 +66,11 @@
                     throw Config.initialScreen + ' - is not Defined';
                 }
 
+                if (Config.rotation_mode) { // this means its bigger then 0 ( zero is allow)
+                    this.rotate_layer = new RotateLayer();
+                }
+                
+                this.checkRotation();
 
             }, this);
 
@@ -81,6 +86,8 @@
         Visibility.change(function (e, state) {
             app.handleVisibility(state === "visible");
         });
+
+
 
     };
 
@@ -143,13 +150,13 @@
         }
 
         if (s instanceof SAT.Circle) {
-            
+
             var p = s.pos;
-            graphics.beginFill(0x000000,0.3);
+            graphics.beginFill(0x000000, 0.3);
             graphics.lineStyle(2, 0x000000);
             graphics.drawCircle(p.x, p.y, s.r);
             graphics.endFill();
-            
+
         } else {
             var p = s.pos;
             var points = s.points;
@@ -216,19 +223,19 @@
 
 
     App.prototype.handleVisibility = function (isVisible) {
-        
+
         if (app.navigator.currentScreen) {
             app.navigator.currentScreen.onVisibilityChange(isVisible);
         }
 
         if (isVisible) {
-            if(Config.is_sound_on){
+            if (Config.is_sound_on) {
                 Howler.mute(false);
-            }            
+            }
         } else {
             Howler.mute(true);
         }
-        
+
     };
 
     App.prototype.resize = function () {
@@ -239,11 +246,15 @@
         this.pixi.view.style.height = Math.ceil(this.canvasHeight) + "px";
         this.pixi.renderer.resize(this.width, this.height);
 
+
+
         if (Config.window_mode === Config.MODE_CENTERED) {
             this.adjustCanvasPositionCentered(this.pixi.view);
         } else if (Config.window_mode === Config.MODE_PADDING) {
             this.adjustCanvasPositionPadding(this.pixi.view);
         }
+
+        this.input.recalucateOffset();
 
         for (var i = 0; i < this.navigator.screens.length; i++) {
             var screen = this.navigator.screens[i];
@@ -252,23 +263,61 @@
         }
 
 //TODO implement the rotate layer
-//        if (this.rotate_layer) {
-//            this.checkRotation();
-//            this.rotate_layer.onResize();
-//        }
+        if (this.rotate_layer) {
+            this.checkRotation();
+            this.rotate_layer.onResize();
+        }
 
     };
 
     App.prototype.checkRotation = function () {
+          if (Config.rotation_mode === Config.ROTATION_MODE_HORIZONTAL) {
 
+            if (app.windowWidth < app.windowHeight) {
+                this.showRotateDevice();
+            } else {
+                this.hideRotateDevice();
+            }
+
+        } else if (Config.rotation_mode === Config.ROTATION_MODE_VERTICAL) {
+
+            if (app.windowWidth > app.windowHeight) {
+                this.showRotateDevice();
+            } else {
+                this.hideRotateDevice();
+            }
+
+        }
     };
 
     App.prototype.showRotateDevice = function () {
 
+        if (!this.isRotationLayerShown) {
+
+            this.isRotationLayerShown = true;
+            this.stage.addChild(this.rotate_layer);
+            this.navigator.currentScreen.isPaused = true;
+            this.input.isBlocked = true;
+            Actions.pause();
+            if (Config.is_sound_on) {
+                Howler.mute(true);
+            }
+        }
+
     };
 
     App.prototype.hideRotateDevice = function () {
+        if (this.isRotationLayerShown) {
 
+            this.isRotationLayerShown = false;
+            this.rotate_layer.removeFromParent();
+            this.navigator.currentScreen.isPaused = false;
+            this.input.isBlocked = false;
+            Actions.resume();
+            if (Config.is_sound_on) {
+                Howler.mute(false);
+            }
+        }
     };
 
     window.App = App;

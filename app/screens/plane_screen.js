@@ -36,6 +36,8 @@
 
         this.selectedHandle = null;
 
+        
+
 
     };
 
