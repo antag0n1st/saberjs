@@ -11,6 +11,7 @@
 
         this.background = new Sprite('white');
         this.background.stretch(app.width,app.height);
+        this.background.visible = false;
         this.addChild(this.background);
 
         this.logo = new Sprite(null);//Put logo image here
@@ -20,7 +21,7 @@
 
         this.isAnimating = true;
 
-        this.loadingBar = new LoadingBar();
+        this.loadingBar = new LoadingBar(null,null,0);
         this.addChild(this.loadingBar);
 
         this.lastLoadedCount = 0;

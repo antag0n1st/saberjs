@@ -34,7 +34,8 @@
             resolution: 1,
             width: this.width,
             height: this.height,
-            backgroundColor: Config.background_color,
+            backgroundColor: Config.background_color ? Config.background_color : null,
+            transparent : Config.background_color ? false : true,
             forceCanvas: useCanvas
         };
 
