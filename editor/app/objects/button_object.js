@@ -102,8 +102,18 @@
             fill: this.label.style.fill,
             fontFamily: this.label.style.fontFamily,
             fontSize: this.label.style.fontSize,
-            padding: 4,
-            align: this.label.style.align
+            align: this.label.style.align,
+            stroke: this.label.style.stroke,
+            strokeThickness: this.label.style.strokeThickness,
+            dropShadow: this.label.style.dropShadow,
+            dropShadowDistance: this.label.style.dropShadowDistance,
+            dropShadowAngle: this.label.style.dropShadowAngle,
+            dropShadowColor: this.label.style.dropShadowColor,
+            wordWrap: this.label.style.wordWrap,
+            wordWrapWidth: this.label.style.wordWrapWidth,
+            letterSpacing: this.label.style.letterSpacing,
+            lineHeight: this.label.style.lineHeight,
+            padding: this.label.style.padding
         };
 
         return o;

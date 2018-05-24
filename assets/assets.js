@@ -2,6 +2,7 @@ App.prototype.loadAssets = function () {
 
 
 
+ContentManager.addFile('cubes','assets/data/cubes.json');
 ContentManager.addFile('sample','assets/data/sample.json');
 ContentManager.addFile('stage','assets/data/stage.json');
 
@@ -9,6 +10,8 @@ ContentManager.addFile('stage','assets/data/stage.json');
 ContentManager.addImage('button','button.png');
 ContentManager.addImage('button_disabled','button_disabled.png');
 ContentManager.addImage('cart','cart.png');
+ContentManager.addImage('circle','circle.png');
+ContentManager.addImage('cubes','cubes.png');
 ContentManager.addImage('favicon','favicon.png');
 
 ContentManager.addImage('item1','item1.png');

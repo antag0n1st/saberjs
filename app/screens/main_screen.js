@@ -38,6 +38,16 @@
         tweenBtn.position.set(app.width / 2, 400);
         this.addChild(tweenBtn);
         this.addTouchable(tweenBtn);
+        
+        var gooeyBtn = new Button('Gooey', Style.DEFAULT_BUTTON);
+        gooeyBtn.onMouseUp = function () {
+            var screen = new GooeyScreen();
+            app.navigator.add(screen, 200);
+            Sounds.click.play();
+        };
+        gooeyBtn.position.set(app.width / 2, 500);
+        this.addChild(gooeyBtn);
+        this.addTouchable(gooeyBtn);
 
 
     };
