@@ -1,4 +1,8 @@
-<!DOCTYPE HTML>
+<?php
+    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");
+?><!DOCTYPE HTML>
 <html>
     <head>
         <title>Editor</title>
@@ -12,80 +16,80 @@
         <meta name="HandheldFriendly" content="true" />
 
         <link rel="shortcut icon" sizes="256x256" href="assets/images/favicon.png" />
-        <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/font-awesome/css/font-awesome.min.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
 
-        <script src="assets/bootstrap/jquery.min.js" type="text/javascript"></script>
+        <script src="assets/bootstrap/jquery.min.js?<?php echo time(); ?>" type="text/javascript"></script>
 
-        <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>        
-        <script src="assets/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <link href="assets/colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
-        <script src="assets/colorpicker/js/bootstrap-colorpicker.js" type="text/javascript"></script>
-        <link href="assets/slider/bootstrap-slider.css" rel="stylesheet" type="text/css"/>
-        <script src="assets/slider/bootstrap-slider.js" type="text/javascript"></script>
+        <link href="assets/bootstrap/css/bootstrap.min.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>        
+        <script src="assets/bootstrap/js/bootstrap.min.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <link href="assets/colorpicker/css/bootstrap-colorpicker.min.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
+        <script src="assets/colorpicker/js/bootstrap-colorpicker.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <link href="assets/slider/bootstrap-slider.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
+        <script src="assets/slider/bootstrap-slider.js?<?php echo time(); ?>" type="text/javascript"></script>
 
-        <link href="assets/treeview/themes/default/style.css" rel="stylesheet" type="text/css"/>
-        <script src="assets/treeview/jstree.js" type="text/javascript"></script>
-
-
-        <link href="assets/toastr/toastr.css" rel="stylesheet" type="text/css"/>
-        <script src="assets/toastr/toastr.min.js" type="text/javascript"></script>
-
-        <link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/treeview/themes/default/style.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
+        <script src="assets/treeview/jstree.js?<?php echo time(); ?>" type="text/javascript"></script>
 
 
-        <script src="config.js" type="application/javascript" ></script>
+        <link href="assets/toastr/toastr.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
+        <script src="assets/toastr/toastr.min.js?<?php echo time(); ?>" type="text/javascript"></script>
 
-        <script src="../pixi.min.js" type="text/javascript"></script>
-        <script src="../lib.min.js" type="text/javascript"></script>
-
-
-        <script src="app/system/app.js" type="text/javascript"></script>
-        <script src="app/system/style.js" type="text/javascript"></script>
-        <script src="app/system/loading_screen.js" type="text/javascript"></script>
-        <script src="app/system/boot.js" type="text/javascript"></script>
-
-        <script src="assets/assets.js" type="text/javascript"></script>
-
-        <script src="app/screens/main_screen.js" type="text/javascript"></script>
+        <link href="assets/css/style.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
 
 
-        <script src="app/local_file_reader.js" type="text/javascript"></script>
-        <script src="app/html_interface.js" type="text/javascript"></script>
-        <script src="app/html_library.js" type="text/javascript"></script>
-        <script src="app/html_context_menu.js" type="text/javascript"></script>
-        <script src="app/html_elements.js" type="text/javascript"></script>
-        <script src="app/html_top_tools.js" type="text/javascript"></script>
-        <script src="app/properties_binder.js" type="text/javascript"></script>
-        <script src="app/importer.js" type="text/javascript"></script>
-        <script src="app/layers_tree.js" type="text/javascript"></script>
+        <script src="config.js?<?php echo time(); ?>" type="application/javascript" ></script>
 
-        <script src="app/objects/entity.js" type="text/javascript"></script>
-        <script src="app/objects/image_object.js" type="text/javascript"></script>
-        <script src="app/objects/label_object.js" type="text/javascript"></script>
-        <script src="app/objects/layer.js" type="text/javascript"></script>
-        <script src="app/objects/button_object.js" type="text/javascript"></script>
-        <script src="app/objects/input_object.js" type="text/javascript"></script>
-        <script src="app/objects/generic_object.js" type="text/javascript"></script>
-        <script src="app/objects/container_object.js" type="text/javascript"></script>
-        <script src="app/objects/polygon_object.js" type="text/javascript"></script>
-        <script src="app/objects/generic_point.js" type="text/javascript"></script>
-        <script src="app/objects/path_object.js" type="text/javascript"></script>
+        <script src="../pixi.min.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="../lib.min.js?<?php echo time(); ?>" type="text/javascript"></script>
 
-        <script src="app/modes/mode_polygon.js" type="text/javascript"></script>
-        <script src="app/modes/mode_select.js" type="text/javascript"></script>
-        <script src="app/modes/mode_points.js" type="text/javascript"></script>
-        <script src="app/modes/mode_lines.js" type="text/javascript"></script>
-        <script src="app/modes/mode_bezier.js" type="text/javascript"></script>
 
-        <script src="app/commands/commands.js" type="text/javascript"></script>
-        <script src="app/commands/command_batch.js" type="text/javascript"></script>
-        <script src="app/commands/command_add.js" type="text/javascript"></script>
-        <script src="app/commands/command_delete.js" type="text/javascript"></script>
-        <script src="app/commands/command_move.js" type="text/javascript"></script>
-        <script src="app/commands/command_property.js" type="text/javascript"></script>
-        <script src="app/commands/command_scale.js" type="text/javascript"></script>
+        <script src="app/system/app.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/system/style.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/system/loading_screen.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/system/boot.js?<?php echo time(); ?>" type="text/javascript"></script>
 
-        <script src="app/shortcuts.js" type="text/javascript"></script>
+        <script src="assets/assets.js?<?php echo time(); ?>" type="text/javascript"></script>
+
+        <script src="app/screens/main_screen.js?<?php echo time(); ?>" type="text/javascript"></script>
+
+
+        <script src="app/local_file_reader.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/html_interface.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/html_library.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/html_context_menu.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/html_elements.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/html_top_tools.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/properties_binder.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/importer.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/layers_tree.js?<?php echo time(); ?>" type="text/javascript"></script>
+
+        <script src="app/objects/entity.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/image_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/label_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/layer.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/button_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/input_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/generic_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/container_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/polygon_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/generic_point.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/path_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+
+        <script src="app/modes/mode_polygon.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/modes/mode_select.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/modes/mode_points.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/modes/mode_lines.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/modes/mode_bezier.js?<?php echo time(); ?>" type="text/javascript"></script>
+
+        <script src="app/commands/commands.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/commands/command_batch.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/commands/command_add.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/commands/command_delete.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/commands/command_move.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/commands/command_property.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/commands/command_scale.js?<?php echo time(); ?>" type="text/javascript"></script>
+
+        <script src="app/shortcuts.js?<?php echo time(); ?>" type="text/javascript"></script>
 
 
 
@@ -187,13 +191,13 @@
             <div class="form-group  form-inline" style="padding-top: 5px;">
                 <label>Font</label>
                 <input id="textFontSize" class="form-control" style="width: 60px;">
-                <select id="textFontFamily" class="form-control" style="width: 165px; display: inline;">
-                    <option>Arial Black</option>
-                </select>
                 <div id="colorPicker" class="input-group colorpicker-component" style="width: 140px;">
                     <input type="text" class="form-control" value="#DD0F20"/>
                     <span class="input-group-addon"><i></i></span>
                 </div>
+                <select id="textFontFamily" class="form-control" style="width: 165px; display: inline;">
+                    <option>Arial Black</option>
+                </select>                
                 <select id="textAlign" class="form-control" style="width: 90px; display: inline;">
                     <option value="left">Left</option>
                     <option value="center">Center</option>
@@ -214,6 +218,7 @@
                 <div style="margin-top: 10px;">
                     <label>Shadow</label>
                     <input id="shadowDistance" class="form-control" style="width: 40px;">
+                    <label> Angle</label>
                     <input id="shadowAngle" class="form-control" style="width: 60px;">
                     <div id="shadowColorPicker" class="input-group colorpicker-component" style="width: 165px;">
 
