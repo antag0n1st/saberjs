@@ -196,7 +196,6 @@
                     <span class="input-group-addon"><i></i></span>
                 </div>
                 <select id="textFontFamily" class="form-control" style="width: 165px; display: inline;">
-                    <option>Arial Black</option>
                 </select>                
                 <select id="textAlign" class="form-control" style="width: 90px; display: inline;">
                     <option value="left">Left</option>

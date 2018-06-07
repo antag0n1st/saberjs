@@ -143,10 +143,17 @@
 
         ////////////////////
 
-        // get the font here , 
-        // set the fonts
+        var fonts = '';
 
-        this.textFontFamily.innerHTML = '<option value="Arial Black">Arial Black</option>';
+        font += '<option value="\'Times New Roman\', Times, serif">Times New Roman, Times, serif</option>';
+        fonts += '<option value="\'Arial Black\', Gadget, sans-serif">Arial Black, Gadget, sans-serif</option>';
+        fonts += '<option value="Impact, Charcoal, sans-serif">Impact, Charcoal, sans-serif</option>';
+        fonts += '<option value="\'Comic Sans MS\', cursive, sans-serif">Comic Sans MS, cursive, sans-serif</option>';
+        fonts += '<option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva, sans-serif</option>';
+
+        this.textFontFamily.innerHTML = '';
+
+
 
         for (var property in Fonts) {
             if (Fonts.hasOwnProperty(property)) {
@@ -159,6 +166,8 @@
 
             }
         }
+
+        this.textFontFamily.innerHTML += fonts;
 
         this.saveButton = document.getElementById('saveButton');
         this.saveButton.onclick = this.onSaveBtn.bind(this);
