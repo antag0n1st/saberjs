@@ -10,13 +10,13 @@
 
     GooeyScreen.prototype.initialize = function () {
         this.screenInitialize();
-        
-        
+
+
         var backBtn = new Button('back', Style.DEFAULT_BUTTON);
         backBtn.setSensorSize(220, 100);
         backBtn.onMouseDown = function () {
             Sounds.click.play();
-            app.navigator.goBack();
+            app.navigator.goBack(300, HNavigator.ANIMATION_TYPE_ALPHA);
         };
         backBtn.position.set(100 + (backBtn.background.width / 2), 50);
         backBtn.zIndex = 10;
@@ -59,58 +59,6 @@
         stage.filterArea = new PIXI.Rectangle(0, 0, app.width, app.height);
 
         this.addChild(stage);
-
-    };
-
-    GooeyScreen.prototype.update = function (dt) {
-
-    };
-
-    GooeyScreen.prototype.onShow = function () {
-
-    };
-
-    GooeyScreen.prototype.onHide = function () {
-
-    };
-
-    GooeyScreen.prototype.onMouseDown = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onMouseMove = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onMouseUp = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onMouseCancel = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onRightMouseDown = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onRightMouseMove = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onRightMouseUp = function (event, sender) {
-
-    };
-
-    GooeyScreen.prototype.onNote = function (name, data, sender) {
-
-    };
-
-    GooeyScreen.prototype.onResize = function () {
-
-    };
-
-    GooeyScreen.prototype.destroy = function () {
 
     };
 

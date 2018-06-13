@@ -42,7 +42,7 @@
         var gooeyBtn = new Button('Gooey', Style.DEFAULT_BUTTON);
         gooeyBtn.onMouseUp = function () {
             var screen = new GooeyScreen();
-            app.navigator.add(screen, 200);
+            app.navigator.add(screen, 300 , HNavigator.ANIMATION_TYPE_ALPHA );
             Sounds.click.play();
         };
         gooeyBtn.position.set(app.width / 2, 500);
