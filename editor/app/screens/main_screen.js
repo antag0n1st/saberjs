@@ -498,6 +498,8 @@
         }
 
         var toScale = this._zoom + scale;
+        
+        toScale = Math.clamp(toScale,-0.8,3);
 
         this._toZoomScale = toScale;
 

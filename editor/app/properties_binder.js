@@ -139,9 +139,9 @@
         } else if (property === 'y') {
             object.position.y = Number(value) || 0;
         } else if (property === 'scaleX') {
-            object.scale.x = Number(value) || 0;
+            object.scale.x = Number(value) || 0.01;
         } else if (property === 'scaleY') {
-            object.scale.y = Number(value) || 0;
+            object.scale.y = Number(value) || 0.01;
         } else if (property === 'tag') {
             object.tag = value;
         } else if (property === 'alpha') {

@@ -37,7 +37,7 @@
     
     Style.DEFAULT_INPUT = {
         fill: "#555555",
-        fontFamily: "Arial Black",
+        fontFamily: "'Arial Black', Gadget, sans-serif",
         fontSize: 50,
         background: "rounded",
         padding: 4 ,
@@ -49,7 +49,7 @@
         wordWrap: true,
         wordWrapWidth: 800,
         fill: "#999999",
-        fontFamily: "Arial Black",
+        fontFamily: "'Arial Black', Gadget, sans-serif",
         fontSize: 30,
         dropShadow: true,
         dropShadowColor: '#000000',
@@ -58,7 +58,7 @@
 
     Style.DEFAULT_LABEL = {
         fill: "#999999",
-        fontFamily: "Arial Black",
+        fontFamily: "'Arial Black', Gadget, sans-serif",
         fontSize: 30 , 
         dropShadowDistance: 0
     };
@@ -67,7 +67,7 @@
         fill: "#cccccc",
         imageNormal: "button",
         imageSelected: "button",
-        fontFamily: "Arial Black",
+        fontFamily: "'Arial Black', Gadget, sans-serif",
         fontSize: 30
     };
 
@@ -75,7 +75,7 @@
         fill: "#cccccc",
         imageNormal: "button",
         imageSelected: "button",
-        fontFamily: "Arial Black",
+        fontFamily: "'Arial Black', Gadget, sans-serif",
         fontSize: 30
     };
 

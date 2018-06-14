@@ -23,6 +23,7 @@
         this.textUpdatePanel = document.getElementById('textUpdatePanel');
         this.textUpdateArea = document.getElementById('textUpdateArea');
         this.textUpdateArea.onkeyup = this.onTextareaKey.bind(this);
+        this.textUpdateArea.oninput = this.onTextareaKey.bind(this);
 
         var size = app.device.windowSize();
 
@@ -744,6 +745,9 @@
         if (!this.editor._zoomPoint) {
             this.editor._zoomPoint = new V().copy(zoomPoint);
         }
+        
+        scale = Math.clamp(scale,-0.8,3);
+       
 
         Actions.stopByTag('zoom');
         var zoom = this.editor._zoom;
