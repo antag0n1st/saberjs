@@ -4,7 +4,8 @@
     function HtmlLibrary(displayContainer, editor, actionName) {
         this.initialize(displayContainer, editor, actionName);
     }
-
+    // DELEGATE
+    // onLibraryItemClicked(event,library)
     HtmlLibrary.prototype.initialize = function (displayContainer, editor, actionName) {
 
         this.editor = editor;
@@ -16,8 +17,12 @@
         this.displayContainer = displayContainer;
 
         this.actionName = actionName;
-        
+
         this.canDeleteObjects = false;
+        
+        this.id = 'lib-'+PIXI.utils.uid();
+        
+        this.delegate = null;
 
     };
 
@@ -73,18 +78,18 @@
             this.displayContainer.appendChild(child);
         }
 
-
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
+                        
             if (file.children) {
-
+                
             } else {
-                var img = document.getElementById('_i_m_a_g_e_' + file.name);
+                var img = document.getElementById(this.id+'_i_m_a_g_e_' + file.name);
                 img.ondragstart = this.dragStart.bind(this);
+                img.onclick = this.onItemClick.bind(this);   
             }
 
         }
-
 
         this.displayContainer.style.height = (app.device.windowSize().height - 120) + 'px';
 
@@ -92,10 +97,11 @@
     };
 
     HtmlLibrary.prototype.dragStart = function (ev) {
- 
+
         var data = ev.target.dataset;
         ev.dataTransfer.setData("id", ev.target.id);
         ev.dataTransfer.setData("action", this.actionName);
+        ev.dataTransfer.setData("library_id" , this.id);
 
         for (var property in data) {
             if (data.hasOwnProperty(property)) {
@@ -112,7 +118,7 @@
         div.className = "libraryItem";
 
         var img = document.createElement("img");
-        img.id = '_i_m_a_g_e_' + file.name;
+        img.id = this.id+'_i_m_a_g_e_' + file.name;
         img.title = file.name;
         img.src = file.url;
 
@@ -126,27 +132,26 @@
             }
         }
 
-        img.draggable = true;
+        if (this.actionName) {
+            img.draggable = true;
+        }
 
         div.appendChild(img);
-        
-        if(this.canDeleteObjects){
-            
-           // log(img.dataset)
-            
-           var deleteBtn = document.createElement("span");
-           deleteBtn.className = "btn btn-danger";
-         //  deleteBtn.innerHTML = '<i class="fa fa-trash"></i>';
-           deleteBtn.style.position = 'absolute';
-           deleteBtn.style.right = '0px';
-           deleteBtn.style.top = '0px';       
-           deleteBtn.onclick = this.onDeleteButton.bind(this);
-           
-           var icon = document.createElement("i");
-           icon.className = "fa fa-trash";
-           deleteBtn.appendChild(icon);
-         
-           for (var property in file.data) {
+
+        if (this.canDeleteObjects) {
+
+            var deleteBtn = document.createElement("span");
+            deleteBtn.className = "btn btn-danger";
+            deleteBtn.style.position = 'absolute';
+            deleteBtn.style.right = '0px';
+            deleteBtn.style.top = '0px';
+            deleteBtn.onclick = this.onDeleteButton.bind(this);
+
+            var icon = document.createElement("i");
+            icon.className = "fa fa-trash";
+            deleteBtn.appendChild(icon);
+
+            for (var property in file.data) {
                 if (file.data.hasOwnProperty(property)) {
                     var value = file.data[property];
                     // do stuff
@@ -154,8 +159,8 @@
                     icon.setAttribute('data-' + property, value);
                 }
             }
-           
-           div.appendChild(deleteBtn);
+
+            div.appendChild(deleteBtn);
         }
 
         return div;
@@ -167,13 +172,13 @@
 
     HtmlLibrary.prototype.createFolder = function (file) {
 
-       // var container = document.createElement("div");
+        // var container = document.createElement("div");
 
         var div = document.createElement("div");
         div.className = "libraryItem";
 
         var icon = document.createElement("img");
-        icon.id = '_folder_' + file.name;
+        icon.id = this.id+'_folder_' + file.name;
         icon.onclick = this.folderClick.bind(this);
         icon.src = ContentManager.baseURL + 'assets/images/folder_icon.png';
         icon['data-path'] = file.name;
@@ -209,14 +214,13 @@
         return container.innerHTML;
 
     };
-    
+
     HtmlLibrary.prototype.onDeleteButton = function (event) {
-       // log(event.target);
-       // you need to overwrite this one
+        // you need to overwrite this one
         this.build();
     };
-    
-    
+
+
 
     HtmlLibrary.prototype.folderClick = function (event) {
         this.path.push(event.target['data-path']);
@@ -226,6 +230,12 @@
     HtmlLibrary.prototype.backClick = function (event) {
         this.path.pop();
         this.build();
+    };
+
+    HtmlLibrary.prototype.onItemClick = function (event) {
+        if(this.delegate && this.delegate.onLibraryItemClicked){
+            this.delegate.onLibraryItemClicked(event,this);
+        }
     };
 
     window.HtmlLibrary = HtmlLibrary;

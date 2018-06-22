@@ -1,7 +1,7 @@
 <?php
-    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-    header("Cache-Control: post-check=0, pre-check=0", false);
-    header("Pragma: no-cache");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 ?><!DOCTYPE HTML>
 <html>
     <head>
@@ -319,6 +319,22 @@
                 </div>
             </div>
         </div>
+
+        <div id="imageBrowser" style="position: absolute; background: white; width: 450px; height: 400px; padding: 0px 5px 5px 5px; display: none;" >
+            
+            <div class="panel-heading" style="padding: 0; overflow: hidden;">
+                <div id="closeImageBrowser" class="btn btn-xs" style="float: right;">
+                    <i class="fa fa-close"></i>
+                </div>
+            </div>
+            
+            <div id="imageLibraryBrowseContent"  class="libraryContent"  >
+
+            </div>
+        </div>
+
+
+
 
     </body>
 

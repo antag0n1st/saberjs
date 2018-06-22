@@ -46,6 +46,15 @@
             that.onDelete();
         });
 
+        this.kibo.up('backspace', function () {
+
+            if (editor.isInputActive()) {
+                return false;
+            }
+
+            that.onDelete();
+        });
+
         this.kibo.down('space', function () {
             that.isSpacePressed = true;
             app.input.setCursor('pointer');
@@ -58,12 +67,14 @@
 
         this.kibo.down('ctrl', function () {
             that.isCtrlPressed = true;
+            return false;
         });
 
         this.kibo.up('ctrl', function () {
             that.isCtrlPressed = false;
+            return false;
         });
-        
+
         this.kibo.down('alt', function () {
             that.isAltPressed = true;
         });
@@ -103,29 +114,32 @@
         this.kibo.down('ctrl c', function () {
             if (!editor.isInputActive()) {
                 editor.copySelection();
+                return false;
             }
-
         });
 
         this.kibo.down('ctrl v', function () {
             if (!editor.isInputActive()) {
                 editor.paste();
+                return false;
             }
         });
-        
+
         this.kibo.down('ctrl s', function () {
             if (!editor.isInputActive()) {
                 editor.htmlInterface.saveCurrentContent();
+                return false;
             }
-            return false;
         });
 
         this.kibo.down('ctrl up', function () {
             editor.htmlInterface.htmlTopTools.moveItemsUp();
+            return false;
         });
 
         this.kibo.down('ctrl down', function () {
             editor.htmlInterface.htmlTopTools.moveItemsDown();
+            return false;
         });
 
         this.kibo.down('esc', function () {
@@ -178,6 +192,10 @@
         this.editor.deselectAllObjects();
         this.editor.htmlInterface.htmlTopTools.hideTextEdit();
         this.editor.setMode(MainScreen.MODE_SELECT);
+        
+        this.editor.htmlInterface.contextMenu.close();
+        this.editor.htmlInterface.contextMenu.closeImageBrowser();
+        
     };
 
     window.Shortcuts = Shortcuts;

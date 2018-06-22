@@ -448,6 +448,7 @@
     MainScreen.prototype.onRightMouseDown = function (event, sender) {
 
         this.htmlInterface.contextMenu.close();
+        this.htmlInterface.contextMenu.closeImageBrowser();
 
         if (this.shortcuts.isSpacePressed) {
             var pp = event.point.clone();

@@ -119,14 +119,15 @@
 
         var data = ev.dataTransfer;
         var action = data.getData('action');
+        var libraryID = data.getData('library_id');
 
         if (action === 'dropImage') {
-            var id = data.getData('id').replace('_i_m_a_g_e_', '');
+            var id = data.getData('id').replace(libraryID+'_i_m_a_g_e_', '');
             this.editor.onLibraryImageDropped(id);
         } else if (action === 'dropLabel') {
             this.editor.onLabelDropped();
         } else if (action === 'dropObject') {
-            var id = data.getData('id').replace('_i_m_a_g_e_', '');
+            var id = data.getData('id').replace(libraryID+'_i_m_a_g_e_', '');
             this.editor.onGalleryObjectDropped(id);
         } else if (action === 'dropPrefab') {
             this.editor.onPrefabDropped(data);

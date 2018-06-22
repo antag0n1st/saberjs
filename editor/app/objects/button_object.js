@@ -42,7 +42,7 @@
             labelRotation: 0,
             isNineSlice: 1
         };
-
+        
     };
 
     ButtonObject.prototype.updateSize = function () {
@@ -135,7 +135,7 @@
                     this.label.style[property] = data.style[property];
                     // do stuff
                 }
-            }
+            }            
         }
 
         this.background.padding = this.properties.padding;

@@ -111,7 +111,6 @@
             for (var i = 0; i < this.frameSensors.length; i++) {
 
                 var s = this.frameSensors[i];
-                //  log(s)
                 graphics.drawCircle(p.x + s.pos.x, p.y + s.pos.y, s.r);
 
             }

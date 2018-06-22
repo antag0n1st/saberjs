@@ -10,6 +10,9 @@
         this.htmlInterface = htmlInterface;
         this.editor = editor;
 
+        this.imageBrowser = document.getElementById('imageBrowser');
+
+
     };
 
     HtmlContextMenu.prototype.build = function (objects) {
@@ -58,6 +61,15 @@
 
         }
 
+        if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
+            html += '<li role="presentation" >';
+            html += '<a id="contextChangeImage" href="#" role="menuitem">';
+            html += '<i class="fa fa-fw fa-lg fa-picture-o"></i> ';
+            html += '<span class="actionName">Change Image</span>';
+            html += '</a>';
+            html += '</li>';
+        }
+
         html += '<li role="presentation"  >';
         html += '<a id="contextSaveAsPrefab" href="#" role="menuitem">';
         html += '<i class="fa fa-fw fa-lg fa-cube"></i> ';
@@ -91,6 +103,11 @@
             var contextConvertToInput = document.getElementById('contextConvertToInput');
             contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
 
+        }
+
+        if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
+            var contextChangeImage = document.getElementById('contextChangeImage');
+            contextChangeImage.onclick = this.onContextChangeImage.bind(this);
         }
 
         var contextFindInTree = document.getElementById('contextFindInTree');
@@ -168,6 +185,10 @@
 
     };
 
+    HtmlContextMenu.prototype.closeImageBrowser = function () {
+        this.imageBrowser.style.display = 'none';
+    };
+
     HtmlContextMenu.prototype.onContextEditBtn = function () {
 
         this.close();
@@ -206,7 +227,7 @@
 
         var btn = new ButtonObject(imageName);
         btn.id = object.id;
-      
+
         btn.position = p;
 
         btn.build();
@@ -319,6 +340,77 @@
         }
 
         this.close();
+    };
+
+    HtmlContextMenu.prototype.onContextChangeImage = function () {
+
+
+
+        //   this.editor.deselectAllObjects();
+
+        //var imageName = object.imageName;
+
+        this.close();
+
+        var dom = document.getElementById('imageLibraryBrowseContent');
+
+        var htmlLibrary = new HtmlLibrary(dom, this.editor, null);
+        htmlLibrary.delegate = this;
+        htmlLibrary.addFiles(app.libraryImages);
+        htmlLibrary.show();
+
+        var height = htmlLibrary.displayContainer.style.height;
+        height = height.replace('px', '');
+        height = Math.round(height);
+
+        this.imageBrowser.style.height = (height + 30) + 'px';
+        this.imageBrowser.style.top = '75px';
+        this.imageBrowser.style.left = '25px';
+
+        this.imageBrowser.style.display = 'block';
+
+        var closeBtn = document.getElementById('closeImageBrowser');
+        var that = this;
+        closeBtn.onclick = function () {
+            that.imageBrowser.style.display = 'none';
+        };
+
+    };
+
+    HtmlContextMenu.prototype.onLibraryItemClicked = function (event, library) {
+
+        var id = event.target.id.replace(library.id + '_i_m_a_g_e_', '');
+
+        event.preventDefault();
+
+        this.closeImageBrowser();
+
+
+        /// change the new image
+
+        var object = this.editor.selectedObjects[0];
+        if (object.imageName) {
+            object.setTexture(id);
+        } else if (object.background) {
+            // update the nine slice
+
+
+            //   object.build(object.data);
+
+            object.backgroundName = id;
+            object.background.imageName = id;
+            object.background.buildBackground();
+
+//            object.background.setTexture(id);
+
+
+//            object.rebuild();
+
+//            object.build();
+//
+//            object.bindProperties(this.editor);
+        }
+
     };
 
     window.HtmlContextMenu = HtmlContextMenu;

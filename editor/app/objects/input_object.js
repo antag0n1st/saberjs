@@ -159,8 +159,6 @@
 
         var method = 'onSelectedObjectPropertyChange';
         
-      //  log(this.properties)
-
         var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
         var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
         var opt2 = {name: 'padding', value: Math.round(this.properties.padding), class: 'big', method: method, feedback: true};

@@ -21,6 +21,7 @@
         this.editor.clickedObject = null;
 
         this.editor.htmlInterface.contextMenu.close();
+        this.editor.htmlInterface.contextMenu.closeImageBrowser();
 
         // check if we are touching a handle of the selected objects
         if (this.editor.checkSelectedObjects(this.editor.selectedObjects, event)) {
