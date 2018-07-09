@@ -46,6 +46,10 @@
     Entity.prototype.createFrame = function (padding, handleSize) {
 
         this.padding = padding;
+        
+        if(this.frameSensors.length){
+            this.frameSensors = [];
+        }
 
         var circle1 = new SAT.Circle(new V(), handleSize);
         this.frameSensors.push(circle1);

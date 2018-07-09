@@ -10,8 +10,8 @@
     PathObject.prototype.initialize = function () {
         this.entityInitialize(null);
 
-        this.graphics = new PIXI.Graphics();
-        this.addChild(this.graphics);
+        this.myGraphics = new PIXI.Graphics();
+        this.addChild(this.myGraphics);
 
         this.selectedHandle = null;
         this.lastPoint = null; // last added point
@@ -22,7 +22,7 @@
 
         this.curve = new BEZIER.PolyBezier();
 
-        this.render();
+        this.renderMe();
 
         this.isAlt = false;
         this.isCtrl = false;
@@ -31,9 +31,22 @@
 
     };
 
-    PathObject.prototype.build = function () {
+    PathObject.prototype.build = function (data) {
         this.canResize = false;
         this.hasFrame = false;
+        
+
+        if (data) {
+            for (var i = 0; i < data.points.length; i++) {
+                this.addPoint(new OV(data.points[i].x, data.points[i].y));
+            }
+
+            this.position.set(data.position.x, data.position.y);
+            
+            this.id = data.id;
+            this.className = data.className;
+
+        }
 
         this.enableSensor();
     };
@@ -41,7 +54,12 @@
     PathObject.prototype.export = function () {
 
         var o = this.basicExport();
-
+        o.points = [];
+        for (var i = 0; i < this.points.length; i++) {
+            var p = this.points[i];
+            o.points.push({x: p.x, y: p.y});
+        }
+        
         return o;
 
     };
@@ -79,17 +97,17 @@
         new Stepper(function (step, data, dt) {
             var p = path.get(step);
 
-            this.render();
+            this.renderMe();
 
-            this.graphics.clear();
+            this.myGraphics.clear();
 
 
-            this.graphics.lineStyle(2, 0x000000, 1);
-            this.graphics.beginFill(0xffffff, 0.5);
+            this.myGraphics.lineStyle(2, 0x000000, 1);
+            this.myGraphics.beginFill(0xffffff, 0.5);
 
-            this.graphics.drawCircle(p.x, p.y, 10);
+            this.myGraphics.drawCircle(p.x, p.y, 10);
 
-            this.graphics.endFill();
+            this.myGraphics.endFill();
 
         }, time, null, null, function () {
             if (callback) {
@@ -107,6 +125,8 @@
         point.callback = this.onHandleMove;
         point.context = this;
         point.sensor = this.createSensor(point, true);
+
+        this.points.push(point);
 
         if (this.lastPoint) {
 
@@ -154,7 +174,7 @@
 
         this.lastPoint = point;
 
-        this.render();
+        this.renderMe();
 
     };
 
@@ -171,19 +191,19 @@
         return circle;
     };
 
-    PathObject.prototype.render = function () {
-        this.graphics.clear();
+    PathObject.prototype.renderMe = function () {
+        this.myGraphics.clear();
 
         for (var i = 0; i < this.curves.length; i++) {
             var curve = this.curves[i];
-            this.renderPathObject(curve, this.graphics);
+            this.renderMePathObject(curve, this.myGraphics);
         }
 
-        this.renderHandles(this.graphics);
+        this.renderMeHandles(this.myGraphics);
     };
 
 
-    PathObject.prototype.renderPathObject = function (bezier, graphics) {
+    PathObject.prototype.renderMePathObject = function (bezier, graphics) {
 
         graphics.beginFill(0xffffff, 0);
         graphics.lineStyle(4, 0x1c19e8, 1);
@@ -205,7 +225,7 @@
         var p = bezier.get(1);
         graphics.lineTo(p.x, p.y);
 
-        // let render the handles now
+        // let renderMe the handles now
 
         graphics.lineStyle(1, 0x222222, 1);
         var points = bezier.points;
@@ -220,9 +240,9 @@
 
     };
 
-    PathObject.prototype.renderHandles = function (graphics) {
+    PathObject.prototype.renderMeHandles = function (graphics) {
 
-        //  this.graphics.clear();
+        //  this.myGraphics.clear();
 
         graphics.lineStyle(2, 0x000000, 1);
         graphics.beginFill(0xffffff, 0.5);
@@ -240,7 +260,7 @@
             this.selectedHandle.pos.x = point.x;
             this.selectedHandle.pos.y = point.y;
         }
-        this.render();
+        this.renderMe();
     };
 
     PathObject.prototype.onMouseDown = function (event, sender) {
@@ -256,7 +276,7 @@
 
                     s.pos.set(s.pos.basePoint.x, s.pos.basePoint.y);
                     s.pos.enabled = false;
-                    this.render();
+                    this.renderMe();
                     break;
                 }
 
@@ -273,7 +293,7 @@
                 }
             }
         }
-        
+
         return this.selectedHandle;
     };
 
@@ -281,10 +301,10 @@
         if (this.selectedHandle) {
             var point = V.substruction(event.point, this.getGlobalPosition());
             this.moveHandleTo(point);
-            
+
             return true;
         }
-        
+
         return false;
     };
 

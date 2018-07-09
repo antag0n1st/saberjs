@@ -68,10 +68,13 @@
         contentLayer = (contentLayer === undefined) ? this.editor.content : contentLayer;
 
         var importedObjects = [];
+        
+       
 
         for (var i = 0; i < objects.length; i++) {
             var o = objects[i];
-
+            
+         
 
             var object = new window[o.type]();
             object.graphics = this.editor.graphics;
@@ -96,6 +99,9 @@
 
     Importer.prototype.importChildren = function (parent, children, batch) {
         var unwrappedObjects = [];
+        
+     
+        
         for (var i = 0; i < children.length; i++) {
             var o = children[i];
 
@@ -106,7 +112,7 @@
             if (o.backgroundName && !Images[o.backgroundName]) {
                 o.backgroundName = '_missing_image';
             }
-
+            
             var object = new window[o.type]();
             object.graphics = this.editor.graphics;
             object.build(o);

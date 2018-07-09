@@ -345,11 +345,6 @@
     HtmlContextMenu.prototype.onContextChangeImage = function () {
 
 
-
-        //   this.editor.deselectAllObjects();
-
-        //var imageName = object.imageName;
-
         this.close();
 
         var dom = document.getElementById('imageLibraryBrowseContent');
@@ -385,30 +380,38 @@
 
         this.closeImageBrowser();
 
-
         /// change the new image
 
         var object = this.editor.selectedObjects[0];
+
         if (object.imageName) {
+
+            var sx = object.scale.x;
+            var sy = object.scale.y;
+
+            var texture = PIXI.utils.TextureCache[id];
             object.setTexture(id);
+
+            object.width = texture.width;
+            object.height = texture.height;
+
+            object.scale.set(sx, sy);
+
+            if (object.updateSize) {
+                object.updateSize();
+            } else {
+                object.setSensorSize(object.width,object.height);
+            }
+
+            object.updateFrame();
+
         } else if (object.background) {
             // update the nine slice
-
-
-            //   object.build(object.data);
 
             object.backgroundName = id;
             object.background.imageName = id;
             object.background.buildBackground();
 
-//            object.background.setTexture(id);
-
-
-//            object.rebuild();
-
-//            object.build();
-//
-//            object.bindProperties(this.editor);
         }
 
     };

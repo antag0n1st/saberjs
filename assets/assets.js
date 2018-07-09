@@ -2,6 +2,7 @@ App.prototype.loadAssets = function () {
 
 
 
+ContentManager.addFile('demo','assets/data/demo.json');
 ContentManager.addFile('sample','assets/data/sample.json');
 ContentManager.addFile('stage','assets/data/stage.json');
 
