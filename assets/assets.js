@@ -2,6 +2,7 @@ App.prototype.loadAssets = function () {
 
 
 
+ContentManager.addFile('black-jack-win','assets/data/black-jack-win.json');
 ContentManager.addFile('demo','assets/data/demo.json');
 ContentManager.addFile('sample','assets/data/sample.json');
 ContentManager.addFile('stage','assets/data/stage.json');
@@ -11,6 +12,7 @@ ContentManager.addImage('button','button.png');
 ContentManager.addImage('button_disabled','button_disabled.png');
 ContentManager.addImage('cart','cart.png');
 ContentManager.addImage('circle','circle.png');
+ContentManager.addImage('commentaire','commentaire.png');
 ContentManager.addImage('favicon','favicon.png');
 
 ContentManager.addImage('item1','item1.png');
@@ -124,9 +126,21 @@ ContentManager.addImage('gui_windows_74','library/gui/elements/gui_windows_74.pn
 ContentManager.addImage('gui_windows_75','library/gui/elements/gui_windows_75.png');
 ContentManager.addImage('mountin_1','mountin_1.png');
 ContentManager.addImage('mountin_2','mountin_2.png');
+
+ContentManager.addImage('marble-0','originals/marble-0.png');
+ContentManager.addImage('marble-1','originals/marble-1.png');
+ContentManager.addImage('marble-2','originals/marble-2.png');
+ContentManager.addImage('marble-3','originals/marble-3.png');
+ContentManager.addImage('marble-4','originals/marble-4.png');
+ContentManager.addImage('marble-5','originals/marble-5.png');
+ContentManager.addImage('orb_shine','originals/orb_shine.jpg');
 ContentManager.addImage('photo','photo.jpg');
+ContentManager.addImage('rose','rose.png');
+ContentManager.addImage('rose2','rose2.png');
 ContentManager.addImage('rounded','rounded.png');
 ContentManager.addImage('sky','sky.png');
+ContentManager.addImage('straight on nets','straight on nets.png');
+ContentManager.addImage('teachersdot','teachersdot.png');
 ContentManager.addImage('water','water.png');
 
 ContentManager.addFile('en','assets/localization/en.txt');
