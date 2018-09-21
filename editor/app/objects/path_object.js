@@ -346,7 +346,7 @@
 
     };
 
-    PathObject.prototype.update = function () {
+    PathObject.prototype.onUpdate = function () {
 
     };
 

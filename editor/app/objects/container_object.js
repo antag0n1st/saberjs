@@ -32,7 +32,7 @@
     };
 
 
-    ContainerObject.prototype.update = function (dt) {
+    ContainerObject.prototype.onUpdate = function (dt) {
 
 
     };

@@ -22,6 +22,13 @@
         this.importer.importObjects(ContentManager.jsons.demo.objects, this.content);
 
         this.moveScreenTo(ContentManager.jsons.demo.screenPosition);
+        
+//        var cart = this.findById('cart');
+//        log(cart.interactive);
+//        log(cart.buttonMode)
+//        
+//        cart.buttonMode = cart.interactive = true;
+       
        
 //        var data = this.importer.findDataByType('LabelObject');
 //
@@ -73,61 +80,6 @@
     ImportedScreen.prototype.adjustLayerPosition = function (layer, np) {
         layer.position.x += np.x;
         layer.position.y += np.y;
-    };
-
-    ImportedScreen.prototype.update = function (dt) {
-        HScreen.prototype.update.call(this);
-
-    };
-
-    ImportedScreen.prototype.onShow = function () {
-        HScreen.prototype.onShow.call(this);
-
-    };
-
-    ImportedScreen.prototype.onHide = function () {
-        HScreen.prototype.onHide.call(this);
-
-    };
-
-    ImportedScreen.prototype.onMouseDown = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onMouseMove = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onMouseUp = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onMouseCancel = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onRightMouseDown = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onRightMouseMove = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onRightMouseUp = function (event, sender) {
-
-    };
-
-    ImportedScreen.prototype.onNote = function (name, data, sender) {
-
-    };
-
-    ImportedScreen.prototype.onResize = function () {
-
-    };
-
-    ImportedScreen.prototype.destroy = function () {
-
     };
 
     window.ImportedScreen = ImportedScreen; // make it available in the main scope

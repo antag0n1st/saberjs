@@ -86,7 +86,7 @@
     };
 
 
-    ButtonObject.prototype.update = function (dt) {
+    ButtonObject.prototype.onUpdate = function (dt) {
 
 
     };

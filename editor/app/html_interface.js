@@ -122,12 +122,12 @@
         var libraryID = data.getData('library_id');
 
         if (action === 'dropImage') {
-            var id = data.getData('id').replace(libraryID+'_i_m_a_g_e_', '');
+            var id = data.getData('id').replace(libraryID + '_i_m_a_g_e_', '');
             this.editor.onLibraryImageDropped(id);
         } else if (action === 'dropLabel') {
             this.editor.onLabelDropped();
         } else if (action === 'dropObject') {
-            var id = data.getData('id').replace(libraryID+'_i_m_a_g_e_', '');
+            var id = data.getData('id').replace(libraryID + '_i_m_a_g_e_', '');
             this.editor.onGalleryObjectDropped(id);
         } else if (action === 'dropPrefab') {
             this.editor.onPrefabDropped(data);
@@ -341,31 +341,14 @@
         }
     };
 
-    // called when the save button is clicked
-//    HtmlInterface.prototype.onSaveContent = function () {
-//
-//        var data = this.editor.importer.export();
-//
-//        if (!data) {
-//            toastr.error("Can't save this. You have a missing image.");
-//        } else {
-//            var jsonString = JSON.stringify(data);
-//
-//            store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
-//        }
-//
-//
-//
-//        /// toastr.success('The content was saved into browsers memory', "Local Save!");
-//
-//    };
-
     HtmlInterface.prototype.onExportBtn = function () {
-        this.saveCurrentContent();
-
+        var that = this;
+        this.saveCurrentContent(function () {
+            that.onSettings();
+        });
     };
 
-    HtmlInterface.prototype.saveCurrentContent = function () {
+    HtmlInterface.prototype.saveCurrentContent = function (callback) {
 
         var data = this.editor.importer.export();
 
@@ -396,7 +379,7 @@
                 document.getElementById('exportFileName').value = fileName;
             }
         }
-        
+
         this.editor.importer.fileName = fileName;
         data.fileName = fileName;
 
@@ -405,8 +388,8 @@
             data: JSON.stringify(data)
 
         };
-        
-        
+
+
 
         ajaxPost('app/php/export.php', sendData, function (response) {
             var msg = response.message;
@@ -414,6 +397,11 @@
             ajaxGet('../tools/assets.php', function (response) {
                 ajaxGet('../tools/fonts.php', function (response) {
                     toastr.success(msg);
+
+                    if (callback) {
+                        callback();
+                    }
+
                 });
             });
 

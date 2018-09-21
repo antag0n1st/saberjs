@@ -55,10 +55,21 @@
                 }
 
                 ajaxGet('app/php/library.php', function (resources) {
+                    
+                    app.libraryImages = resources['structure'];
 
-                    app.libraryImages = resources;
-
-                    app.addToLoader(resources);
+                    app.addToLoader(resources['structure']);
+                    
+                    for (var i = 0; i < resources.atlases.length; i++) {
+                        var url = resources.atlases[i];
+                        
+                     url = ContentManager.baseURL + url;
+                        ContentManager.loader.add(url, url);
+                        ContentManager.countToLoad += 2;
+                        ContentManager.isResourcesLoaded = false;
+                        
+                        // ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
+                    }
 
                     ContentManager.downloadResources(function () {
 
@@ -79,6 +90,8 @@
 
 
         });
+        
+        this.texturesBase64Cache = [];
 
 
 
@@ -92,7 +105,10 @@
             if (resource.children) {
                 this.addToLoader(resource.children);
             } else if (resource.url) {
-                ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
+                if(!resource.frame){
+                    ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
+                }
+                
             }
 
         }

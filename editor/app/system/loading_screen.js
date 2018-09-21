@@ -43,7 +43,7 @@
         
     };
 
-    LoadingScreen.prototype.update = function (dt) {
+    LoadingScreen.prototype.onUpdate = function (dt) {
 
         var to_load = ContentManager.countToLoad;
         var loaded = ContentManager.countLoaded;

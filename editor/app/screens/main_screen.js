@@ -634,7 +634,7 @@
 
     };
 
-    MainScreen.prototype.update = function (dt) {
+    MainScreen.prototype.onUpdate = function (dt) {
 
         var x = app.input.point.x - this._screenPosition.x;
         var y = app.input.point.y - this._screenPosition.y;
@@ -775,7 +775,7 @@
         }
 
         layer.name = name;
-        layer.factor = factor;
+        layer.factor = Number(factor);
         layer.isInputContent = isInputContent;
         layer.build();
 

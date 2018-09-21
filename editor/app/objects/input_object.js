@@ -87,7 +87,7 @@
     };
 
 
-    InputObject.prototype.update = function (dt) {
+    InputObject.prototype.onUpdate = function (dt) {
 
 
     };

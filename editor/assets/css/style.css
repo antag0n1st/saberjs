@@ -118,7 +118,7 @@ body{
     cursor: pointer;
 }
 
-.libraryItem img{
+.libraryItem .libImg{
     width:90px;
     height:90px;
     margin: 0px;
@@ -126,7 +126,7 @@ body{
     padding: 0px;
 }
 
-.libraryItem div{
+.libraryItem .libFooter{
     position: absolute;
     line-height: initial;
     font-size: 12px;

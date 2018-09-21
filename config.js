@@ -21,7 +21,7 @@ Config.canvas_padding = '50 50 50 50'; // top - right - bottom - left
 Config.is_sound_on = true; // switch the sound on/off
 Config.debug_info = false;
 Config.debug = false;
-Config.should_clear_stage = true;
+Config.should_clear_stage = false;
 Config.slow_motion_factor = 1;
 Config.is_game_paused = false;
 
@@ -29,13 +29,13 @@ Config.master_volume = 0.8;
 
 Config.base_url = '';
 Config.lang = 'en';
-Config.background_color = 0x333333;
+Config.background_color = 0x555555;
 
 Config.ROTATION_MODE_ALLOW = 0;
 Config.ROTATION_MODE_HORIZONTAL = 1;
 Config.ROTATION_MODE_VERTICAL = 2;
 
-Config.rotation_mode = Config.ROTATION_MODE_HORIZONTAL;
+Config.rotation_mode = Config.ROTATION_MODE_ALLOW;
 
-Config.initialScreen = 'RopeScreen'; // name of the screen
+Config.initialScreen = 'ImportedScreen'; // name of the screen
 Config.initialScreenArgs = []; // list of arguments to pass to the screen

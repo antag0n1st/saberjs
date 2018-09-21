@@ -11,7 +11,7 @@
 
         this.background = new Sprite('white');
         this.background.stretch(app.width,app.height);
-        this.background.visible = false;
+        this.background.visible = true;
         this.addChild(this.background);
 
         this.logo = new Sprite(null);//Put logo image here
@@ -44,7 +44,7 @@
         
     };
 
-    LoadingScreen.prototype.update = function (dt) {
+    LoadingScreen.prototype.onUpdate = function (dt) {
 
         var to_load = ContentManager.countToLoad;
         var loaded = ContentManager.countLoaded;

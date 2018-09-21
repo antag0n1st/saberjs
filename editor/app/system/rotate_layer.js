@@ -44,7 +44,7 @@
     };
 
 
-    RotateLayer.prototype.update = function (dt) {
+    RotateLayer.prototype.onUpdate = function (dt) {
         Sprite.prototype.update.call(this, dt);
 
         this.drawingLayer.clear();

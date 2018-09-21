@@ -21,7 +21,7 @@
 
     };
 
-    SpineScreen.prototype.update = function (dt) {
+    SpineScreen.prototype.onUpdate = function (dt) {
         HScreen.prototype.update.call(this);
 
 

@@ -95,7 +95,7 @@
 
     };
 
-    SceneGraphScreen.prototype.update = function (dt) {
+    SceneGraphScreen.prototype.onUpdate = function (dt) {
 
         this.item1.rotation += 0.0001 * dt;
 

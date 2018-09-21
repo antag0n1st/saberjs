@@ -196,6 +196,8 @@
         this.editor.htmlInterface.contextMenu.close();
         this.editor.htmlInterface.contextMenu.closeImageBrowser();
         
+        $(".colorpicker-component").colorpicker('hide');
+        
     };
 
     window.Shortcuts = Shortcuts;

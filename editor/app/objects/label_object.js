@@ -36,7 +36,7 @@
     };
 
 
-    LabelObject.prototype.update = function (dt) {
+    LabelObject.prototype.onUpdate = function (dt) {
 
         if (this.anchor.x !== this.label.anchor.x || this.anchor.y !== this.label.anchor.y) {
             this.label.anchor.x = this.anchor.x;

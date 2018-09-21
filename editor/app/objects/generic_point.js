@@ -47,7 +47,7 @@
     };
 
 
-    GenericPoint.prototype.update = function (dt) {
+    GenericPoint.prototype.onUpdate = function (dt) {
 
         if (!this.visible || !this.parent.visible) {
             return;

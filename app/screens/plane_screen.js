@@ -74,7 +74,7 @@
 
     var count = 0;
 
-    PlaneScreen.prototype.update = function (dt) {
+    PlaneScreen.prototype.onUpdate = function (dt) {
 
 
         count += 0.003*dt;

@@ -14,7 +14,7 @@
 
     };
 
-    Goo.prototype.update = function (dt) {
+    Goo.prototype.onUpdate = function (dt) {
         // you could also use postUpdate method
 
         this.position.x += this.velocity.x * dt;

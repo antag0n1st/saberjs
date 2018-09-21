@@ -32,7 +32,7 @@
     };
 
 
-    ImageObject.prototype.update = function (dt) {
+    ImageObject.prototype.onUpdate = function (dt) {
 
 
     };

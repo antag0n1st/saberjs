@@ -153,9 +153,11 @@
 
             var width = event.point.x - this.editor.mouseDownPosition.x;
             var height = event.point.y - this.editor.mouseDownPosition.y;
-
-            if (width > 4 || height > 4) { // a safty zone
+            
+            if (Math.abs(width) > 4 || Math.abs(height) > 4) { // a safty zone
+               
                 this.editor.selectionRectangle = new SAT.Box(new V(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y), width, height).toPolygon();
+              //  this.editor.selectionRectangle = new SAT.Box( new V(200,200) , -300 , + 300).toPolygon();
                 this.editor.checkSelection(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y, width, height);
 
             }

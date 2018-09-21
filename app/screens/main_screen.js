@@ -48,6 +48,16 @@
         gooeyBtn.position.set(app.width / 2, 500);
         this.addChild(gooeyBtn);
         this.addTouchable(gooeyBtn);
+        
+        var importedScreen = new Button('Imported', Style.DEFAULT_BUTTON);
+        importedScreen.onMouseUp = function () {
+            var screen = new ImportedScreen();
+            app.navigator.add(screen, 300 , HNavigator.ANIMATION_TYPE_ALPHA );
+            Sounds.click.play();
+        };
+        importedScreen.position.set(app.width / 2, 600);
+        this.addChild(importedScreen);
+        this.addTouchable(importedScreen);
 
 
     };

@@ -105,11 +105,11 @@
         for (var i = 0; i < children.length; i++) {
             var o = children[i];
 
-            if (o.imageName && !Images[o.imageName]) {
+            if (o.imageName && !PIXI.utils.TextureCache[o.imageName]) {
                 o.imageName = '_missing_image';
             }
             
-            if (o.backgroundName && !Images[o.backgroundName]) {
+            if (o.backgroundName && !PIXI.utils.TextureCache[o.backgroundName]) {
                 o.backgroundName = '_missing_image';
             }
             

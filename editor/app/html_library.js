@@ -19,9 +19,9 @@
         this.actionName = actionName;
 
         this.canDeleteObjects = false;
-        
-        this.id = 'lib-'+PIXI.utils.uid();
-        
+
+        this.id = 'lib-' + PIXI.utils.uid();
+
         this.delegate = null;
 
     };
@@ -80,13 +80,13 @@
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
-                        
+
             if (file.children) {
-                
+
             } else {
-                var img = document.getElementById(this.id+'_i_m_a_g_e_' + file.name);
+                var img = document.getElementById(this.id + '_i_m_a_g_e_' + file.name);
                 img.ondragstart = this.dragStart.bind(this);
-                img.onclick = this.onItemClick.bind(this);   
+                img.onclick = this.onItemClick.bind(this);
             }
 
         }
@@ -101,7 +101,7 @@
         var data = ev.target.dataset;
         ev.dataTransfer.setData("id", ev.target.id);
         ev.dataTransfer.setData("action", this.actionName);
-        ev.dataTransfer.setData("library_id" , this.id);
+        ev.dataTransfer.setData("library_id", this.id);
 
         for (var property in data) {
             if (data.hasOwnProperty(property)) {
@@ -117,10 +117,63 @@
         var div = document.createElement("div");
         div.className = "libraryItem";
 
-        var img = document.createElement("img");
-        img.id = this.id+'_i_m_a_g_e_' + file.name;
+        var img = document.createElement("div");
+        img.id = this.id + '_i_m_a_g_e_' + file.name;
         img.title = file.name;
-        img.src = file.url;
+        img.style.backgroundImage = "url('" + file.url + "')";
+        //  img.style.width = "92px";
+        img.className = "libImg";
+        img.style.backgroundRepeat = "no-repeat";
+
+
+        var texture = null;
+
+        if (PIXI.utils.TextureCache[file.name]) {
+            texture = PIXI.utils.TextureCache[file.name];
+        } else if (PIXI.utils.TextureCache[ ContentManager.baseURL + file.url]) {
+            texture = PIXI.utils.TextureCache[ContentManager.baseURL + file.url];
+        }
+
+        if (texture) {
+            var ar = texture.width / texture.height;
+
+            if (file.frame) {
+
+                // from atlas
+
+                var base64 = null;
+
+                if (app.texturesBase64Cache[file.name]) {
+                    base64 = app.texturesBase64Cache[file.name];
+                } else {
+                    base64 = app.pixi.renderer.extract.base64(new PIXI.Sprite(texture));
+                    app.texturesBase64Cache[file.name] = base64;
+                }
+
+                img.style.backgroundImage = "url('" + base64 + "')";
+                img.style.backgroundPosition = "center";
+                if (texture.width > texture.height) {
+                    img.style.backgroundSize = "90px " + (90 / ar) + "px";
+                } else {
+                    img.style.backgroundSize = (90 * ar) + "px 90px";
+                }
+
+            } else {
+
+                img.style.backgroundPosition = "center";
+
+                if (texture.width > texture.height) {
+                    img.style.backgroundSize = "90px " + (90 / ar) + "px";
+                } else {
+                    img.style.backgroundSize = (90 * ar) + "px 90px";
+                }
+
+            }
+        } else {
+            img.style.backgroundPosition = "center";
+            img.style.backgroundSize = "90px 90px";
+        }
+
 
         if (file.data) {
             for (var property in file.data) {
@@ -165,9 +218,6 @@
 
         return div;
 
-//        container.appendChild(div);
-//        return container.innerHTML;
-
     };
 
     HtmlLibrary.prototype.createFolder = function (file) {
@@ -178,7 +228,7 @@
         div.className = "libraryItem";
 
         var icon = document.createElement("img");
-        icon.id = this.id+'_folder_' + file.name;
+        icon.id = this.id + '_folder_' + file.name;
         icon.onclick = this.folderClick.bind(this);
         icon.src = ContentManager.baseURL + 'assets/images/folder_icon.png';
         icon['data-path'] = file.name;
@@ -186,13 +236,11 @@
         div.appendChild(icon);
 
         var label = document.createElement("div");
+        label.className = "libFooter";
         label.innerHTML = '<label style="margin:auto;" >' + file.name + '</label>';
         div.appendChild(label);
 
         return div;
-
-//        container.appendChild(div);
-//        return container.innerHTML;
 
     };
 
@@ -233,8 +281,8 @@
     };
 
     HtmlLibrary.prototype.onItemClick = function (event) {
-        if(this.delegate && this.delegate.onLibraryItemClicked){
-            this.delegate.onLibraryItemClicked(event,this);
+        if (this.delegate && this.delegate.onLibraryItemClicked) {
+            this.delegate.onLibraryItemClicked(event, this);
         }
     };
 

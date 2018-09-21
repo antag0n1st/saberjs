@@ -80,7 +80,7 @@
 
     var count = 0;
 
-    PerspectiveScreen.prototype.update = function (dt) {
+    PerspectiveScreen.prototype.onUpdate = function (dt) {
         HScreen.prototype.update.call(this);
 //        var bright = 1 + Math.sin(count);
 //        f1.brightness(bright, false);

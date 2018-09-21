@@ -1,12 +1,16 @@
 <?php
 
+$atlas_array = [];
+
 define('DS', DIRECTORY_SEPARATOR);
 
-define('ASSETS_DIR', '../assets/images');
+
+define('ASSETS_DIR', '..' . DS . 'assets' . DS . 'images');
 
 $main_dir = getcwd() . DS . '..' . DS . '..' . DS . ASSETS_DIR;
 
 $content = [];
+
 
 function stringContains($haystack, $needle) {
     return strpos($haystack, $needle) !== false;
@@ -30,18 +34,21 @@ function beforeComma($string) {
 function create_url($dir) {
     global $main_dir;
     $url = str_replace($main_dir, '', $dir);
+    $url = str_replace("\\", "/", $url);
     $url = str_replace(DS, "/", $url);
+ 
     //  return $url;
-    return ASSETS_DIR . $url . '/';
+    return str_replace(DS, "/",ASSETS_DIR) . $url . '/';
 }
 
 function listFolderFiles($dir, $folder_name) {
     $ffs = scandir($dir);
-    global $main_dir, $content;
+    global $main_dir, $content,$atlas_array;
 
     $folder = [];
     $folder['name'] = $folder_name;
     $folder['children'] = [];
+    
 
     foreach ($ffs as $ff) {
 
@@ -54,9 +61,36 @@ function listFolderFiles($dir, $folder_name) {
                 // do nothing   
             } else {
 
-                if (endsWith($ff, '.png') or endsWith($ff, '.jpg') or endsWith($ff, '.jpeg')) {
+
+                if (stringContains($dir, 'assets' . DS . 'images' . DS . "atlases")) {
+
+                    if (endsWith($ff, '.json')) {
+                        
+                        $string = file_get_contents($dir . DS . $ff);
+                        $json_a = json_decode($string, true);
+
+                        $url = create_url($dir);     
+                        $url = ltrim($url, '/');
+                       
+                        $atlas_array[] = $url.$ff;
+                      
+                        $url = str_replace('.json', '.png', $url.$ff);
+                        
+                      
+                        
+                        foreach ($json_a['frames'] as $k => $v) {
+                            $node = ['url' => $url , 'name' => $k , 'frame' => $v['frame'],'rotated' => $v['rotated']];
+                            $folder['children'][] = $node;
+                        }
+                        
+                       
+                        
+                    }
+                } else if (endsWith($ff, '.png') or endsWith($ff, '.jpg') or endsWith($ff, '.jpeg')) {
 
                     $basic = beforeComma($ff);
+                   
+                    $basic = substr($basic, 0, strpos($basic, "@"))?: $basic;
                     $url = create_url($dir);
                     //   $url = str_replace('', '', $url);
                     $url = ltrim($url, '/');
@@ -90,8 +124,11 @@ if ($debug) {
 } else {
     header('Content-type: application/json');
 
-    $structure = listFolderFiles($main_dir, 'root');
-    print_r(json_encode($structure['children']));
+    $data = [];
+    
+    $data['structure'] = listFolderFiles($main_dir, 'root')['children'];
+    $data['atlases'] = $atlas_array;
+    print_r(json_encode($data, JSON_PRETTY_PRINT));
 }
 
 

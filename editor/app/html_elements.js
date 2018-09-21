@@ -295,6 +295,8 @@
             // that.onTextColorChange(e.color.toHex());
 
         });
+       
+        
     };
 
     window.HtmlElements = HtmlElements;

@@ -85,7 +85,7 @@
         this.setCustomSensor(polygon);
     };
 
-    PolygonObject.prototype.update = function (dt) {
+    PolygonObject.prototype.onUpdate = function (dt) {
 
         if (!this.visible) {
             return;

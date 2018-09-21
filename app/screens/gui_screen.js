@@ -149,7 +149,7 @@
 
     };
 
-    GuiScreen.prototype.update = function (dt) {
+    GuiScreen.prototype.onUpdate = function (dt) {
 
     };
 

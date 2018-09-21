@@ -32,7 +32,7 @@
     };
 
 
-    GenericObject.prototype.update = function (dt) {
+    GenericObject.prototype.onUpdate = function (dt) {
 
 
     };

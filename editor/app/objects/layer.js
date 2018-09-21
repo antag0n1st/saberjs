@@ -40,7 +40,7 @@
     };
 
 
-    Layer.prototype.update = function (dt) {
+    Layer.prototype.onUpdate = function (dt) {
 
 
     };

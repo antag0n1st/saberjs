@@ -82,6 +82,7 @@ function listFolderFiles($dir) {
                 } else if (stringContains($dir, 'assets' . DS . 'images')) {
                     if (endsWith($ff, '.png') or endsWith($ff,".jpg")) {
                         $basic = beforeComma($ff);
+                        $basic = substr($basic, 0, strpos($basic, "@"))?: $basic;
                         $url = create_url($dir);
                         $url = str_replace('assets/images', '', $url);
                         $url = ltrim($url, '/');

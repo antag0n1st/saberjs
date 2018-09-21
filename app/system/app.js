@@ -30,12 +30,12 @@
 
         var settings = {
             clearBeforeRender: Config.should_clear_stage,
-            preserveDrawingBuffer: true,
+            preserveDrawingBuffer: false,
             resolution: 1,
             width: this.width,
             height: this.height,
             backgroundColor: Config.background_color ? Config.background_color : null,
-            transparent : Config.background_color ? false : true,
+            transparent: Config.background_color ? false : true,
             forceCanvas: useCanvas
         };
 
@@ -70,7 +70,7 @@
                 if (Config.rotation_mode) { // this means its bigger then 0 ( zero is allow)
                     this.rotate_layer = new RotateLayer();
                 }
-                
+
                 this.checkRotation();
 
             }, this);
@@ -272,7 +272,7 @@
     };
 
     App.prototype.checkRotation = function () {
-          if (Config.rotation_mode === Config.ROTATION_MODE_HORIZONTAL) {
+        if (Config.rotation_mode === Config.ROTATION_MODE_HORIZONTAL) {
 
             if (app.windowWidth < app.windowHeight) {
                 this.showRotateDevice();
