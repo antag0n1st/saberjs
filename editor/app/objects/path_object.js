@@ -22,7 +22,7 @@
 
         this.curve = new BEZIER.PolyBezier();
 
-        this.renderMe();
+        // this.renderMe();
 
         this.isAlt = false;
         this.isCtrl = false;
@@ -34,32 +34,71 @@
     PathObject.prototype.build = function (data) {
         this.canResize = false;
         this.hasFrame = false;
-        
+
 
         if (data) {
+
             for (var i = 0; i < data.points.length; i++) {
-                this.addPoint(new OV(data.points[i].x, data.points[i].y));
+
+                var point = new OV(data.points[i].x, data.points[i].y);
+                this.addPoint(point, this.lastPoint);
+
+            }
+
+            for (var i = 0; i < data.points.length; i++) {
+                var iPoint = data.points[i];
+                var point = this.points[i];
+
+                if (iPoint.handles) {
+                    for (var j = 0; j < iPoint.handles.length; j++) {
+                        var h = iPoint.handles[j];
+                        var handle = point.handles[j];
+
+                        if (h.x !== handle.sensor.pos.x || h.y !== handle.sensor.pos.y) {
+                            handle.sensor.pos.x = h.x;
+                            handle.sensor.pos.y = h.y;
+                            handle.enabled = true;
+                        }
+
+                    }
+                }
+
             }
 
             this.position.set(data.position.x, data.position.y);
-            
+
             this.id = data.id;
             this.className = data.className;
 
         }
 
         this.enableSensor();
+
+        this.renderMe();
     };
 
     PathObject.prototype.export = function () {
 
         var o = this.basicExport();
         o.points = [];
+
         for (var i = 0; i < this.points.length; i++) {
             var p = this.points[i];
-            o.points.push({x: p.x, y: p.y});
+
+            var point = {
+                x: p.x,
+                y: p.y,
+                handles: []
+            };
+
+            o.points.push(point);
+
+            for (var j = 0; j < p.handles.length; j++) {
+                var h = p.handles[j];
+                point.handles.push({x: h.x, y: h.y});
+            }
         }
-        
+
         return o;
 
     };
@@ -117,66 +156,7 @@
 
     };
 
-    PathObject.prototype.addPoint = function (point) {
 
-        point.basePoint = null;
-        point.handles = [];
-        point.curves = [];
-        point.callback = this.onHandleMove;
-        point.context = this;
-        point.sensor = this.createSensor(point, true);
-
-        this.points.push(point);
-
-        if (this.lastPoint) {
-
-            var a2 = new OV(this.lastPoint.x, this.lastPoint.y);
-            var a3 = new OV(point.x, point.y);
-            var curve = new BEZIER.Bezier(this.lastPoint, a2, a3, point);
-            this.curves.push(curve);
-
-            a2.sensor = this.createSensor(a2, false);
-            a3.sensor = this.createSensor(a3, false);
-
-            a2.basePoint = this.lastPoint;
-            a3.basePoint = point;
-
-            a2.curves = [];
-            a3.curves = [];
-
-            point.curves.push(curve);
-            this.lastPoint.curves.push(curve);
-            a2.curves.push(curve);
-            a3.curves.push(curve);
-
-            a2.handles = [];
-            a3.handles = [];
-
-            this.lastPoint.handles.push(a2);
-            point.handles.push(a3);
-
-            a2.callback = this.onHandleMove;
-            a2.context = this;
-
-            a3.callback = this.onHandleMove;
-            a3.context = this;
-
-            Math.bubbleSort(this.sensors, function (a, b) {
-                if (a.pos.enabled && !b.pos.enabled) {
-                    return true;
-                }
-                return false;
-            });
-
-            this.curve.addCurve(curve);
-
-        }
-
-        this.lastPoint = point;
-
-        this.renderMe();
-
-    };
 
     PathObject.prototype.createSensor = function (point, enabled) {
 
@@ -240,20 +220,7 @@
 
     };
 
-    PathObject.prototype.renderMeHandles = function (graphics) {
 
-        //  this.myGraphics.clear();
-
-        graphics.lineStyle(2, 0x000000, 1);
-        graphics.beginFill(0xffffff, 0.5);
-
-        for (var i = 0; i < this.sensors.length; i++) {
-            var s = this.sensors[i];
-            graphics.drawCircle(s.pos.x, s.pos.y, s.r);
-        }
-
-        graphics.endFill();
-    };
 
     PathObject.prototype.moveHandleTo = function (point) {
         if (this.selectedHandle) {
@@ -277,7 +244,9 @@
                     s.pos.set(s.pos.basePoint.x, s.pos.basePoint.y);
                     s.pos.enabled = false;
                     this.renderMe();
-                    break;
+                } else if (SAT.pointInCircle(point, s)) {
+
+                    this.removePoint(s);
                 }
 
             } else if (this.isCtrl) {
@@ -346,7 +315,201 @@
 
     };
 
+    PathObject.prototype.renderMeHandles = function (graphics) {
+
+        graphics.lineStyle(2, 0x000000, 1);
+        graphics.beginFill(0xffffff, 0.5);
+
+        for (var i = 0; i < this.sensors.length; i++) {
+            var s = this.sensors[i];
+
+            var inPoints = false;
+            for (var j = 0; j < this.points.length; j++) {
+                var p = this.points[j];
+                if (p.x === s.pos.x && p.y === s.pos.y) {
+                    inPoints = true;
+                    break;
+                }
+            }
+
+            var radius = 20;
+
+            if (inPoints) {
+                graphics.beginFill(0xffffff, 0.5);
+            } else {
+                graphics.beginFill(0xe4e81b, 0.6);
+                radius = 16;
+            }
+
+            graphics.drawCircle(s.pos.x, s.pos.y, radius);
+
+            graphics.endFill();
+        }
+
+
+    };
+
     PathObject.prototype.onUpdate = function () {
+
+    };
+
+    PathObject.prototype.addPoint = function (point, lastPoint) {
+
+        point.basePoint = null;
+        point.handles = [];
+        point.curves = [];
+        point.callback = this.onHandleMove;
+        point.context = this;
+        point.sensor = this.createSensor(point, true);
+
+        this.points.push(point);
+
+        if (lastPoint) {
+
+            var a2 = new OV(lastPoint.x, lastPoint.y);
+            var a3 = new OV(point.x, point.y);
+            var curve = new BEZIER.Bezier(lastPoint, a2, a3, point);
+            this.curves.push(curve);
+
+            a2.sensor = this.createSensor(a2, false);
+            a3.sensor = this.createSensor(a3, false);
+
+            a2.basePoint = lastPoint;
+            a3.basePoint = point;
+
+            a2.curves = [];
+            a3.curves = [];
+
+            point.curves.push(curve);
+            lastPoint.curves.push(curve);
+            a2.curves.push(curve);
+            a3.curves.push(curve);
+
+            a2.handles = [];
+            a3.handles = [];
+
+            lastPoint.handles.push(a2);
+
+            point.handles.push(a3);
+
+            a2.callback = this.onHandleMove;
+            a2.context = this;
+
+            a3.callback = this.onHandleMove;
+            a3.context = this;
+
+            Math.bubbleSort(this.sensors, function (a, b) {
+                if (a.pos.enabled && !b.pos.enabled) {
+                    return true;
+                }
+                return false;
+            });
+
+            this.curve.addCurve(curve);
+
+        }
+
+        this.lastPoint = point;
+
+        this.renderMe();
+
+    };
+
+    PathObject.prototype.removePoint = function (sensor) {
+
+        if (sensor.pos.curves.length === 2) {
+
+            var point = null;
+
+            var o = this.export();
+
+            for (var i = 0; i < o.points.length; i++) {
+                point = o.points[i];
+                if (point.x === sensor.pos.x && point.y === sensor.pos.y) {
+                    break;
+                }
+            }
+
+
+            o.points.removeElement(point);
+
+            var contentLayer = this.parent;
+            var io = app.navigator.currentScreen.importer.importObjects([o], contentLayer);
+
+            this.removeFromParent();
+
+            // editor
+            //   var contentLayer = this.activeLayer; this.parent
+
+            //  var io = this.importer.importObjects(clipboard, contentLayer);
+
+
+
+//            var curveToRemove = sensor.pos.curves[0];
+//
+//            var pIndex = this.points.indexOf(point);
+//            var prevPoint = curveToRemove.a; //this.points[pIndex - 1];
+//            var nextPoint = this.points[pIndex + 1];
+//
+//            var ind = this.curve.curves.indexOf(curveToRemove);
+//            var prevCurve = this.curve.curves[ind - 1];
+//            var nextCurve = this.curve.curves[ind + 1];
+//
+//
+//            
+//
+//            nextCurve.a = prevPoint;
+//            nextCurve.points[0] = prevPoint;
+//            nextCurve.a.curves[0] = prevCurve;
+//            nextCurve.a.curves[1] = nextCurve;
+//
+//            // handle - sensor - pos - base point
+//
+//            prevCurve.b.sensor.pos.basePoint = prevPoint;
+//            prevCurve.b.curves = [nextCurve];
+//            prevCurve.b.basePoint = prevPoint;
+//            log(prevCurve.b);
+//            
+//            
+//            
+//          // this.sensors.removeElement(prevCurve.b)
+//
+////            prevPoint.handles[0].curves = [prevCurve];
+////            prevPoint.handles[1].curves = [nextCurve];
+////
+////            prevCurve.c.curves = [nextCurve];
+//
+//            //  prevPoint.curves[1] = nextCurve;
+//
+//
+//            nextCurve.update();
+//            prevCurve.update();
+//
+//            this.sensors.removeElement(point.handles[0].sensor);
+//            this.sensors.removeElement(point.handles[1].sensor);
+//            
+//            this.curve.curves.removeElement(curveToRemove);
+//            this.curves.removeElement(curveToRemove);
+//
+//            this.points.removeElement(point);
+//
+//            point.handles = [];
+//            
+//            for (var i = 0; i < this.points.length; i++) {
+//                var p = this.points[i];
+//                p.index = i;
+//            }
+
+
+//            this.renderMe();
+
+
+            // log(this.curves)
+
+//               this.points = [];
+//        this.curves = [];
+//        this.sensors = [];
+        }
 
     };
 

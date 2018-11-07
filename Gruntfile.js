@@ -52,6 +52,7 @@ module.exports = function (grunt) {
                         "lib/display/h_screen.js",
                         "lib/display/layer.js",
                         "lib/display/line_path.js",
+                        "lib/display/poly_bezier.js",
                         
 
                         "lib/ui/label.js",

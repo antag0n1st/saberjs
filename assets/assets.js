@@ -5,6 +5,7 @@ App.prototype.loadAssets = function () {
 ContentManager.addFile('black-jack-win','assets/data/black-jack-win.json');
 ContentManager.addFile('demo','assets/data/demo.json');
 ContentManager.addFile('demo2','assets/data/demo2.json');
+ContentManager.addFile('levels','assets/data/levels.json');
 ContentManager.addFile('sample','assets/data/sample.json');
 ContentManager.addFile('stage','assets/data/stage.json');
 
@@ -12,6 +13,7 @@ ContentManager.addFile('stage','assets/data/stage.json');
 ContentManager.addImage('Pique-1','Pique-1.png');
 
 ContentManager.addAtlas('images');
+ContentManager.addImage('bg_1','bg_1.jpg');
 ContentManager.addImage('button','button.png');
 ContentManager.addImage('button_disabled','button_disabled.png');
 ContentManager.addImage('cart','cart.png');
@@ -117,6 +119,7 @@ ContentManager.addImage('gui_windows_72','library/gui/elements/gui_windows_72.pn
 ContentManager.addImage('gui_windows_73','library/gui/elements/gui_windows_73.png');
 ContentManager.addImage('gui_windows_74','library/gui/elements/gui_windows_74.png');
 ContentManager.addImage('gui_windows_75','library/gui/elements/gui_windows_75.png');
+ContentManager.addImage('meche','meche.png');
 ContentManager.addImage('mountin_1','mountin_1.png');
 ContentManager.addImage('mountin_2','mountin_2.png');
 ContentManager.addImage('photo','photo.jpg');

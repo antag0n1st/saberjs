@@ -19,45 +19,23 @@
 
         this._screenPosition = new V();
 
-        this.importer.importObjects(ContentManager.jsons.demo.objects, this.content);
-
-        this.moveScreenTo(ContentManager.jsons.demo.screenPosition);
+        this.importer.importObjects(ContentManager.jsons.levels.objects, this.content);
         
-//        var cart = this.findById('cart');
-//        log(cart.interactive);
-//        log(cart.buttonMode)
-//        
-//        cart.buttonMode = cart.interactive = true;
-       
-       
-//        var data = this.importer.findDataByType('LabelObject');
-//
-//        for (var i = 0; i < 20; i++) {
-//            var a = this.importer.dataToObject(data[3]);
-//            a.position.set(Math.randomInt(0, 1000), Math.randomInt(100, 800));
-//
-//            this.content.addChild(a);
-//        }
+        thepath = this.findById('level-1-1');
 
 
-
-//        var btn = this.findById('blue');
-//        this.addTouchable(btn);
-//
-//        btn.onMouseUp = function () {
-//            Sounds.click.play();
-//        };
-
-
-//        var object = this.findById('my-colider');
-//        object.onMouseUp = function(event,sender){
-//            log("mother fucker");
-//        };
-//        
-//        this.addTouchable(object);
-
-
-
+    };
+    
+    ImportedScreen.prototype.onMouseDown = function (event,sender) {
+        log("down")
+    };
+    
+    ImportedScreen.prototype.onMouseMove = function (event,sender) {
+        log("move")
+    };
+    
+    ImportedScreen.prototype.onMouseUp = function (event,sender) {
+        log("up")
     };
 
     ImportedScreen.prototype.moveScreenTo = function (p) {

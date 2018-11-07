@@ -46,7 +46,7 @@
         }
 
 
-        this.path.addPoint(new OV(p.x - this.pathPosition.x, p.y - this.pathPosition.y));
+        this.path.addPoint(new OV(p.x - this.pathPosition.x, p.y - this.pathPosition.y),this.path.lastPoint);
         this.pathPoints.push(p);
 
 
