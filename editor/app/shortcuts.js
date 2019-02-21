@@ -15,6 +15,8 @@
         this.isSpacePressed = false;
         this.isCtrlPressed = false;
         this.isAltPressed = false;
+        this.isZPressed = false;
+        this.isXPressed = false;
 
         var that = this;
         this.kibo.up('ctrl z', function () {
@@ -146,6 +148,22 @@
             that.onEsc();
         });
 
+        this.kibo.down('x', function () {
+            that.isXPressed = true;
+        });
+
+        this.kibo.down('z', function () {
+            that.isZPressed = true;
+        });
+
+        this.kibo.up('x', function () {
+            that.isXPressed = false;
+        });
+
+        this.kibo.up('z', function () {
+            that.isZPressed = false;
+        });
+
     };
 
     Shortcuts.prototype.moveSelectionBy = function (dragBy) {
@@ -192,12 +210,12 @@
         this.editor.deselectAllObjects();
         this.editor.htmlInterface.htmlTopTools.hideTextEdit();
         this.editor.setMode(MainScreen.MODE_SELECT);
-        
+
         this.editor.htmlInterface.contextMenu.close();
         this.editor.htmlInterface.contextMenu.closeImageBrowser();
-        
+
         $(".colorpicker-component").colorpicker('hide');
-        
+
     };
 
     window.Shortcuts = Shortcuts;

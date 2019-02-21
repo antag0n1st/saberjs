@@ -74,6 +74,7 @@ header("Pragma: no-cache");
         <script src="app/objects/polygon_object.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="app/objects/generic_point.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="app/objects/path_object.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/objects/line_object.js?<?php echo time(); ?>" type="text/javascript"></script>
 
         <script src="app/modes/mode_polygon.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="app/modes/mode_select.js?<?php echo time(); ?>" type="text/javascript"></script>

@@ -19,9 +19,11 @@
 
         this._screenPosition = new V();
 
-        this.importer.importObjects(ContentManager.jsons.levels.objects, this.content);
+        this.importer.importObjects(ContentManager.jsons.stage.objects, this.content);
         
-        thepath = this.findById('level-1-1');
+        
+        
+//        thepath = this.findById('level-1-1');
 
 
     };

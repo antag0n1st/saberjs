@@ -67,7 +67,7 @@
      * @param Number someData 
      */
     MainScreen.prototype.onShow = function (someData) {
-
+       
     };
 
     MainScreen.prototype.onHide = function () {

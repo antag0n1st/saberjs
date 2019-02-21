@@ -243,16 +243,16 @@
 
         this.device.calculateSizes();
 
-        this.pixi.view.style.width = Math.ceil(this.canvasWidth) + "px";
-        this.pixi.view.style.height = Math.ceil(this.canvasHeight) + "px";
-        this.pixi.renderer.resize(this.width, this.height);
+        if (Config.is_canvas_auto_layout) {
+            this.pixi.view.style.width = Math.ceil(this.canvasWidth) + "px";
+            this.pixi.view.style.height = Math.ceil(this.canvasHeight) + "px";
+            this.pixi.renderer.resize(this.width, this.height);
 
-
-
-        if (Config.window_mode === Config.MODE_CENTERED) {
-            this.adjustCanvasPositionCentered(this.pixi.view);
-        } else if (Config.window_mode === Config.MODE_PADDING) {
-            this.adjustCanvasPositionPadding(this.pixi.view);
+            if (Config.window_mode === Config.MODE_CENTERED) {
+                this.adjustCanvasPositionCentered(this.pixi.view);
+            } else if (Config.window_mode === Config.MODE_PADDING) {
+                this.adjustCanvasPositionPadding(this.pixi.view);
+            }
         }
 
         this.input.recalucateOffset();
@@ -263,10 +263,12 @@
             screen._onResize(this.width, this.height);
         }
 
+        if (Config.is_canvas_auto_layout) {
 //TODO implement the rotate layer
-        if (this.rotate_layer) {
-            this.checkRotation();
-            this.rotate_layer.onResize();
+            if (this.rotate_layer) {
+                this.checkRotation();
+                this.rotate_layer.onResize();
+            }
         }
 
     };

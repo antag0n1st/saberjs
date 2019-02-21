@@ -16,6 +16,8 @@ Config.MODE_PADDING = 5; // it will leave some space on the sides
 Config.window_mode = Config.MODE_CENTERED; // set the scaling method
 Config.window_mode_mobile = null; // if you need special mode for mobile devices
 
+Config.is_canvas_auto_layout = true;
+
 Config.canvas_padding = '50 50 50 50'; // top - right - bottom - left
 
 Config.is_sound_on = true; // switch the sound on/off

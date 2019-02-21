@@ -81,6 +81,9 @@
                 },
                 GenericPoint: {
                     icon: 'fa fa-circle-o'
+                },
+                LineObject: {
+                    icon: 'fa fa-arrows-h'
                 }
             }
 

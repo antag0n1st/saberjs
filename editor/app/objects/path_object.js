@@ -69,8 +69,11 @@
 
             this.id = data.id;
             this.className = data.className;
+            this.visible = data.visible;
 
         }
+        
+        
 
         this.enableSensor();
 
@@ -231,6 +234,7 @@
     };
 
     PathObject.prototype.onMouseDown = function (event, sender) {
+               
         this.selectedHandle = null;
 
         var point = V.substruction(event.point, this.getGlobalPosition());
@@ -350,7 +354,7 @@
     };
 
     PathObject.prototype.onUpdate = function () {
-
+       
     };
 
     PathObject.prototype.addPoint = function (point, lastPoint) {
@@ -438,77 +442,6 @@
 
             this.removeFromParent();
 
-            // editor
-            //   var contentLayer = this.activeLayer; this.parent
-
-            //  var io = this.importer.importObjects(clipboard, contentLayer);
-
-
-
-//            var curveToRemove = sensor.pos.curves[0];
-//
-//            var pIndex = this.points.indexOf(point);
-//            var prevPoint = curveToRemove.a; //this.points[pIndex - 1];
-//            var nextPoint = this.points[pIndex + 1];
-//
-//            var ind = this.curve.curves.indexOf(curveToRemove);
-//            var prevCurve = this.curve.curves[ind - 1];
-//            var nextCurve = this.curve.curves[ind + 1];
-//
-//
-//            
-//
-//            nextCurve.a = prevPoint;
-//            nextCurve.points[0] = prevPoint;
-//            nextCurve.a.curves[0] = prevCurve;
-//            nextCurve.a.curves[1] = nextCurve;
-//
-//            // handle - sensor - pos - base point
-//
-//            prevCurve.b.sensor.pos.basePoint = prevPoint;
-//            prevCurve.b.curves = [nextCurve];
-//            prevCurve.b.basePoint = prevPoint;
-//            log(prevCurve.b);
-//            
-//            
-//            
-//          // this.sensors.removeElement(prevCurve.b)
-//
-////            prevPoint.handles[0].curves = [prevCurve];
-////            prevPoint.handles[1].curves = [nextCurve];
-////
-////            prevCurve.c.curves = [nextCurve];
-//
-//            //  prevPoint.curves[1] = nextCurve;
-//
-//
-//            nextCurve.update();
-//            prevCurve.update();
-//
-//            this.sensors.removeElement(point.handles[0].sensor);
-//            this.sensors.removeElement(point.handles[1].sensor);
-//            
-//            this.curve.curves.removeElement(curveToRemove);
-//            this.curves.removeElement(curveToRemove);
-//
-//            this.points.removeElement(point);
-//
-//            point.handles = [];
-//            
-//            for (var i = 0; i < this.points.length; i++) {
-//                var p = this.points[i];
-//                p.index = i;
-//            }
-
-
-//            this.renderMe();
-
-
-            // log(this.curves)
-
-//               this.points = [];
-//        this.curves = [];
-//        this.sensors = [];
         }
 
     };

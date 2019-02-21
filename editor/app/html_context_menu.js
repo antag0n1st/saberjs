@@ -384,6 +384,7 @@
 
         var object = this.editor.selectedObjects[0];
 
+
         if (object.imageName) {
 
             var sx = object.scale.x;
@@ -395,12 +396,24 @@
             object.width = texture.width;
             object.height = texture.height;
 
-            object.scale.set(sx, sy);
+
 
             if (object.updateSize) {
+                object.scale.set(sx, sy);
                 object.updateSize();
             } else {
-                object.setSensorSize(object.width,object.height);
+
+                object.setSensorSize(object.width, object.height);
+
+                object._sensorTranslationX = 0;
+                object._sensorTranslationY = 0;
+                object._sensorTranslationScaleX = sx;
+                object._sensorTranslationScaleY = sy;
+                object._sensorRotation = 0;
+                object.updateFrame();
+
+                object.scale.set(sx, sy);
+
             }
 
             object.updateFrame();

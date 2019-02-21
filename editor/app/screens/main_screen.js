@@ -297,8 +297,9 @@
                 // return true;
             }
 
+            //TODO the method of checking the selection needs to change
             var rectangle = object.getSensor();
-            if (SAT.testPolygonPolygon(this.selectionRectangle, rectangle)) {
+            if ((object._checkPolygon && object._checkPolygon(this.selectionRectangle)) ||  SAT.testPolygonPolygon(this.selectionRectangle, rectangle)) {
 
                 if (this.selectedObjects.length && this.selectedObjects[0].parent.id !== object.parent.id) {
                     continue;
@@ -334,9 +335,9 @@
             }
 
             // check if the object is clicked
-
+            //TODO 
             var sensor = object.getSensor();
-            if (SAT.pointInPolygon(event.point, sensor)) {
+            if ( (object._checkPoint && object._checkPoint(event.point)) || SAT.pointInPolygon(event.point, sensor)) {
 
                 return object;
             }
@@ -415,8 +416,10 @@
             return;
         }
 
-        if (this.checkPointPaths(this.activeLayer.children, event, 'onMouseDown')) {
-            return;
+        if (this.activeLayer.visible) {
+            if (this.checkPointPaths(this.activeLayer.children, event, 'onMouseDown')) {
+                return;
+            }
         }
 
         this.modes[this.mode].onMouseDown(event, sender);
@@ -493,14 +496,14 @@
             scale = -0.1;
         }
         var p = new V(app.input.point.x, app.input.point.y);
-        
+
         if (Actions.isRunning('zoom')) {
-            this._zoom = Math.roundDecimal(this._toZoomScale,1);
+            this._zoom = Math.roundDecimal(this._toZoomScale, 1);
         }
 
         var toScale = this._zoom + scale;
-        
-        toScale = Math.clamp(toScale,-0.8,3);
+
+        toScale = Math.clamp(toScale, -0.8, 3);
 
         this._toZoomScale = toScale;
 
