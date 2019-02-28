@@ -1020,6 +1020,37 @@
         store.set('tint-' + ContentManager.baseURL, tint);
     };
 
+    MainScreen.prototype.layoutObjects = function () {
+
+        var object = this.selectedObjects[0];
+        var props = object.properties;
+        var children = object.children;
+
+        // alignment - bottom , center , compact
+
+        // (items, width, x_offset, y_offset, spacing, alignment, wrap, h_spacing, custom)
+        Layout.hbox(children, parseInt(props.width), parseInt(props.xOffset), parseInt(props.yOffset), parseInt(props.spacing), props.alignment, props.wrap, parseInt(props.hSpacing));
+
+    };
+
+    MainScreen.prototype.resetObjectsAnchor = function () {
+
+        var batch = new CommandBatch();
+
+        var object = this.selectedObjects[0];
+        var children = object.children;
+
+        for (var i = 0; i < children.length; i++) {
+            var object = children[i];
+            var command = new CommandProperty(object, 'anchor.x', 0);
+            var command2 = new CommandProperty(object, 'anchor.y', 0);
+            batch.add(command);
+            batch.add(command2);
+        }
+
+        this.commands.add(batch);
+
+    };
 
     MainScreen.prototype.blank = function () {
         // used to call it , and do nothing

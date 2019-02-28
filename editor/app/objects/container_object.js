@@ -16,7 +16,13 @@
 
 
         this.properties = {
-            padding: 0
+            width: 600,
+            spacing: 10,
+            hSpacing: 0,
+            xOffset: 0,
+            yOffset: 0,
+            alignment: 'center',
+            wrap: true
         };
 
     };
@@ -58,13 +64,29 @@
 
         var method = 'onSelectedObjectPropertyChange';
 
-        var opt0 = {name: 'padding', value: Math.round(this.properties.padding), method: method};
-        var opt1 = {name: 'layout', displayName: 'Layout Now', class: '', icon: 'fa fa-th',  method: '' ,tooltip: 'It will layout all the containing elements' , style:'margin-top:5px;'};
+        var opt0 = {name: 'width', value: Math.round(this.properties.width), method: method};
+        var opt1 = {name: 'spacing', value: Math.round(this.properties.spacing), method: method, class: 'small'};
+        var opt2 = {name: 'hSpacing', value: Math.round(this.properties.hSpacing), method: method, class: 'small'};
+        var opt3 = {name: 'xOffset', value: Math.round(this.properties.xOffset), method: method, class: 'small'};
+        var opt4 = {name: 'yOffset', value: Math.round(this.properties.yOffset), method: method, class: 'small'};
+        var opt5 = {name: 'alignment', value: this.properties.alignment, method: method, items: ['center', 'top', 'bottom', 'compact']};
+        var opt6 = {name: 'wrap', displayName: 'Wrap', class: '', method: method, checked: this.properties.wrap, isDisabled: false};
+        var optBtn = {name: 'layout', displayName: 'Layout Now', class: '', icon: 'fa fa-th', method: 'layoutObjects', tooltip: 'It will layout all the containing elements', style: 'margin-top:5px;'};
+        var optBtn2 = {name: 'strip-anchor', displayName: 'Reset Anchors', class: 'btn btn-success', icon: 'fa fa-anchor', method: 'resetObjectsAnchor', tooltip: 'It will set the anchor to 0,0', style: 'margin-top:5px;'};
 
 
         html += HtmlElements.createSection('Grid').html;
         html += HtmlElements.createInput(opt0).html;
-        html += HtmlElements.createButton(opt1).html;
+        html += HtmlElements.createInput(opt1).html;
+        html += HtmlElements.createInput(opt2).html;
+        html += HtmlElements.createInput(opt3).html;
+        html += HtmlElements.createInput(opt4).html;
+        html += HtmlElements.createDropdown(opt5).html;
+        html += HtmlElements.createCheckbox(opt6).html;
+        html += HtmlElements.createButton(optBtn2).html;
+        html += '<br />';
+        html += HtmlElements.createButton(optBtn).html;
+
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
@@ -72,25 +94,11 @@
 
     ContainerObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
 
-        this.properties[property] = value;
-
-//        if (property === "padding") {
-//            if (value <= 0) {
-//                this.label.style.wordWrap = false;
-//            } else {
-//                this.label.style.wordWrap = true;
-//                this.label.style.wordWrapWidth = value;
-//            }
-//        }
-//
-//        var command = new CommandProperty(this, 'properties.' + property, value, function () {
-//
-//            this.updateSize();
-//            this.updateFrame();
-//
-//        }, this);
-//
-//        editor.commands.add(command);
+        if (property === "wrap") {
+            this.properties[property] = element.checked;
+        } else {
+            this.properties[property] = value;
+        }
 
     };
 

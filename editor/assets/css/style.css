@@ -219,7 +219,11 @@ body{
     display: inline-block;
 }
 
-.content div.big input{
+.content div.big input {
+    width: 240px;
+}
+
+.content div.big select {
     width: 240px;
 }
 
@@ -228,6 +232,7 @@ body{
     margin-right: 225px;
     margin-left: 2px;
 }
+
 
 .content div.small{
     font-size: inherit;

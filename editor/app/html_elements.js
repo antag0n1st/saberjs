@@ -24,6 +24,7 @@
         buttonClass: '',
         buttonAction: ''
     };
+
     HtmlElements.createInput = function (options) {
 
         var value = (typeof options.value === "undefined") ? '' : options.value;
@@ -65,7 +66,7 @@
         html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';
         html += ' />';
 
-        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\''+id+'\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
+        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\'' + id + '\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
 
 
         html += '</div>';
@@ -216,6 +217,71 @@
 
     };
 
+
+    var dropdownOpt = {
+        name: '',
+        displayName: '',
+        method: '',
+        items: '',
+        value: '',
+        isDisabled: false
+    };
+
+    HtmlElements.createDropdown = function (options) {
+
+
+        var className = options.class || 'big';
+        var method = options.method || "propertiesBinder.onPropertyChange";
+        var items = options.items || [];
+
+        var name = options.name || '';
+        var displayName = options.displayName || name;
+        if (displayName === name) {
+            displayName = displayName.replace('_', ' ').capitalize();
+        }
+
+        //TODO selected value
+        var value = options.value;
+
+
+        var id = "htmlElementId-" + PIXI.utils.uid();
+
+
+        var html = '<div class="' + className + '">';
+        html += '<label ';
+        html += ' style="cursor:pointer;" ';
+        html += '>';
+        html += displayName + ': </label> ';
+
+        html += '<select';
+        html += ' class="form-control" ';
+        html += ' id="' + id + '" ';
+        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,\'select\',null);" ';
+        html += '>';
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+
+            html += '<option';
+          //  html += ' class="" ';
+            if(item == value){
+                html += ' selected="selected"';
+            }
+            html += '>';
+            html += item;
+            html += '</option>';
+
+        }
+
+        html += '</select>';
+
+
+        html += '</div>';
+
+        return {html: html, id: id, feedbackID: null};
+
+    };
+
     var colorPickerOpt = {
         name: '',
         displayName: '',
@@ -295,8 +361,8 @@
             // that.onTextColorChange(e.color.toHex());
 
         });
-       
-        
+
+
     };
 
     window.HtmlElements = HtmlElements;
