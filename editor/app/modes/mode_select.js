@@ -31,19 +31,23 @@
         var object = null;
         // recursivly check if an object was clicked down
         if (this.editor.activeLayer.visible) {
-            object = this.editor.checkPointInChildren(this.editor.activeLayer.children, event);
+            object = this.editor.checkPointInChildren(this.editor.activeLayer.children, event , this.editor.shortcuts.isAltPressed);
         }
 
         if (object) {
 
-            if (this.editor.shortcuts.isCtrlPressed) {
+            if (this.editor.shortcuts.isShiftPressed) {
+             
+            } else if (this.editor.shortcuts.isCtrlPressed) {
 
                 if (object.isSelected) {
                     this.editor.deselectObject(object);
                 } else {
                     if (this.editor.selectedObjects.length && this.editor.selectedObjects[0].parent.id !== object.parent.id) {
-
+                        // if the object is not selected , ctrl is down , but it has different parent
+                        // do nothing about it
                     } else {
+                        // if it is under the same parent , then we can add it to the selection
                         this.editor.addObjectToSelection(object);
                     }
                 }
@@ -88,7 +92,7 @@
 
     ModeSelect.prototype.onMouseMove = function (event, sender) {
 
-        if (this.editor.shortcuts.isCtrlPressed) {
+        if (this.editor.shortcuts.isShiftPressed) {
             var object = null;
             if (this.editor.activeLayer.visible) {
                 object = this.editor.checkPointInChildren(this.editor.activeLayer.children, event);
@@ -105,6 +109,7 @@
 
                 if (!isSelected) {
                     this.editor.targetDropObject = object;
+                    app.input.restoreCursor();
                     app.input.setCursor('cell');
                 } else if (this.editor.targetDropObject) {
                     this.editor.targetDropObject = null;
@@ -153,11 +158,11 @@
 
             var width = event.point.x - this.editor.mouseDownPosition.x;
             var height = event.point.y - this.editor.mouseDownPosition.y;
-            
+
             if (Math.abs(width) > 4 || Math.abs(height) > 4) { // a safty zone
-               
+
                 this.editor.selectionRectangle = new SAT.Box(new V(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y), width, height).toPolygon();
-              //  this.editor.selectionRectangle = new SAT.Box( new V(200,200) , -300 , + 300).toPolygon();
+                //  this.editor.selectionRectangle = new SAT.Box( new V(200,200) , -300 , + 300).toPolygon();
                 this.editor.checkSelection(this.editor.mouseDownPosition.x, this.editor.mouseDownPosition.y, width, height);
 
             }
@@ -174,7 +179,8 @@
 
         app.input.restoreCursor();
 
-        if (this.editor.shortcuts.isCtrlPressed) {
+        if (this.editor.shortcuts.isShiftPressed) {
+
             if (this.editor.targetDropObject) {
 
                 var targetAP = this.editor.targetDropObject.getGlobalPosition();
@@ -232,7 +238,7 @@
             // it can be selection if dragging did not take place
             if (!this.editor.didDrag) {
 
-                if (this.editor.shortcuts.isCtrlPressed) {
+                if (this.editor.shortcuts.isShiftPressed) {
 
                 } else if (!this.editor.selectionRectangle) {
                     this.editor.deselectAllObjects();

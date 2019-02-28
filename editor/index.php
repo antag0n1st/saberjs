@@ -322,19 +322,118 @@ header("Pragma: no-cache");
         </div>
 
         <div id="imageBrowser" style="position: absolute; background: white; width: 450px; height: 400px; padding: 0px 5px 5px 5px; display: none;" >
-            
+
             <div class="panel-heading" style="padding: 0; overflow: hidden;">
                 <div id="closeImageBrowser" class="btn btn-xs" style="float: right;">
                     <i class="fa fa-close"></i>
                 </div>
             </div>
-            
+
             <div id="imageLibraryBrowseContent"  class="libraryContent"  >
 
             </div>
         </div>
 
+        <style type="text/css">
 
+            .textarea{
+                position: absolute;
+                top:0px;
+                left:0px;               
+                color:black;
+                padding: 0px;
+                margin: 0px;
+                resize: none;
+                border-style: none; 
+                border-color: Transparent; 
+                overflow: hidden; 
+                background-color: transparent;  
+                alignment-baseline: alphabetic;
+                outline: none;
+            }
+
+            .textarea:focus{
+                border-style: none; 
+                border-color: Transparent; 
+            }
+
+        </style>
+
+
+        <script type="text/javascript" >
+
+
+            function swap(object) {
+
+                
+                
+                // width height
+
+                if (object.properties.width) {
+                    var width = object.properties.width;
+                } else {
+                    var width = object.label.width;
+                }
+
+                var height = object.label.height;
+                                
+                // position
+                
+                var p = object.getGlobalPosition();
+                
+                var x = p.x - width / 2;
+                var y = p.y - height / 2;
+                
+                // rotiation
+                var rotation = Math.radiansToDegrees(object.rotation);
+                
+                // relative values
+
+                var canvas = app.pixi.renderer.view;
+
+                var mtop = parseInt(canvas.style.marginTop) || 0;
+                var mLeft = parseInt(canvas.style.marginLeft) || 0;
+
+                var cwidth = parseInt(canvas.style.width);
+                var cheight = parseInt(canvas.style.height);
+
+                var fay = cheight / app.height;
+                var fax = cwidth / app.width;
+
+                var sX =  Math.roundDecimal(fax,2);
+                var sY =  Math.roundDecimal(fay,2);
+               
+                var pX = sX * x + mLeft;
+                var pY = sY * y + mtop;
+                
+                var fontSize = parseInt(object.label.style.fontSize);
+                var textMetrics = PIXI.TextMetrics.measureText(object.label.txt, object.label.style);
+           
+              
+                var element = document.createElement("textarea");
+                element.classList.add("textarea");
+                element.value = object.label.txt;
+
+                element.style.transform = 'matrix(' + sX + ' , 0,0 ,' + sY + ', ' + (pX) + ',' + pY + ') rotate(' + rotation + 'deg)';
+                element.style.transformOrigin = '0% 0%';
+                element.style.width = width + 'px';
+                element.style.height = height + 'px';
+                element.style.lineHeight = textMetrics.lineHeight+'px';
+                element.style.fontSize = fontSize+'px';
+                element.style.fontFamily = object.label.style.fontFamily;
+                element.style.color = object.label.style.fill;
+              
+            
+                document.body.appendChild(element);
+
+                object.visible = false;
+            
+              
+
+            }
+
+
+        </script>
 
 
     </body>

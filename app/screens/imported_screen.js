@@ -21,7 +21,7 @@
 
         this.importer.importObjects(ContentManager.jsons.stage.objects, this.content);
         
-        
+        this.addTouchable(this);
         
 //        thepath = this.findById('level-1-1');
 

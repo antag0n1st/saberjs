@@ -107,15 +107,6 @@
         this.setDefaultLayer();
 
 
-//        var path = new PathObject();
-//        path.addPoint(new OV(100, 100));
-//        path.addPoint(new OV(300, 500));
-//        path.addPoint(new OV(500, 500));
-//        path.addPoint(new OV(800, 400));
-//        path.position.set(0, 0);
-//        path.build();
-//        this.activeLayer.addChild(path);
-
         this.shortcuts.isCtrlPressed = false;
 
     };
@@ -299,7 +290,7 @@
 
             //TODO the method of checking the selection needs to change
             var rectangle = object.getSensor();
-            if ((object._checkPolygon && object._checkPolygon(this.selectionRectangle)) ||  SAT.testPolygonPolygon(this.selectionRectangle, rectangle)) {
+            if ((object._checkPolygon && object._checkPolygon(this.selectionRectangle)) || SAT.testPolygonPolygon(this.selectionRectangle, rectangle)) {
 
                 if (this.selectedObjects.length && this.selectedObjects[0].parent.id !== object.parent.id) {
                     continue;
@@ -318,30 +309,59 @@
     };
 
     // check if the point is inside some object
-    MainScreen.prototype.checkPointInChildren = function (children, event) {
+    MainScreen.prototype.checkPointInChildren = function (children, event, bottomFirst) {
 
-        for (var i = children.length - 1; i >= 0; i--) {
+        if (bottomFirst) {
+            // if it is alternative selection
+            // we are going in reverse ( check the one that is on the bottom first ) 
+            for (var i = 0; i < children.length; i++) {
+                var object = this.checkPointInObject(children[i], event, bottomFirst);
+                if (object) {
+                    return object;
+                }
+            }
+        } else {
 
-            var object = children[i];
+            for (var i = children.length - 1; i >= 0; i--) {
+                var object = this.checkPointInObject(children[i], event, bottomFirst);
+                if (object) {
+                    return object;
+                }
+            }
+        }
 
-            if (!object.export || !object.visible) {
+        return false;
+    };
 
-                continue;
+    MainScreen.prototype.checkPointInObject = function (object, event, bottomFirst) {
+
+        if (!object.export || !object.visible) {
+            return false;
+        }
+
+        if (bottomFirst) {
+            var sensor = object.getSensor();
+            if ((object._checkPoint && object._checkPoint(event.point)) || SAT.pointInPolygon(event.point, sensor)) {
+                return object;
             }
 
-            var obj = this.checkPointInChildren(object.children, event);
+            var obj = this.checkPointInChildren(object.children, event, bottomFirst);
+            if (obj) {
+                return obj;
+            }
+        } else {
+            var obj = this.checkPointInChildren(object.children, event, bottomFirst);
             if (obj) {
                 return obj;
             }
 
-            // check if the object is clicked
-            //TODO 
             var sensor = object.getSensor();
-            if ( (object._checkPoint && object._checkPoint(event.point)) || SAT.pointInPolygon(event.point, sensor)) {
-
+            if ((object._checkPoint && object._checkPoint(event.point)) || SAT.pointInPolygon(event.point, sensor)) {
                 return object;
             }
         }
+
+
 
         return false;
     };

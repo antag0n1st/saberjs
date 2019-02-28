@@ -14,6 +14,7 @@
 
         this.isSpacePressed = false;
         this.isCtrlPressed = false;
+        this.isShiftPressed = false;
         this.isAltPressed = false;
         this.isZPressed = false;
         this.isXPressed = false;
@@ -83,6 +84,14 @@
 
         this.kibo.up('alt', function () {
             that.isAltPressed = false;
+        });
+        
+        this.kibo.down('shift', function () {
+            that.isShiftPressed = true;
+        });
+
+        this.kibo.up('shift', function () {
+            that.isShiftPressed = false;
         });
 
         this.kibo.down('left', function () {

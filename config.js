@@ -39,5 +39,5 @@ Config.ROTATION_MODE_VERTICAL = 2;
 
 Config.rotation_mode = Config.ROTATION_MODE_ALLOW;
 
-Config.initialScreen = 'ImportedScreen'; // name of the screen
+Config.initialScreen = 'SceneGraphScreen'; // name of the screen
 Config.initialScreenArgs = []; // list of arguments to pass to the screen
