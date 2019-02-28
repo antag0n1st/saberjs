@@ -77,7 +77,6 @@
 
         if (data) {
             this.setBasicData(data);
-            //  this.setTexture(data.imageName);
             this.label.txt = data.txt;
 
 
@@ -117,8 +116,6 @@
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
-
-
     };
 
     LabelObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
@@ -130,17 +127,9 @@
                 this.label.style.wordWrap = true;
                 this.label.style.wordWrapWidth = value;
             }
-
-            //   this.build();
-
         }
 
-
-
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
-
-            //   this.background.padding = this.properties.padding;
-            //  this.background.setSize(this.properties.width, this.properties.height);
 
             this.updateSize();
             this.updateFrame();

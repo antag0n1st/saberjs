@@ -20,6 +20,7 @@
         this.hasFrame = false;
         
         this.isInputContent = false;
+      
         
     };
 
@@ -34,14 +35,12 @@
             this.isInputContent = data.isInputContent ? true : false;
             
         }
-        this.enableSensor();
         
+        this.enableSensor();        
 
     };
 
-
     Layer.prototype.onUpdate = function (dt) {
-
 
     };
 
@@ -61,6 +60,7 @@
         return o;
 
     };
+        
 
     window.Layer = Layer;
 

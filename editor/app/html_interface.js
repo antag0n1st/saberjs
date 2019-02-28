@@ -16,7 +16,8 @@
         app.pixi.renderer.view.ondrop = this.canvasDrop.bind(this);
         app.pixi.renderer.view.ondragover = this.canvasAllowDrop.bind(this);
 
-        this.tabs = ['imageLibrary', 'commonProperties', 'settings', 'layers', 'properties', 'prefabs', 'objectsGalery'];
+        // this.tabs = ['imageLibrary', 'commonProperties', 'settings', 'layers', 'properties', 'prefabs', 'objectsGalery'];
+        this.tabs = ['commonProperties', 'properties', 'layers', 'objectsGalery', 'imageLibrary', 'prefabs', 'settings'];
 
         this.createTabs();
         this.bindHTML();

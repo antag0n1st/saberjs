@@ -85,7 +85,7 @@
         this.kibo.up('alt', function () {
             that.isAltPressed = false;
         });
-        
+
         this.kibo.down('shift', function () {
             that.isShiftPressed = true;
         });
@@ -171,6 +171,16 @@
 
         this.kibo.up('z', function () {
             that.isZPressed = false;
+        });
+
+        this.kibo.down('any number', function (e) {
+            if (!editor.isInputActive()) {
+                var tab = that.editor.htmlInterface.tabs[parseInt(e.key) - 1];
+                if (tab) {
+                    that.editor.htmlInterface.activateTab(tab);
+                }
+            }
+
         });
 
     };
