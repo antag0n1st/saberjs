@@ -2,3 +2,7 @@
 /system/config.js
 /node_modules
 /package-lock.json
+/config.js
+/config.php
+/editor/config.js
+/editor/config.php

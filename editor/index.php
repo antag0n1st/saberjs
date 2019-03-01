@@ -92,33 +92,62 @@ header("Pragma: no-cache");
 
         <script src="app/shortcuts.js?<?php echo time(); ?>" type="text/javascript"></script>
 
+        <script src="app/animator/gui/animation_panel.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/gui/animation_control_panel.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/animator.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/animation.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/animation_thread.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/gui/animation_playbar.js?<?php echo time(); ?>" type="text/javascript"></script>
+        
+
 
 
     </head>
 
     <body class="unselectable">   
 
+        <div id="leftToolbar" >
+
+            <div style="height: 50px;"></div>
+            
+            <div id="editorModes" style="display: inline;">
+
+            </div>
+            
+            <div id="alignButtons" style="display: inline;">
+
+            </div>
+            
+            
+
+        </div>
+
         <div id="topToolbar" >
+
             <div id="saveButton" class="btn btn-success "  >
+
                 <i class="fa fa-save"></i>
             </div>
+
             <div style="display: inline-block; margin-left: 10px; padding-top: 7px;" >
 
                 <label style="margin-right: 10px;">Zoom</label>
                 <input style="display: none;" id="zoomSlider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
             </div>
 
-            <div id="editorModes" style="display: inline;margin-left: 20px;">
+            <div id="spacingButtons" style="display: inline;margin-left: 20px;">
 
             </div>
-
-            <div id="alignButtons" style="display: inline;margin-left: 20px;">
-
-            </div>
-
+            
             <div id="zIndexButtons" style="display: inline;margin-left: 20px;">
 
             </div>
+            
+            <div id="animateButton" class="btn btn-success pull-right "  >
+                <i class="fa fa-rocket"></i> 
+                <span>Animate</span>
+            </div>
+            
         </div>
 
         <div id="sideToolbar" >
@@ -184,7 +213,13 @@ header("Pragma: no-cache");
 
 
 
+
+
+
         </div>
+
+
+
 
         <div id="textUpdatePanel" class="panel">
             <div id="textUpdatePanelHeader" class="panel-heading" style="cursor: move;"></div>
@@ -365,8 +400,8 @@ header("Pragma: no-cache");
 
             function swap(object) {
 
-                
-                
+
+
                 // width height
 
                 if (object.properties.width) {
@@ -376,17 +411,17 @@ header("Pragma: no-cache");
                 }
 
                 var height = object.label.height;
-                                
+
                 // position
-                
+
                 var p = object.getGlobalPosition();
-                
+
                 var x = p.x - width / 2;
                 var y = p.y - height / 2;
-                
+
                 // rotiation
                 var rotation = Math.radiansToDegrees(object.rotation);
-                
+
                 // relative values
 
                 var canvas = app.pixi.renderer.view;
@@ -400,16 +435,16 @@ header("Pragma: no-cache");
                 var fay = cheight / app.height;
                 var fax = cwidth / app.width;
 
-                var sX =  Math.roundDecimal(fax,2);
-                var sY =  Math.roundDecimal(fay,2);
-               
+                var sX = Math.roundDecimal(fax, 2);
+                var sY = Math.roundDecimal(fay, 2);
+
                 var pX = sX * x + mLeft;
                 var pY = sY * y + mtop;
-                
+
                 var fontSize = parseInt(object.label.style.fontSize);
                 var textMetrics = PIXI.TextMetrics.measureText(object.label.txt, object.label.style);
-           
-              
+
+
                 var element = document.createElement("textarea");
                 element.classList.add("textarea");
                 element.value = object.label.txt;
@@ -418,17 +453,17 @@ header("Pragma: no-cache");
                 element.style.transformOrigin = '0% 0%';
                 element.style.width = width + 'px';
                 element.style.height = height + 'px';
-                element.style.lineHeight = textMetrics.lineHeight+'px';
-                element.style.fontSize = fontSize+'px';
+                element.style.lineHeight = textMetrics.lineHeight + 'px';
+                element.style.fontSize = fontSize + 'px';
                 element.style.fontFamily = object.label.style.fontFamily;
                 element.style.color = object.label.style.fill;
-              
-            
+
+
                 document.body.appendChild(element);
 
                 object.visible = false;
-            
-              
+
+
 
             }
 

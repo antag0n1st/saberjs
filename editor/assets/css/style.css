@@ -70,6 +70,16 @@ body{
     top: 0;
     border-left: 1px solid #8d8d8d;
 }
+
+#leftToolbar{
+    background-color: #f5fae4;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-right: 1px solid #8d8d8d;
+    padding: 8px;
+}
+
 .none {
     display: none;
 }
@@ -241,6 +251,11 @@ body{
     display: inline-block;
 }
 
+div.inline-small label{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
 .content div.small input{
     font-size: inherit;
     width: 80px;
@@ -259,15 +274,17 @@ body{
 }
 
 .image-button.active{
-    cursor: pointer;
-    width: 34px;
-    height: 34px;
-    margin-left: 10px;
     background-color: #9282ef;
 }
 
 .image-button:hover{
     background-color: #cccccc;
+}
+
+#leftToolbar .image-button{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 5px;
 }
 
 .inline-small{

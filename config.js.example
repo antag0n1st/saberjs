@@ -13,15 +13,17 @@ Config.MODE_CENTERED = 3; // it will preserve the aspect ratio an fit into the s
 Config.MODE_NONE = 4; // do not do anything about it
 Config.MODE_PADDING = 5; // it will leave some space on the sides
 
-Config.window_mode = Config.MODE_PADDING; // set the scaling method
+Config.window_mode = Config.MODE_CENTERED; // set the scaling method
 Config.window_mode_mobile = null; // if you need special mode for mobile devices
 
-Config.canvas_padding = '50 360 0 50'; // top - right - bottom - left
+Config.is_canvas_auto_layout = true;
+
+Config.canvas_padding = '50 50 50 50'; // top - right - bottom - left
 
 Config.is_sound_on = true; // switch the sound on/off
-Config.debug_info = true;
+Config.debug_info = false;
 Config.debug = false;
-Config.should_clear_stage = true;
+Config.should_clear_stage = false;
 Config.slow_motion_factor = 1;
 Config.is_game_paused = false;
 
@@ -29,13 +31,13 @@ Config.master_volume = 0.8;
 
 Config.base_url = '';
 Config.lang = 'en';
-Config.background_color = 0x333333;
+Config.background_color = 0x555555;
 
 Config.ROTATION_MODE_ALLOW = 0;
 Config.ROTATION_MODE_HORIZONTAL = 1;
 Config.ROTATION_MODE_VERTICAL = 2;
 
-Config.rotation_mode = Config.ROTATION_MODE_HORIZONTAL;
+Config.rotation_mode = Config.ROTATION_MODE_ALLOW;
 
-Config.initialScreen = 'MainScreen'; // name of the screen
+Config.initialScreen = 'SceneGraphScreen'; // name of the screen
 Config.initialScreenArgs = []; // list of arguments to pass to the screen

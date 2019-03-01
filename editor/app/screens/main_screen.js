@@ -21,8 +21,9 @@
         this.mouseDownPosition = new V();
         this.screenMouseOffset = new V();
 
-        this.content = new Sprite();
+        this.content = new PIXI.Container();
         this.addChild(this.content);
+
 
         this.mode = MainScreen.MODE_SELECT;
         this.modes = [
@@ -108,6 +109,17 @@
 
 
         this.shortcuts.isCtrlPressed = false;
+
+        // set the animator
+
+        this.animator = new AnimationPanel();
+        this.animator.zIndex = 11; // above the 
+        this.animator.position.set(0, app.height - this.animator.panelHeight);
+        this.addTouchable(this.animator);
+        this.addChild(this.animator);
+        
+        var actor = this.findById('actor');
+        this.animator.show(actor);
 
     };
 
@@ -427,7 +439,12 @@
 
     MainScreen.prototype.onMouseDown = function (event, sender) {
 
+        var s = this.animator.getSensor();
 
+        if (SAT.pointInPolygon(event.point, s)) {
+            event.cancel();
+            return false;
+        }
 
         if (this.shortcuts.isSpacePressed) {
             var pp = event.point.clone();
@@ -503,9 +520,13 @@
 
         if (this.selectedObjects.length) {
             this.htmlInterface.contextMenu.open(event.point);
+            event.stopPropagation();
+            return false;
         } else {
 
         }
+        
+        // prevent default behaviour
 
     };
 
@@ -1050,6 +1071,22 @@
 
         this.commands.add(batch);
 
+    };
+     
+    MainScreen.prototype.onAnimateBtn = function () {
+        
+        if(!this.animator.isOn){
+            this.animator.show();
+            
+           var btn = this.htmlInterface.htmlTopTools.animateButton;
+           
+          //  log(this.htmlInterface.htmlTopTools.animateButton)
+            
+        } else {
+            this.animator.hide();
+        }
+        
+      
     };
 
     MainScreen.prototype.blank = function () {

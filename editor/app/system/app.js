@@ -217,6 +217,7 @@
     App.prototype.adjustToolbars = function () {
         var topToolbar = document.getElementById('topToolbar');
         var sideToolbar = document.getElementById('sideToolbar');
+        var leftToolbar = document.getElementById('leftToolbar');
 
         var canvasPadding = Config.canvas_padding.split(' ');
 
@@ -225,6 +226,9 @@
 
         sideToolbar.style.width = canvasPadding[1] + 'px';
         sideToolbar.style.height = (app.device.windowSize().height) + 'px';
+        
+        leftToolbar.style.width = canvasPadding[3] + 'px';
+        leftToolbar.style.height = (app.device.windowSize().height) + 'px';
     };
 
     App.prototype.checkRotation = function () {

@@ -1,0 +1,88 @@
+{
+    "objects": [{
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "rotation": 0,
+            "alpha": 1,
+            "tag": 0,
+            "zIndex": 0,
+            "children": [],
+            "type": "Layer",
+            "id": "_change_it_before_use-457",
+            "className": "",
+            "visible": true,
+            "tint": 16777215,
+            "properties": {},
+            "name": "Default Layer",
+            "factor": 1,
+            "isActive": false
+        }, {
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "rotation": 0,
+            "alpha": 1,
+            "tag": 0,
+            "zIndex": 0,
+            "children": [{
+                    "position": {
+                        "x": 540.81,
+                        "y": 316.41
+                    },
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "scale": {
+                        "x": 1,
+                        "y": 1
+                    },
+                    "rotation": 0,
+                    "alpha": 1,
+                    "tag": 0,
+                    "zIndex": 0,
+                    "children": [],
+                    "type": "ImageObject",
+                    "id": "_change_it_before_use-459",
+                    "className": "",
+                    "visible": true,
+                    "tint": 16777215,
+                    "properties": {},
+                    "imageName": "item3"
+                }],
+            "type": "Layer",
+            "id": "_change_it_before_use-458",
+            "className": "",
+            "visible": true,
+            "tint": 16777215,
+            "properties": {},
+            "name": "an other one",
+            "factor": 1,
+            "isActive": true,
+            "isInputContent": false
+        }],
+    "screenPosition": {
+        "x": 284.1255605381166,
+        "y": 87.17488789237669
+    },
+    "fileName": "skelethon.json"
+}

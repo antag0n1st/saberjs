@@ -22,7 +22,8 @@
         feedback: false,
         inputType: HtmlElements.INPUT_TYPE_ALL,
         buttonClass: '',
-        buttonAction: ''
+        buttonAction: '',
+        style : ''
     };
 
     HtmlElements.createInput = function (options) {
@@ -61,6 +62,7 @@
         html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
         html += ' class="form-control" ';
+        html += ' style="'+options.style+'" ';
         html += ' id="' + id + '" ';
         html += ' type="text" value="' + value + '" ' + event_string;
         html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';

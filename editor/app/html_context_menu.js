@@ -164,11 +164,12 @@
         this.build(this.editor.selectedObjects);
 
         var size = app.device.windowSize();
+        var canvasPadding = Config.canvas_padding.split(' ');
+        
+        var w = size.width - canvasPadding[1] - canvasPadding[3];
+        var h = size.height - canvasPadding[0] - canvasPadding[2];
 
-        var w = size.width - 360;
-        var h = size.height - 50;
-
-        var x = point.x * (w / app.width) + 10;
+        var x = point.x * (w / app.width) + 60;
         var y = point.y * (h / app.height) + 50;
 
         this.htmlInterface.contextMenuHtml.style.display = 'block';

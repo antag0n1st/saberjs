@@ -173,6 +173,11 @@
         this.saveButton = document.getElementById('saveButton');
         this.saveButton.onclick = this.onSaveBtn.bind(this);
 
+        this.animateButton = document.getElementById('animateButton');
+        this.animateButton.onclick = this.editor.onAnimateBtn.bind(this.editor);
+
+        // 
+
         // ZOOM
 
         this.zoomSlider = new Slider('#zoomSlider', {
@@ -194,6 +199,7 @@
         this.showEditorModes();
 
         this.alignButtons = document.getElementById('alignButtons');
+        this.spacingButtons = document.getElementById('spacingButtons');
         this.zIndexButtons = document.getElementById('zIndexButtons');
     };
 
@@ -511,6 +517,7 @@
     };
 
     HtmlTopTools.prototype.hideAlignButtons = function (objects) {
+        this.spacingButtons.innerHTML = '';
         this.alignButtons.innerHTML = '';
 
         this.showEditorModes(objects);
@@ -519,23 +526,29 @@
     HtmlTopTools.prototype.showAlignButtons = function (objects) {
 
         var html = HtmlElements.createImageButton('align_top', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'top'", 'image-button').html;
-        html += HtmlElements.createImageButton('align_right', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'right'", 'image-button').html;
         html += HtmlElements.createImageButton('align_bottom', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'bottom'", 'image-button').html;
+
         html += HtmlElements.createImageButton('align_left', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'left'", 'image-button').html;
-        html += HtmlElements.createImageButton('align_center_x', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'centerX'", 'image-button').html;
+        html += HtmlElements.createImageButton('align_right', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'right'", 'image-button').html;
+
         html += HtmlElements.createImageButton('align_center_y', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'centerY'", 'image-button').html;
+        html += HtmlElements.createImageButton('align_center_x', 'htmlInterface.htmlTopTools.alignSelectedObjects', "'centerX'", 'image-button').html;
 
         var opt1 = {name: 'spacingX', displayName: 'Space X', value: 0, class: 'inline-small', method: 'htmlInterface.htmlTopTools.onSpacing'};
         var opt2 = {name: 'spacingY', displayName: 'Y', value: 0, class: 'inline-small', method: 'htmlInterface.htmlTopTools.onSpacing'};
 
-        html += HtmlElements.createInput(opt1).html;
-        html += HtmlElements.createInput(opt2).html;
+        var html2 = '';
+        html2 += HtmlElements.createInput(opt1).html;
+        html2 += HtmlElements.createInput(opt2).html;
 
         this.alignButtons.innerHTML = html;
+        this.spacingButtons.innerHTML = html2;
+
 
         this.hideEditorModes(objects);
 
     };
+
 
     HtmlTopTools.prototype.showEditorModes = function () {
         // (imageName, method, argsString, className, tooltip)
@@ -745,9 +758,9 @@
         if (!this.editor._zoomPoint) {
             this.editor._zoomPoint = new V().copy(zoomPoint);
         }
-        
-        scale = Math.clamp(scale,-0.8,3);
-       
+
+        scale = Math.clamp(scale, -0.8, 3);
+
 
         Actions.stopByTag('zoom');
         var zoom = this.editor._zoom;
