@@ -5,6 +5,20 @@ MainScreen.prototype.onPlayButton = function (event, sender) {
 //        app.navigator.add(new DashboardScreen());
 //    }, true);
 
+    if (!this.previewScreenName) {
+        toastr.error("Please specify a Preview Screen Name");
+        this.htmlInterface.activateTab('settings');
+        var input = document.getElementById('previewScreenInput');
+        input.focus();
+        return;
+    } else if(!window[this.previewScreenName]){
+        toastr.error("Please include the screen in the extra_scripts.php");
+        this.htmlInterface.activateTab('settings');
+        return;
+    }
+
+
+
 
     this.htmlInterface.saveCurrentContent(function () {
 

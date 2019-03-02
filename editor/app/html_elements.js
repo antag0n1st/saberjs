@@ -43,6 +43,7 @@
         var tooltip = options.tooltip || "";
         var inputType = options.inputType || HtmlElements.INPUT_TYPE_ALL;
         var name = options.name || '';
+        var style = options.style || '';
         var displayName = options.displayName || name;
         if (displayName === name) {
             displayName = displayName.replace('_', ' ').capitalize();
@@ -62,7 +63,7 @@
         html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
         html += ' class="form-control" ';
-        html += ' style="'+options.style+'" ';
+        html += ' style="'+style+'" ';
         html += ' id="' + id + '" ';
         html += ' type="text" value="' + value + '" ' + event_string;
         html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';

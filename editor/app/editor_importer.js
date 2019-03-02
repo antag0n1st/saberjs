@@ -58,7 +58,8 @@
 
         this.data = data;
         this.fileName = data.fileName;
-
+        this.editor.previewScreenName = data.previewScreenName || '';
+        
     };
 
     EditorImporter.prototype.importObjects = function (objects, contentLayer) {

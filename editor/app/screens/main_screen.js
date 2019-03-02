@@ -82,7 +82,7 @@
         this._screenPosition = new V();
         this.targetDropObject = null; // the object in which we are going to drop the children.
         this.clipboard = null;
-        this.preivewScreenName = '';
+        this.previewScreenName = '';
 
         this.activeLayer = null;
 
@@ -1066,6 +1066,10 @@
 
         this.commands.add(batch);
 
+    };
+
+    MainScreen.prototype.changePreviewScreen = function (name, value) {
+        this.previewScreenName = value;
     };
 
     MainScreen.prototype.blank = function () {

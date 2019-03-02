@@ -190,9 +190,8 @@
         html += '<input id="exportFileName" type="text" class="form-control" />';
         html += '<div id="exportBtn" class="btn btn-info" style="margin-left:5px;"><i class="fa fa-arrow-up"></i>Export</div>';
         html += '</div>';
-        
-        var snOpt = {name: "preview", method: 'changePreviewScreen'};
-        html += HtmlElements.createInput(snOpt).html;
+
+        html += '<div class="big  "><label>Preview: </label> <input class="form-control" style="" id="previewScreenInput" type="text" value="' + this.editor.previewScreenName + '" onkeyup="app.navigator.currentScreen.changePreviewScreen(\'preview-screen\',this.value,this,0,\'previewScreenInput\');"></div>';
 
         html += ' <div class="big" style="display: block;">';
         html += '<label>Import</label>';
@@ -209,7 +208,7 @@
         html += '<div id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i>Clear All</div>';
         html += '</div>';
 
-        
+
 
         html += HtmlElements.createSection('Editor').html;
 
@@ -384,14 +383,19 @@
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////////////
+
         this.editor.importer.fileName = fileName;
         data.fileName = fileName;
+        data.previewScreenName = this.editor.previewScreenName;
 
         //TODO attach extra data here
         var sendData = {
             file_name: fileName,
-            data: JSON.stringify(data),
-            preview_screen_name: ''
+            data: JSON.stringify(data)
         };
 
         var exportURL = editorConfig.export.url;
@@ -466,6 +470,7 @@
             importer.clearStage();
 
             document.getElementById('exportFileName').value = '';
+            document.getElementById('previewScreenInput').value = '';
 
             if (this.selectJSON.value != 0) {
                 var editor = this.editor;
@@ -473,6 +478,7 @@
                     if (response) {
                         importer.import(response);
                         document.getElementById('exportFileName').value = importer.data.fileName;
+                        document.getElementById('previewScreenInput').value = importer.data.previewScreenName || '';
                     } else {
                         editor.setDefaultLayer();
                     }
