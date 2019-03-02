@@ -46,8 +46,8 @@
     Entity.prototype.createFrame = function (padding, handleSize) {
 
         this.padding = padding;
-        
-        if(this.frameSensors.length){
+
+        if (this.frameSensors.length) {
             this.frameSensors = [];
         }
 
@@ -421,38 +421,40 @@
 
         var html = '';
 
-        var method = '_changeCustomProperty';
+        if (editorConfig.features.customProperties) {
+            var method = '_changeCustomProperty';
 
-        if (!this.properties) {
-            this.properties = {};
+            if (!this.properties) {
+                this.properties = {};
+            }
+
+            if (!this.properties._custom) {
+                this.properties._custom = [];
+            }
+
+            html += HtmlElements.createSection('Properties').html;
+
+            for (var i = 0; i < this.properties._custom.length; i++) {
+                var prop = this.properties._custom[i];
+                var opt0 = {displayName: prop.key + ' ', name: prop.key, value: prop.value, method: method, class: 'big', buttonClass: 'btn-danger fa fa-trash', buttonAction: 'onCustomPropertyDelete'};
+                html += HtmlElements.createInput(opt0).html;
+            }
+
+            var buttonOpt = {
+                name: 'add-property',
+                displayName: 'Add Property',
+                class: 'btn-info big',
+                icon: '',
+                tooltip: '',
+                method: 'addCustomProperty',
+                style: ''
+            };
+
+
+            html += HtmlElements.createButton(buttonOpt).html;
+
+            editor.htmlInterface.propertiesContent.innerHTML = html;
         }
-
-        if (!this.properties._custom) {
-            this.properties._custom = [];
-        }
-
-        html += HtmlElements.createSection('Properties').html;
-
-        for (var i = 0; i < this.properties._custom.length; i++) {
-            var prop = this.properties._custom[i];
-            var opt0 = {displayName: prop.key+' ', name: prop.key, value: prop.value, method: method, class: 'big', buttonClass: 'btn-danger fa fa-trash', buttonAction: 'onCustomPropertyDelete'};
-            html += HtmlElements.createInput(opt0).html;
-        }
-
-        var buttonOpt = {
-            name: 'add-property',
-            displayName: 'Add Property',
-            class: 'btn-info big',
-            icon: '',
-            tooltip: '',
-            method: 'addCustomProperty',
-            style: ''
-        };
-
-
-        html += HtmlElements.createButton(buttonOpt).html;
-
-        editor.htmlInterface.propertiesContent.innerHTML = html;
 
         return html;
 

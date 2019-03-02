@@ -18,6 +18,8 @@
 
         this.screen_initialize();
 
+
+
         this.mouseDownPosition = new V();
         this.screenMouseOffset = new V();
 
@@ -80,12 +82,13 @@
         this._screenPosition = new V();
         this.targetDropObject = null; // the object in which we are going to drop the children.
         this.clipboard = null;
+        this.preivewScreenName = '';
 
         this.activeLayer = null;
 
         ////////////////////
 
-        this.importer = new Importer(this);
+        this.importer = new EditorImporter(this);
 
         ////////////////////
         this.htmlInterface = new HtmlInterface(this);
@@ -110,16 +113,6 @@
 
         this.shortcuts.isCtrlPressed = false;
 
-        // set the animator
-
-        this.animator = new AnimationPanel();
-        this.animator.zIndex = 11; // above the 
-        this.animator.position.set(0, app.height - this.animator.panelHeight);
-        this.addTouchable(this.animator);
-        this.addChild(this.animator);
-        
-        var actor = this.findById('actor');
-        this.animator.show(actor);
 
     };
 
@@ -134,7 +127,15 @@
         } else if (id === "ContainerObject") {
             var object = new ContainerObject();
             object.build();
+        } else if (id === "ButtonObject") {
+            var object = new ButtonObject('_default_button');
+            object.build();
+        } else if (id === "InputObject") {
+            var object = new InputObject('_default_input');
+            object.build();
         }
+
+        // _default_button
 
         if (object) {
             this.placeObjectOnScreen(object);
@@ -439,13 +440,6 @@
 
     MainScreen.prototype.onMouseDown = function (event, sender) {
 
-        var s = this.animator.getSensor();
-
-        if (SAT.pointInPolygon(event.point, s)) {
-            event.cancel();
-            return false;
-        }
-
         if (this.shortcuts.isSpacePressed) {
             var pp = event.point.clone();
             pp.scale(1 / (this.activeLayer.factor + this._zoom));
@@ -525,7 +519,7 @@
         } else {
 
         }
-        
+
         // prevent default behaviour
 
     };
@@ -659,7 +653,8 @@
 
 
     MainScreen.prototype.onShow = function () {
-
+        Config.canvas_padding = '50 360 0 50';
+        app.resize();
     };
 
     MainScreen.prototype.onHide = function () {
@@ -838,7 +833,7 @@
         // if there are no layers , then we are going to create one
 
         if (!this.content.children.length) {
-            this.addLayer('Default Layer', 1);
+            this.addLayer('Default Layer', 1, null, true);
             this.content.children[0].isActive = true;
         }
 
@@ -1071,22 +1066,6 @@
 
         this.commands.add(batch);
 
-    };
-     
-    MainScreen.prototype.onAnimateBtn = function () {
-        
-        if(!this.animator.isOn){
-            this.animator.show();
-            
-           var btn = this.htmlInterface.htmlTopTools.animateButton;
-           
-          //  log(this.htmlInterface.htmlTopTools.animateButton)
-            
-        } else {
-            this.animator.hide();
-        }
-        
-      
     };
 
     MainScreen.prototype.blank = function () {

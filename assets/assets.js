@@ -3,10 +3,14 @@ App.prototype.loadAssets = function () {
 
 
 ContentManager.addFile('demo','assets/data/demo.json');
+ContentManager.addFile('extra','assets/data/extra.json');
+ContentManager.addFile('main','assets/data/main.json');
 ContentManager.addFile('skelethon','assets/data/skelethon.json');
 ContentManager.addFile('stage','assets/data/stage.json');
 
 
+ContentManager.addImage('_default_button','_default_button.png');
+ContentManager.addImage('_default_input','_default_input.png');
 
 ContentManager.addImage('button','button.png');
 ContentManager.addImage('button_disabled','button_disabled.png');

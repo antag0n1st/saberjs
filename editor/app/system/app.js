@@ -121,8 +121,12 @@
         ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
         ContentManager.addImage('white', 'initial/white.png');
         ContentManager.addImage('black', 'initial/black.png');
+        //ContentManager.addFile('_editor_config', 'config.json');
 
         ContentManager.downloadResources(function () {
+            
+            // PIXI.loader.resources._editor_config.data
+            
             var screen = new LoadingScreen();
             app.navigator.add(screen);
 
@@ -210,7 +214,7 @@
             screen._onResize(this.width, this.height);
         }
 
-        this.adjustToolbars();
+         this.adjustToolbars();
 
     };
 
@@ -218,6 +222,10 @@
         var topToolbar = document.getElementById('topToolbar');
         var sideToolbar = document.getElementById('sideToolbar');
         var leftToolbar = document.getElementById('leftToolbar');
+        
+        topToolbar.style.visibility = 'visible';
+        sideToolbar.style.visibility = 'visible';
+        leftToolbar.style.visibility = 'visible';
 
         var canvasPadding = Config.canvas_padding.split(' ');
 

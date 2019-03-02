@@ -43,23 +43,23 @@
         html += '</a>';
         html += '</li>';
 
-        if (object instanceof ImageObject) {
-
-            html += '<li role="presentation" >';
-            html += '<a id="contextConvertToButton" href="#" role="menuitem">';
-            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
-            html += '<span class="actionName">Convert To Btn</span>';
-            html += '</a>';
-            html += '</li>';
-
-            html += '<li role="presentation" >';
-            html += '<a id="contextConvertToInput" href="#" role="menuitem">';
-            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
-            html += '<span class="actionName">Convert To Input</span>';
-            html += '</a>';
-            html += '</li>';
-
-        }
+//        if (object instanceof ImageObject) {
+//
+//            html += '<li role="presentation" >';
+//            html += '<a id="contextConvertToButton" href="#" role="menuitem">';
+//            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
+//            html += '<span class="actionName">Convert To Btn</span>';
+//            html += '</a>';
+//            html += '</li>';
+//
+//            html += '<li role="presentation" >';
+//            html += '<a id="contextConvertToInput" href="#" role="menuitem">';
+//            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
+//            html += '<span class="actionName">Convert To Input</span>';
+//            html += '</a>';
+//            html += '</li>';
+//
+//        }
 
         if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
             html += '<li role="presentation" >';
@@ -95,15 +95,15 @@
             contextEdit.onclick = this.onContextEditBtn.bind(this);
         }
 
-        if (object instanceof ImageObject) {
-
-            var contextConvertToButton = document.getElementById('contextConvertToButton');
-            contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
-
-            var contextConvertToInput = document.getElementById('contextConvertToInput');
-            contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
-
-        }
+//        if (object instanceof ImageObject) {
+//
+//            var contextConvertToButton = document.getElementById('contextConvertToButton');
+//            contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
+//
+//            var contextConvertToInput = document.getElementById('contextConvertToInput');
+//            contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
+//
+//        }
 
         if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
             var contextChangeImage = document.getElementById('contextChangeImage');

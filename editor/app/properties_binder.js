@@ -78,25 +78,28 @@
         html += HtmlElements.createInput(opt9).html;
         html += HtmlElements.createInput(opt10).html;
 
-        html += HtmlElements.createInput(opt13).html;
-        html += HtmlElements.createSection('Constraints').html;
+        if (editorConfig.features.constraints) {
+            html += HtmlElements.createInput(opt13).html;
+            html += HtmlElements.createSection('Constraints').html;
 
-        var cx = HtmlElements.createInput(opt11);
-        var cy = HtmlElements.createInput(opt12);
+            var cx = HtmlElements.createInput(opt11);
+            var cy = HtmlElements.createInput(opt12);
 
-        html += cx.html;
-        html += cy.html;
+            html += cx.html;
+            html += cy.html;
+        }
 
         this.editor.htmlInterface.commonPropertiesContent.innerHTML = html;
 
         // validate fields
+        if (editorConfig.features.constraints) {
+            if (object.constraintX) {
+                HtmlElements.setFeedback(cx.feedbackID, object.constraintX.isValid);
+            }
 
-        if (object.constraintX) {
-            HtmlElements.setFeedback(cx.feedbackID, object.constraintX.isValid);
-        }
-
-        if (object.constraintY) {
-            HtmlElements.setFeedback(cy.feedbackID, object.constraintY.isValid);
+            if (object.constraintY) {
+                HtmlElements.setFeedback(cy.feedbackID, object.constraintY.isValid);
+            }
         }
 
         var isValid = this.editor.isIdUnique(object.id);
@@ -176,11 +179,11 @@
 
         if (property === 'constraintY' || property === 'constraintX') {
 
-           this.editor.constraints.remove(constraint);
+            this.editor.constraints.remove(constraint);
 
             if (constraint.isValid) {
                 this.editor.constraints.add(constraint);
-            } 
+            }
 
             this.editor.constraints.rebuildDependencyTree();
             this.editor.constraints.applyValues();

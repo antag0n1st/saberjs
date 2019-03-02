@@ -19,7 +19,7 @@
         this.backgroundName = imageName;
 
         this.label = new Label(Style.DEFAULT_INPUT);
-        this.label.txt = 'Default';
+        this.label.txt = '';
         this.label.anchor.set(0.5, 0.5);
 
         this.addChild(this.label);
@@ -33,8 +33,8 @@
 
         this.properties = {
             width: 200,
-            height: 100,
-            padding: '30',
+            height: 80,
+            padding: '20',
             offsetX: 0,
             offsetY: 0,
             sensorWidth: 0,

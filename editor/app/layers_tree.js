@@ -14,13 +14,9 @@
         this.tree = null;
         this.data = null;
 
-        var html = '<div class="big" style="margin-bottom:10px;">';
-        html += '<div  data-toggle="modal" data-target="#addLayerModal" class="btn btn-info" style="width:50px; margin-right:10px;line-height:default;">';
-        html += '<i class="fa fa-plus"></i></div>';
-        html += '</div>';
-        html += '<input class="form-control" placeholder="Search Objects" style="width: 200px" />';
-        html += '<div class="btn btn-success" style="width:50px; margin-left:10px;line-height:default;">';
-        html += '<i class="fa fa-search"></i> </div>';
+        var html = '<div class="big" style="margin-bottom:10px;width:100%;">';
+        html += '<div  data-toggle="modal" data-target="#addLayerModal" class="btn btn-info pull-left" style="">';
+        html += '<i class="fa fa-plus"></i> Add Layer </div>';
         html += '</div>';
         html += '<div id="layersTree" style="text-align:left;"></div>';
 

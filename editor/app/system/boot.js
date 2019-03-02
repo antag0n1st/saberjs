@@ -8,7 +8,7 @@ window.addEventListener("load", function () {
 
     app = new App();
     
-    app.adjustToolbars();
+   // app.adjustToolbars();
         
 
 }, false);

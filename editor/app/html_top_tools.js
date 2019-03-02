@@ -173,25 +173,30 @@
         this.saveButton = document.getElementById('saveButton');
         this.saveButton.onclick = this.onSaveBtn.bind(this);
 
-        this.animateButton = document.getElementById('animateButton');
-        this.animateButton.onclick = this.editor.onAnimateBtn.bind(this.editor);
-
-        // 
+        if (editorConfig.features.playButton) {
+            this.playButton = document.getElementById('playButton');
+            this.playButton.onclick = this.editor.onPlayButton.bind(this.editor);
+        } else {
+            var playButton = document.getElementById('playButton');
+            playButton.style.display = 'none';
+        }
 
         // ZOOM
+        if (editorConfig.features.zoom) {
 
-        this.zoomSlider = new Slider('#zoomSlider', {
-            ticks: [-0.8, 0, 3],
-            ticks_positions: [0, 50, 100],
-            value: 0,
-            step: 0.1,
-            tooltip_position: 'bottom',
-            formatter: function (value) {
-                return 'Zoom: ' + value;
-            }
-        });
+            this.zoomSlider = new Slider('#zoomSlider', {
+                ticks: [-0.8, 0, 3],
+                ticks_positions: [0, 50, 100],
+                value: 0,
+                step: 0.1,
+                tooltip_position: 'bottom',
+                formatter: function (value) {
+                    return 'Zoom: ' + value;
+                }
+            });
 
-        this.zoomSlider.on('change', this.onZoomSlider, this);
+            this.zoomSlider.on('change', this.onZoomSlider, this);
+        }
 
         /////
 

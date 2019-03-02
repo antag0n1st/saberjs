@@ -63,10 +63,10 @@
     };
 
     Style.DEFAULT_BUTTON = {
-        fill: "#cccccc",
-        imageNormal: "button",
-        imageSelected: "button",
-        fontFamily: "Arial Black",
+        fill: "#ffffff",
+        imageNormal: "_default_button",
+        imageSelected: "_default_button",
+        fontFamily: "'Arial Black', Gadget, sans-serif",
         fontSize: 30
     };
 

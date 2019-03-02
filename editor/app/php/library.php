@@ -1,11 +1,14 @@
 <?php
 
+$json = file_get_contents('../../config.json');
+$editorConfig = json_decode($json);
+
 $atlas_array = [];
 
 define('DS', DIRECTORY_SEPARATOR);
 
 
-define('ASSETS_DIR', '..' . DS . 'assets' . DS . 'images');
+define('ASSETS_DIR', str_replace('/', DS, $editorConfig->library));
 
 $main_dir = getcwd() . DS . '..' . DS . '..' . DS . ASSETS_DIR;
 

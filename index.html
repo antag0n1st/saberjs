@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>HTML 5</title>
+        <title>SaberCore</title>
         <meta charset="UTF-8">
         <link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
         <link href="assets/css/fonts.css" rel="stylesheet" type="text/css"/>
@@ -17,98 +17,8 @@
 
         <script src="config.js" type="application/javascript" ></script>
 
-        <!--                <script src="pixi.min.js" type="text/javascript"></script>
-                        <script src="lib.min.js" type="text/javascript"></script>
-                        <script src="app.min.js" type="text/javascript"></script>-->
-
-        <script src="lib/external/pixi.js" type="text/javascript"></script>
-        <script src="lib/external/visibility.core.js" type="text/javascript"></script>
-        <script src="lib/external/howler.core.js" type="text/javascript"></script>
-        <script src="lib/external/font.js" type="text/javascript"></script>
-        <script src="lib/external/kibo.js" type="text/javascript"></script>
-        <script src="lib/external/store.js" type="text/javascript"></script>
-        <script src="lib/external/SAT.js" type="text/javascript"></script>
-        <script src="lib/external/pixi-spine.js" type="text/javascript"></script>
-
-        <script src="lib/external/bezier/utils.js" type="text/javascript"></script>
-        <script src="lib/external/bezier/bezier.js" type="text/javascript"></script>
-        <script src="lib/external/bezier/poly_bezier.js" type="text/javascript"></script>
-
-        <script src="lib/external/delaunator.js" type="text/javascript"></script>
-        <script src="lib/external/pixi-extend.js" type="text/javascript"></script>
-        <script src="lib/external/sat-extend.js" type="text/javascript"></script>
-
-        <script src="lib/utility/localization.js" type="text/javascript"></script>
-        <script src="lib/utility/helpers.js" type="text/javascript"></script>
-        <script src="lib/utility/playlist.js" type="text/javascript"></script>
-        <script src="lib/utility/cookies.js" type="text/javascript"></script>
-        <script src="lib/utility/layout.js" type="text/javascript"></script>
-        <script src="lib/utility/device.js" type="text/javascript"></script>
-        <script src="lib/utility/color.js" type="text/javascript"></script>
-        <script src="lib/utility/importer.js" type="text/javascript"></script>
-        <script src="lib/utility/constraint.js" type="text/javascript"></script>
-        <script src="lib/utility/constraints.js" type="text/javascript"></script>
-
-        <script src="lib/display/h_navigator.js" type="text/javascript"></script>
-        <script src="lib/display/h_screen.js" type="text/javascript"></script>
-        <script src="lib/display/sprite.js" type="text/javascript"></script>
-        <script src="lib/display/layer.js" type="text/javascript"></script>
-        <script src="lib/display/spine_animation.js" type="text/javascript"></script>
-        <script src="lib/display/line_path.js" type="text/javascript"></script>
-        <script src="lib/display/poly_bezier.js" type="text/javascript"></script>
-
-
-        <script src="lib/events/h_event.js" type="text/javascript"></script>
-        <script src="lib/events/input.js" type="text/javascript"></script>
-        <script src="lib/events/looper.js" type="text/javascript"></script>
-        <script src="lib/events/notes.js" type="text/javascript"></script>
-
-
-        <script src="lib/tweens/actions.js" type="text/javascript"></script>
-        <script src="lib/tweens/bezier.js" type="text/javascript"></script>  
-        <script src="lib/tweens/tween.js" type="text/javascript"></script>
-        <script src="lib/tweens/sequencer.js" type="text/javascript"></script>
-        <script src="lib/tweens/easing.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_alpha.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_blink.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_float.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_move_to.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_pulsate.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_rotate.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_rotate_by.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_rotate_to.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_scale.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_shake.js" type="text/javascript"></script>
-        <script src="lib/tweens/timer.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_squash_stretch.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_squashy.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_back_forth.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_scale_x.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_scale_y.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_pop.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_tint.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_shake_x.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_idle.js" type="text/javascript"></script>
-        <script src="lib/tweens/stepper.js" type="text/javascript"></script>
-        <script src="lib/tweens/tween_generic.js" type="text/javascript"></script>
-
-        <script src="lib/resources/content_manager.js" type="text/javascript"></script>
-        <script src="lib/resources/fonts.js" type="text/javascript"></script>
-        <script src="lib/resources/images.js" type="text/javascript"></script>
-        <script src="lib/resources/sounds.js" type="text/javascript"></script>
-
-        <script src="lib/ui/label.js" type="text/javascript"></script>
-        <script src="lib/ui/button.js" type="text/javascript"></script>
-        <script src="lib/ui/nine_slice.js" type="text/javascript"></script>
-        <script src="lib/ui/tableview.js" type="text/javascript"></script>
-        <script src="lib/ui/tablecell.js" type="text/javascript"></script>
-        <script src="lib/ui/keyboard.js" type="text/javascript"></script>
-        <script src="lib/ui/input_field.js" type="text/javascript"></script>
-        <script src="lib/ui/input_content.js" type="text/javascript"></script>
-        <script src="lib/ui/scrollview.js" type="text/javascript"></script>
-        <script src="lib/ui/scrollview_content.js" type="text/javascript"></script>
-        <script src="lib/ui/loading_bar.js" type="text/javascript"></script>
-        <script src="lib/ui/popup.js" type="text/javascript"></script>
+        <script src="pixi.min.js" type="text/javascript"></script>
+        <script src="lib.min.js" type="text/javascript"></script>
 
 
         <script src="app/system/app.js" type="text/javascript"></script>
@@ -119,29 +29,11 @@
 
         <script src="assets/assets.js" type="text/javascript"></script>
 
-        <script src="app/screens/main_screen.js" type="text/javascript"></script>
-        <script src="app/screens/gui_screen.js" type="text/javascript"></script>
-        <script src="app/screens/tween_screen.js" type="text/javascript"></script>
-        <script src="app/screens/scene_graph_screen.js" type="text/javascript"></script>
-        <script src="app/screens/plane_screen.js" type="text/javascript"></script>
-        <script src="app/screens/rope_screen.js" type="text/javascript"></script>
-        <script src="app/screens/perspective_screen.js" type="text/javascript"></script>
-        <script src="app/screens/imported_screen.js" type="text/javascript"></script>
-        <script src="app/screens/spine_screen.js" type="text/javascript"></script>
-        <script src="app/screens/gooey_screen.js" type="text/javascript"></script>
-        <script src="app/screens/dev_screen.js" type="text/javascript"></script>
-        <script src="app/screens/kinematics_screen.js" type="text/javascript"></script>
+        <script src="app/screens/dashboard_screen.js" type="text/javascript"></script>
 
-        <script src="app/threshold_filter.js" type="text/javascript"></script>
-        <script src="app/goo.js" type="text/javascript"></script>
-        
-        <script src="app/kimenatics/ik_system.js" type="text/javascript"></script>
-        <script src="app/kimenatics/arm.js" type="text/javascript"></script>
-        <script src="app/my_line.js" type="text/javascript"></script>
 
         <style type="text/css">
             body{  background-color: #555555;  }
-            
         </style>
 
     </head>

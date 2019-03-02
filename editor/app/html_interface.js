@@ -28,7 +28,10 @@
         this.objectsGalery.addFiles([
             {name: "LabelObject", url: 'assets/images/_text_icon.png'},
             {name: "ContainerObject", url: 'assets/images/_container.png'},
-            {name: "GenericObject", url: 'assets/images/_cube.png'}
+//            {name: "GenericObject", url: 'assets/images/_cube.png'},
+            {name: "ButtonObject", url: 'assets/images/_button.png'},
+            {name: "InputObject", url: 'assets/images/_input_field_icon.png'}
+
         ]);
 
 
@@ -72,9 +75,6 @@
 
         this.contextMenuHtml = document.getElementById('contextMenu');
         this.sideToolbarPanel = document.getElementById('sideToolbarPanel');
-
-        this.localFileLoaderBtn = document.getElementById('localFileLoaderBtn');
-        this.localFileLoaderBtn.onchange = this.onLocalFileLoaderBtn.bind(this);
 
 
 
@@ -188,8 +188,11 @@
 
         html += '<div class="big">';
         html += '<input id="exportFileName" type="text" class="form-control" />';
-        html += '<div id="exportBtn" class="btn btn-info"><i class="fa fa-arrow-up"></i>Export</div>';
+        html += '<div id="exportBtn" class="btn btn-info" style="margin-left:5px;"><i class="fa fa-arrow-up"></i>Export</div>';
         html += '</div>';
+        
+        var snOpt = {name: "preview", method: 'changePreviewScreen'};
+        html += HtmlElements.createInput(snOpt).html;
 
         html += ' <div class="big" style="display: block;">';
         html += '<label>Import</label>';
@@ -206,7 +209,7 @@
         html += '<div id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i>Clear All</div>';
         html += '</div>';
 
-
+        
 
         html += HtmlElements.createSection('Editor').html;
 
@@ -349,7 +352,7 @@
         });
     };
 
-    HtmlInterface.prototype.saveCurrentContent = function (callback) {
+    HtmlInterface.prototype.saveCurrentContent = function (callback, hideMessage) {
 
         var data = this.editor.importer.export();
 
@@ -384,37 +387,44 @@
         this.editor.importer.fileName = fileName;
         data.fileName = fileName;
 
+        //TODO attach extra data here
         var sendData = {
             file_name: fileName,
-            data: JSON.stringify(data)
-
+            data: JSON.stringify(data),
+            preview_screen_name: ''
         };
 
+        var exportURL = editorConfig.export.url;
 
+        var cURLs = editorConfig.export.callback.slice();
 
-        ajaxPost('app/php/export.php', sendData, function (response) {
-            var msg = response.message;
-
-            ajaxGet('../tools/assets.php', function (response) {
-                ajaxGet('../tools/fonts.php', function (response) {
-                    toastr.success(msg);
-
-                    if (callback) {
-                        callback();
-                    }
-
+        function callMeBack(msg) {
+            if (cURLs.length) {
+                var url = cURLs.shift();
+                ajaxGet(url, function (response) {
+                    callMeBack(msg);
                 });
-            });
+            } else {
+                if (!hideMessage) {
+                    toastr.success(msg);
+                }
+                if (callback) {
+                    callback();
+                }
+            }
+        }
 
+        ajaxPost(exportURL, sendData, function (response) {
+            var msg = response.message;
+            callMeBack(msg);
         });
 
         var jsonString = JSON.stringify(data);
 
         store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
-    };
 
-    HtmlInterface.prototype.onLocalFileLoaderBtn = function (e) {
-        this.editor.localReader.selectFolder(e);
+        //TODO this is a temporary hack , remove it
+        ContentManager.jsons['main'] = data;
     };
 
     HtmlInterface.prototype.onImportJSONBtn = function (evt) {
@@ -491,9 +501,9 @@
             $("#addLayerModal").modal('hide');
 
             document.getElementById('layerName').value = '';
-            document.getElementById('layerFactor').value = '';
+            document.getElementById('layerFactor').value = '1';
             document.getElementById('layerID').value = '';
-            document.getElementById('layerInputContent').checked = false;
+            document.getElementById('layerInputContent').checked = true;
         }
 
     };

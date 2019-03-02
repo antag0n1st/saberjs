@@ -6,6 +6,8 @@ var Config = {};
 Config.game_width = 1920; // set the size of the canvas here 
 Config.game_height = 1080;
 
+Config.name = 'app';
+
 Config.MODE_FLEXIBLE_WIDTH = 0; // it will scale to the same height and adjust the width acordingly
 Config.MODE_FLEXIBLE_HEIGHT = 1; // use the same width , but change the height to flll the screen
 Config.MODE_STRETCH = 2; // I dont know why I would use this mode
@@ -18,7 +20,7 @@ Config.window_mode_mobile = null; // if you need special mode for mobile devices
 
 Config.is_canvas_auto_layout = true;
 
-Config.canvas_padding = '50 50 50 50'; // top - right - bottom - left
+Config.canvas_padding = '0 0 0 0'; // top - right - bottom - left
 
 Config.is_sound_on = true; // switch the sound on/off
 Config.debug_info = false;
@@ -39,5 +41,5 @@ Config.ROTATION_MODE_VERTICAL = 2;
 
 Config.rotation_mode = Config.ROTATION_MODE_ALLOW;
 
-Config.initialScreen = 'SceneGraphScreen'; // name of the screen
+Config.initialScreen = 'DashboardScreen'; // name of the screen
 Config.initialScreenArgs = []; // list of arguments to pass to the screen

@@ -20,7 +20,7 @@
 
         this.isAnimating = true;
 
-        this.loadingBar = new LoadingBar();
+        this.loadingBar = new LoadingBar(null,null,0);
         this.addChild(this.loadingBar);
 
         this.lastLoadedCount = 0;

@@ -2,10 +2,13 @@
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
+
+$json = file_get_contents('./config.json');
+$editorConfig = json_decode($json);
 ?><!DOCTYPE HTML>
 <html>
     <head>
-        <title>Editor</title>
+        <title>SaberEditor</title>
         <meta charset="UTF-8">
 
 
@@ -36,7 +39,9 @@ header("Pragma: no-cache");
 
         <link href="assets/css/style.css?<?php echo time(); ?>" rel="stylesheet" type="text/css"/>
 
-
+        <script>
+            var editorConfig = <?php echo $json; ?>;
+        </script>
         <script src="config.js?<?php echo time(); ?>" type="application/javascript" ></script>
 
         <script src="../pixi.min.js?<?php echo time(); ?>" type="text/javascript"></script>
@@ -60,7 +65,7 @@ header("Pragma: no-cache");
         <script src="app/html_elements.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="app/html_top_tools.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="app/properties_binder.js?<?php echo time(); ?>" type="text/javascript"></script>
-        <script src="app/importer.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/editor_importer.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="app/layers_tree.js?<?php echo time(); ?>" type="text/javascript"></script>
 
         <script src="app/objects/entity.js?<?php echo time(); ?>" type="text/javascript"></script>
@@ -91,66 +96,65 @@ header("Pragma: no-cache");
         <script src="app/commands/command_scale.js?<?php echo time(); ?>" type="text/javascript"></script>
 
         <script src="app/shortcuts.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="play_button.js" type="text/javascript"></script>
 
-        <script src="app/animator/gui/animation_panel.js?<?php echo time(); ?>" type="text/javascript"></script>
-        <script src="app/animator/gui/animation_control_panel.js?<?php echo time(); ?>" type="text/javascript"></script>
-        <script src="app/animator/animator.js?<?php echo time(); ?>" type="text/javascript"></script>
-        <script src="app/animator/animation.js?<?php echo time(); ?>" type="text/javascript"></script>
-        <script src="app/animator/animation_thread.js?<?php echo time(); ?>" type="text/javascript"></script>
-        <script src="app/animator/gui/animation_playbar.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <?php include './extra_scripts.php'; ?>
         
-
-
+        <style type="text/css">
+            body{
+                background-color: white;
+            }
+        </style>
 
     </head>
 
     <body class="unselectable">   
 
-        <div id="leftToolbar" >
+        <div id="leftToolbar" style="visibility: hidden;" >
 
             <div style="height: 50px;"></div>
-            
+
             <div id="editorModes" style="display: inline;">
 
             </div>
-            
+
             <div id="alignButtons" style="display: inline;">
 
             </div>
-            
-            
+
+
 
         </div>
 
-        <div id="topToolbar" >
+        <div id="topToolbar" style="visibility: hidden;" >
 
             <div id="saveButton" class="btn btn-success "  >
-
                 <i class="fa fa-save"></i>
             </div>
-
-            <div style="display: inline-block; margin-left: 10px; padding-top: 7px;" >
-
-                <label style="margin-right: 10px;">Zoom</label>
-                <input style="display: none;" id="zoomSlider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
+            
+            <div id="playButton" class="btn btn-info" style="width: 100px; margin-left: 5px;"  >
+                <i class="fa fa-play"></i>
             </div>
+
+            <?php if ($editorConfig->features->zoom): ?>
+                <div id="zoomControl" style="display: inline-block; margin-left: 10px; padding-top: 7px;" >
+
+                    <label style="margin-right: 10px;">Zoom</label>
+                    <input style="display: none;" id="zoomSlider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>
+                </div>
+            <?php endif; ?>
 
             <div id="spacingButtons" style="display: inline;margin-left: 20px;">
 
             </div>
-            
+
             <div id="zIndexButtons" style="display: inline;margin-left: 20px;">
 
             </div>
-            
-            <div id="animateButton" class="btn btn-success pull-right "  >
-                <i class="fa fa-rocket"></i> 
-                <span>Animate</span>
-            </div>
-            
+
         </div>
 
-        <div id="sideToolbar" >
+        <div id="sideToolbar" style="visibility: hidden;" >
 
             <div id="side-toolbar-navigation">
                 <div id="commonPropertiesTab" class="nav-bar-btn fa fa-file fa-2x "></div>
@@ -195,9 +199,7 @@ header("Pragma: no-cache");
                 </div>
 
                 <div id="imageLibraryPanel" class="none">
-                    <div>
-                        <input class="form-control" id="localFileLoaderBtn" type="file" webkitdirectory mozdirectory msdirectory odirectory directory multiple="multiple" />
-                    </div>
+                   
                     <div id="imageLibraryContent" class="libraryContent" >
 
                     </div>
@@ -211,14 +213,7 @@ header("Pragma: no-cache");
 
             </div>
 
-
-
-
-
-
         </div>
-
-
 
 
         <div id="textUpdatePanel" class="panel">
@@ -287,7 +282,7 @@ header("Pragma: no-cache");
                             <input id="layerName" class="form-control" Placeholder="Name"/>
                         </div>
                         <div class="form-group">
-                            <input type="number" id="layerFactor" class="form-control" Placeholder="Factor Number (Normal Value)"/>
+                            <input type="number" id="layerFactor" class="form-control" Placeholder="Factor Number (Normal Value)" value="1"/>
                         </div>
 
                         <div class="form-group">
@@ -356,7 +351,7 @@ header("Pragma: no-cache");
             </div>
         </div>
 
-        <div id="imageBrowser" style="position: absolute; background: white; width: 450px; height: 400px; padding: 0px 5px 5px 5px; display: none;" >
+        <div id="imageBrowser" style="position: absolute; background: white; width: 450px; height: 400px; padding: 0px 5px 5px 5px; display: none; border: 1px solid #555555;" >
 
             <div class="panel-heading" style="padding: 0; overflow: hidden;">
                 <div id="closeImageBrowser" class="btn btn-xs" style="float: right;">
@@ -368,108 +363,6 @@ header("Pragma: no-cache");
 
             </div>
         </div>
-
-        <style type="text/css">
-
-            .textarea{
-                position: absolute;
-                top:0px;
-                left:0px;               
-                color:black;
-                padding: 0px;
-                margin: 0px;
-                resize: none;
-                border-style: none; 
-                border-color: Transparent; 
-                overflow: hidden; 
-                background-color: transparent;  
-                alignment-baseline: alphabetic;
-                outline: none;
-            }
-
-            .textarea:focus{
-                border-style: none; 
-                border-color: Transparent; 
-            }
-
-        </style>
-
-
-        <script type="text/javascript" >
-
-
-            function swap(object) {
-
-
-
-                // width height
-
-                if (object.properties.width) {
-                    var width = object.properties.width;
-                } else {
-                    var width = object.label.width;
-                }
-
-                var height = object.label.height;
-
-                // position
-
-                var p = object.getGlobalPosition();
-
-                var x = p.x - width / 2;
-                var y = p.y - height / 2;
-
-                // rotiation
-                var rotation = Math.radiansToDegrees(object.rotation);
-
-                // relative values
-
-                var canvas = app.pixi.renderer.view;
-
-                var mtop = parseInt(canvas.style.marginTop) || 0;
-                var mLeft = parseInt(canvas.style.marginLeft) || 0;
-
-                var cwidth = parseInt(canvas.style.width);
-                var cheight = parseInt(canvas.style.height);
-
-                var fay = cheight / app.height;
-                var fax = cwidth / app.width;
-
-                var sX = Math.roundDecimal(fax, 2);
-                var sY = Math.roundDecimal(fay, 2);
-
-                var pX = sX * x + mLeft;
-                var pY = sY * y + mtop;
-
-                var fontSize = parseInt(object.label.style.fontSize);
-                var textMetrics = PIXI.TextMetrics.measureText(object.label.txt, object.label.style);
-
-
-                var element = document.createElement("textarea");
-                element.classList.add("textarea");
-                element.value = object.label.txt;
-
-                element.style.transform = 'matrix(' + sX + ' , 0,0 ,' + sY + ', ' + (pX) + ',' + pY + ') rotate(' + rotation + 'deg)';
-                element.style.transformOrigin = '0% 0%';
-                element.style.width = width + 'px';
-                element.style.height = height + 'px';
-                element.style.lineHeight = textMetrics.lineHeight + 'px';
-                element.style.fontSize = fontSize + 'px';
-                element.style.fontFamily = object.label.style.fontFamily;
-                element.style.color = object.label.style.fill;
-
-
-                document.body.appendChild(element);
-
-                object.visible = false;
-
-
-
-            }
-
-
-        </script>
-
 
     </body>
 

@@ -1,0 +1,20 @@
+{
+    "name": "Saber Editor",
+    "features": {
+        "zoom": true,
+        "constraints": true,
+        "customProperties": true,
+        "playButton": true
+    },
+    "colors": {
+
+    },
+    "library": "../assets/images",
+    "export": {
+        "url": "app/php/export.php",
+        "callback": [
+            "../tools/assets.php", 
+            "../tools/fonts.php"
+        ]
+    } 
+}

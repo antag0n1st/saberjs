@@ -19,8 +19,8 @@
         this.backgroundName = imageName;
 
         this.label = new Label(Style.DEFAULT_INPUT);
-        this.label.txt = 'Text';
-        this.label.style.fill = "#ffffff";
+        this.label.txt = '';
+        this.label.style.fill = "#333333";
         this.label.style.fontSize = 40;
         this.label.anchor.set(0.5, 0.5);
 
@@ -35,8 +35,8 @@
 
         this.properties = {
             width: 320,
-            height: 100,
-            padding: '30',
+            height: 120,
+            padding: '20',
             sensorWidth: 0,
             sensorHeight: 0,
             hasPlaceholder: false,
