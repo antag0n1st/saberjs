@@ -58,11 +58,14 @@
     };
 
     AnimationPanel.prototype.show = function (actor) {
-
+        
+        this.removeChildren();
+       
         this.animator = new Animator(actor);
 
         this.isTouchable = true;
         Actions.stopByTag('animator_show');
+        
         new TweenAlpha(this, 1, null, 200, function () {
 
         }).run('animator_show');
@@ -77,8 +80,9 @@
 
         this.isTouchable = false;
         Actions.stopByTag('animator_show');
+        
         new TweenAlpha(this, 0, null, 200, function () {
-
+            this.object.removeChildren();
         }).run('animator_show');
 
         this.isOn = false;

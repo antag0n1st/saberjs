@@ -98,8 +98,15 @@ $editorConfig = json_decode($json);
         <script src="app/shortcuts.js?<?php echo time(); ?>" type="text/javascript"></script>
         <script src="play_button.js" type="text/javascript"></script>
 
+        <script src="app/animator/gui/animation_panel.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/gui/animation_control_panel.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/animator.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/animation.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/animation_thread.js?<?php echo time(); ?>" type="text/javascript"></script>
+        <script src="app/animator/gui/animation_playbar.js?<?php echo time(); ?>" type="text/javascript"></script>
+
         <?php include './extra_scripts.php'; ?>
-        
+
         <style type="text/css">
             body{
                 background-color: white;
@@ -131,7 +138,7 @@ $editorConfig = json_decode($json);
             <div id="saveButton" class="btn btn-success "  >
                 <i class="fa fa-save"></i>
             </div>
-            
+
             <div id="playButton" class="btn btn-info" style="width: 100px; margin-left: 5px;"  >
                 <i class="fa fa-play"></i>
             </div>
@@ -199,7 +206,7 @@ $editorConfig = json_decode($json);
                 </div>
 
                 <div id="imageLibraryPanel" class="none">
-                   
+
                     <div id="imageLibraryContent" class="libraryContent" >
 
                     </div>

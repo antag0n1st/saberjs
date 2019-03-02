@@ -113,6 +113,20 @@
 
         this.shortcuts.isCtrlPressed = false;
 
+        // set the animator
+
+        if (editorConfig.features.animator) {
+            this.animator = new AnimationPanel();
+            this.animator.zIndex = 11; // above the 
+            this.animator.position.set(0, app.height - this.animator.panelHeight);
+            this.addTouchable(this.animator);
+            this.addChild(this.animator);
+
+            var actor = this.findById('actor');
+            this.animator.show(actor);
+        }
+
+
 
     };
 

@@ -4,7 +4,8 @@
         "zoom": true,
         "constraints": true,
         "customProperties": true,
-        "playButton": true
+        "playButton": true,
+        "animator": true
     },
     "colors": {
 
