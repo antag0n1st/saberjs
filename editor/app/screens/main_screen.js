@@ -22,6 +22,7 @@
 
         this.mouseDownPosition = new V();
         this.screenMouseOffset = new V();
+        this.isPointInAnimator = false;
 
         this.content = new PIXI.Container();
         this.addChild(this.content);
@@ -116,14 +117,21 @@
         // set the animator
 
         if (editorConfig.features.animator) {
-            this.animator = new AnimationPanel();
-            this.animator.zIndex = 11; // above the 
-            this.animator.position.set(0, app.height - this.animator.panelHeight);
-            this.addTouchable(this.animator);
-            this.addChild(this.animator);
 
-            var actor = this.findById('actor');
-            this.animator.show(actor);
+
+
+            timeout(function () {
+
+                this.animator = new AnimationPanel();
+                this.animator.zIndex = 11; // above the 
+                this.animator.position.set(0, app.height - this.animator.panelHeight);
+                this.addTouchable(this.animator);
+                this.addChild(this.animator);
+
+                var actor = this.findById('actor');
+                this.animator.show(actor);
+            }, 600, this);
+
         }
 
 
@@ -454,6 +462,17 @@
 
     MainScreen.prototype.onMouseDown = function (event, sender) {
 
+        if (editorConfig.features.animator && this.animator) {
+            var s = this.animator.getSensor();
+
+            if (SAT.pointInPolygon(event.point, s)) {
+                event.stopPropagation();
+                this.animator.onMouseDown(event, sender);
+                this.isPointInAnimator = true;
+                return false;
+            }
+        }
+
         if (this.shortcuts.isSpacePressed) {
             var pp = event.point.clone();
             pp.scale(1 / (this.activeLayer.factor + this._zoom));
@@ -472,6 +491,12 @@
 
     MainScreen.prototype.onMouseMove = function (event, sender) {
 
+        if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
+            this.animator.onMouseMove(event, sender);
+            event.stopPropagation();
+            return;
+        }
+
         if (this.shortcuts.isSpacePressed && !this.selectionRectangle) {
             var offset = new V().copy(this.screenMouseOffset);
             var pp = event.point.clone();
@@ -489,7 +514,17 @@
     };
 
     MainScreen.prototype.onMouseUp = function (event, sender) {
-        this.modes[this.mode].onMouseUp(event, sender);
+
+        if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
+            this.isPointInAnimator = false;
+            this.animator.onMouseUp(event, sender);
+            return;
+        } else {
+            this.modes[this.mode].onMouseUp(event, sender);
+        }
+
+        this.isPointInAnimator = false;
+
     };
 
 
@@ -539,6 +574,21 @@
     };
 
     MainScreen.prototype.onWheel = function (event, sender) {
+
+        if (editorConfig.features.animator && this.animator) {
+            var s = this.animator.getSensor();
+
+            if (SAT.pointInPolygon(app.input.point, s)) {
+               
+                var scrollY = -1;
+                if (event.point.y < 0) {
+                    scrollY = 1;
+                }
+
+                this.animator.onScroll(scrollY);
+                return false;
+            }
+        }
 
         var scale = 0.1;
         if (event.point.y < 0) {

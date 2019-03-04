@@ -427,8 +427,8 @@
 
         store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
 
-        //TODO this is a temporary hack , remove it
-        ContentManager.jsons['main'] = data;
+        ContentManager.jsons[fileName.replace('.json','')] = data;
+        previewData = data.objects;
     };
 
     HtmlInterface.prototype.onImportJSONBtn = function (evt) {

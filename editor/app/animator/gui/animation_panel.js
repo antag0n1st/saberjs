@@ -4,73 +4,123 @@
         this.initialize();
     }
 
-    AnimationPanel.prototype = Object.create(PIXI.Container.prototype);
-    AnimationPanel.prototype.constructor = AnimationPanel;
-
+    AnimationPanel.prototype = new AnimationGUI();
+    AnimationPanel.prototype.guiInitialize = AnimationPanel.prototype.initialize;
 
     AnimationPanel.prototype.initialize = function () {
 
-        PIXI.Container.call(this);
+        this.guiInitialize.call(this);
+
+        this.animator = null;
+
+        this.keyframes = [];
+        this.controls = [];
+        this.clickedControl = null;
+
+        this.panelPadding = 30;
+        this.rightScrollWidth = 30;
+        this.panelBottomHeight = 30;
 
         this.panelHeight = 360;
-        this.panelTopHeight = 60;
+        this.panelTopHeight = 50;
         this.panelLeftWidth = 400;
+
+        this.panelRightWidth = app.width - this.panelLeftWidth - 3 - this.panelPadding - this.rightScrollWidth; // its the separators
         this.isOn = false;
 
         this.backgroundColor = 0xf5fae4;
         this.panelBorderColor = 0x8d8d8d;
 
+        ////////////////
+
+        this.drawRect(0, -1, app.width, 2, this.panelBorderColor);
+        this.drawRect(0, 0, app.width, this.panelHeight, this.backgroundColor);
+        this.drawRect(this.panelLeftWidth + 1, 0, 1, this.panelHeight, this.panelBorderColor);
+        this.drawRect(this.panelLeftWidth + 1 + this.panelPadding, this.panelHeight - this.panelBottomHeight, this.panelRightWidth, 1, this.panelBorderColor);
+
+        /////////////////////
+
+        this.leftPanel = new AnimationPanelLeft(this);
+        this.leftPanel.y = this.panelTopHeight + 1;
+        this.addChild(this.leftPanel);
+
+        this.rightPanel = new AnimationPanelRight(this);
+        this.rightPanel.y = this.panelTopHeight + 1;
+        this.rightPanel.x = this.panelLeftWidth + 2 + this.panelPadding;
+        this.addChild(this.rightPanel);
+
         this.controlPanel = new AnimationControlPanel(this);
         this.addChild(this.controlPanel);
 
+        this.scrollRight = new AnimationScrollRight(this);
+        this.scrollRight.position.set(app.width - this.rightScrollWidth, 0); // , this.rightScrollWidth , this.panelHeight
+        this.scrollRight.delegate = this;
+        this.addChild(this.scrollRight);
+
         this.playbar = new AnimationPlaybar(this);
+        this.playbar.position.set(this.panelLeftWidth + 2 + this.panelPadding, 0);
+        this.playbar.playHead.delegate = this;
         this.addChild(this.playbar);
 
+        this.controls.push(this.playbar.playHead);
+        this.controls.push(this.scrollRight.pad);
+
         this.setSensorSize(app.width, this.panelHeight);
-
-
     };
 
-    AnimationPanel.prototype.drawRect = function (x, y, width, height, color, alpha) {
+    AnimationPanel.prototype.onRightScrollMove = function (percent) {
+        this.leftPanel.scroll(percent);
+        this.rightPanel.scroll(percent);
+    };
 
-        var rect = new Sprite('white');
-        rect.width = width;
-        rect.height = height;
-        rect.tint = color;
-        rect.position.set(x, y);
-        rect.alpha = alpha || 1;
-        this.addChild(rect);
+    AnimationPanel.prototype.onScroll = function (direction) {
 
-        return rect; // so that I might change the tint
+        var that = this;
+
+        var start = this.scrollRight.percent;
+
+        Actions.stopByTag('smooth_time_table_scroll');
+
+        new Stepper(function (step) {
+            var percent = start + direction * step * 0.25;
+            percent = Math.clamp(percent, 0, 1);
+            that.scrollRight.setPercent(percent);
+            that.leftPanel.scroll(percent);
+            that.rightPanel.scroll(percent);
+
+        }, 100).run('smooth_time_table_scroll');
 
     };
 
     AnimationPanel.prototype.build = function () {
+        this.leftPanel.build();
+        this.rightPanel.build();
 
-        // draw the panel
-        this.drawRect(0, -1, app.width, 2, this.panelBorderColor);
-        this.drawRect(0, 0, app.width, this.panelHeight, this.backgroundColor);
-        this.drawRect(this.panelLeftWidth + 1, 0, 1, this.panelHeight, this.panelBorderColor);
+        //
+        this.scrollRight.totalLength = this.leftPanel.panelHeight;
+        this.scrollRight.contentLength = this.leftPanel.contentLength;
 
-        this.controlPanel.build();
-        this.playbar.build();
+        this.scrollRight.build();
+
+
+
+        //this.rightPanel.build();
+
+        //TODO build right scroll
 
     };
 
     AnimationPanel.prototype.show = function (actor) {
-        
-        this.removeChildren();
-       
+
         this.animator = new Animator(actor);
+        this.build();
 
         this.isTouchable = true;
         Actions.stopByTag('animator_show');
-        
+
         new TweenAlpha(this, 1, null, 200, function () {
 
         }).run('animator_show');
-
-        this.build();
 
         this.isOn = true;
 
@@ -80,7 +130,7 @@
 
         this.isTouchable = false;
         Actions.stopByTag('animator_show');
-        
+
         new TweenAlpha(this, 0, null, 200, function () {
             this.object.removeChildren();
         }).run('animator_show');
@@ -90,9 +140,39 @@
     };
 
     AnimationPanel.prototype.onMouseDown = function (event, sender) {
+        // step 1 check for the contols
+
+        this.clickedControl = null;
+
+        for (var i = 0; i < this.controls.length; i++) {
+            var c = this.controls[i];
+            var s = c.getSensor();
+            if (SAT.pointInPolygon(event.point, s)) {
+                this.clickedControl = c;
+                this.clickedControl.onMouseDown(event, sender);
+                break;
+            }
+        }
 
     };
 
+    AnimationPanel.prototype.onMouseMove = function (event, sender) {
+        if (this.clickedControl) {
+            this.clickedControl.onMouseMove(event, sender);
+        }
+    };
+
+    AnimationPanel.prototype.onMouseUp = function (event, sender) {
+        if (this.clickedControl) {
+            this.clickedControl.onMouseUp(event, sender);
+        }
+
+        this.clickedControl = null;
+    };
+
+    AnimationPanel.prototype.onPlayHeadMove = function (percent, x) {
+
+    };
 
     window.AnimationPanel = AnimationPanel; // make it available in the main scope
 

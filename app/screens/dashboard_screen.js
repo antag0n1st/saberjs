@@ -15,7 +15,15 @@
         this.content = new Layer();
         this.addChild(this.content);
         this.importer = new Importer(this);
-        this.importer.importObjects(ContentManager.jsons.main.objects, this.content);
+
+        if (Config.name === 'editor') {
+            // This is totaly generic solution , it will take data from any file
+            // that we gonna reference this screen
+            this.importer.importObjects(previewData, this.content);
+        } else {
+            this.importer.importObjects(ContentManager.jsons.animation.objects, this.content);
+        }
+
 
     };
 

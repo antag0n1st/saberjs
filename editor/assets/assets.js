@@ -28,7 +28,7 @@ ContentManager.addImage('align_right','icons/align_right.png');
 ContentManager.addImage('align_top','icons/align_top.png');
 
 ContentManager.addImage('_icon_polygon','icons/_icon_polygon.png');
-
+ContentManager.addImage('_play_head','_play_head.png');
 
 ContentManager.addImage('repeatable_chess_pattern','repeatable_chess_pattern.png');
 

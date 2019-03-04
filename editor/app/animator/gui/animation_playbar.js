@@ -4,24 +4,37 @@
         this.initialize(panel);
     }
 
-    AnimationPlaybar.prototype = Object.create(PIXI.Container.prototype);
-    AnimationPlaybar.prototype.constructor = AnimationPlaybar;
-
+    AnimationPlaybar.prototype = new AnimationGUI();
+    AnimationPlaybar.prototype.guiInitialize = AnimationPlaybar.prototype.initialize;
 
     AnimationPlaybar.prototype.initialize = function (panel) {
-        PIXI.Container.call(this);
+
+        this.guiInitialize(this);
 
         this.panel = panel;
 
+        this.drawRect(0, 0, this.panel.panelRightWidth, this.panel.panelTopHeight, 0xffffff);
+        this.drawRect(0, this.panel.panelTopHeight + 1, this.panel.panelRightWidth, 1, this.panel.panelBorderColor);
+        this.drawRect(0, 0, 1, this.panel.panelHeight, this.panel.panelBorderColor);
+        this.drawRect(this.panel.panelRightWidth, 0, 1, this.panel.panelHeight, this.panel.panelBorderColor);
+
+        this.playHead = new AnimationPlayHead();
+        this.playHead.y = 25;
+        this.playHead.x = 50;
+        this.playHead.timelineLength = this.panel.panelRightWidth;
+
+        this.playLine = this.drawRect(0, 26, 1, this.panel.panelHeight - this.panel.panelBottomHeight - this.panel.panelTopHeight, 0x555555);
+        this.playLine.removeFromParent();
+        this.playHead.addChild(this.playLine);
+
+        this.addChild(this.playHead);
+
     };
 
-    AnimationPlaybar.prototype.build = function () {
+    AnimationPlaybar.prototype.setTimeline = function (percent) {
 
-        this.panel.drawRect(0, 0, 400, 50, 0xffffff);
-        this.panel.drawRect(0, 51, 400, 1, this.panel.panelBorderColor);
-
-       
-
+        this.playHead.x = this.playHead.timelineLength * percent;
+        this.playHead.percent = percent; // x / this.timelineLength;
     };
 
 
