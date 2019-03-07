@@ -9,11 +9,6 @@ $json = file_get_contents('./config.json');
 $editorConfig = json_decode($json);
 
 ////////////////////////////////////////////////////////////////////////////////
-
-if (in_array("mymathcore", $editorConfig->plugins)) {
-    include_once './mymathcore/authentication.php';
-}
-
 ?><!DOCTYPE HTML>
 <html>
     <head>
@@ -29,7 +24,7 @@ if (in_array("mymathcore", $editorConfig->plugins)) {
         <link rel="shortcut icon" sizes="256x256" href="assets/images/favicon.png" />
 
         <?php include './views/css.php'; ?>
-        
+
         <?php include './views/base_scripts.php'; ?>
         <?php include './views/scripts.php'; ?>
         <?php include './views/extra_scripts.php'; ?>
@@ -44,13 +39,7 @@ if (in_array("mymathcore", $editorConfig->plugins)) {
 
     <body class="unselectable">   
 
-        <?php
-        if (in_array("mymathcore", $editorConfig->plugins)) {
-            include './mymathcore/layout.php';            
-        } else {
-            include_once './views/html.php';
-        }
-        ?>
+        <?php include_once './views/html.php'; ?>
 
     </body>
 

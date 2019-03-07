@@ -1,7 +1,3 @@
 function onEditorReady(editor) {
-    // lets load the mother fucking question
-
- //   var mathcore = new Mathcore(editor);
- //   mathcore.readDataFromServerByID(GlobalData.questionID);
 
 }
