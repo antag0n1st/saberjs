@@ -134,7 +134,7 @@
 
         }
 
-
+        onEditorReady(this);
 
     };
 
@@ -250,11 +250,15 @@
     };
 
     MainScreen.prototype.addObjectToSelection = function (object) {
-        if (this.selectedObjects.indexOf(object) === -1) {
-            this.selectedObjects.push(object);
-            object.select();
-            this.onSelectionChange();
+
+        if (object.canSelect) {
+            if (this.selectedObjects.indexOf(object) === -1) {
+                this.selectedObjects.push(object);
+                object.select();
+                this.onSelectionChange();
+            }
         }
+
     };
 
     MainScreen.prototype.deselectObject = function (object) {
@@ -579,7 +583,7 @@
             var s = this.animator.getSensor();
 
             if (SAT.pointInPolygon(app.input.point, s)) {
-               
+
                 var scrollY = -1;
                 if (event.point.y < 0) {
                     scrollY = 1;

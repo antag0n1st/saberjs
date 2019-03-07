@@ -23,7 +23,7 @@
         inputType: HtmlElements.INPUT_TYPE_ALL,
         buttonClass: '',
         buttonAction: '',
-        style : ''
+        style: ''
     };
 
     HtmlElements.createInput = function (options) {
@@ -51,10 +51,10 @@
         var event_string = options.event ? options.event.name + '="' + options.event.callback + '"' : "";
 
         var id = "htmlElementId-" + PIXI.utils.uid();
-        var feedbackID = "feedbackElementId-" + PIXI.utils.uid();
+        var feedbackID = id; // "feedbackElementId-" + PIXI.utils.uid();
 
-        var html = '<div class="' + className + ' ' + (options.feedback ? 'has-feedback' : '') + ' ' + (options.buttonAction ? 'input-group m-bot15' : '') + '">';
-        html += options.feedback ? '<i id="' + feedbackID + '" style="color:orange;" class="fa fa-warning form-control-feedback"></i>' : '';
+        var html = '<div class="' + className + ' ' + (options.buttonAction ? 'input-group m-bot15' : '') + '">';
+        //  html += options.feedback ? '<i id="' + feedbackID + '" style="color:orange;" class="fa fa-warning form-control-feedback"></i>' : '';
         html += '<label ';
         html += tooltip ? 'title="' + tooltip + '"' : '';
         html += '>';
@@ -63,7 +63,7 @@
         html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
         html += ' class="form-control" ';
-        html += ' style="'+style+'" ';
+        html += ' style="' + style + '" ';
         html += ' id="' + id + '" ';
         html += ' type="text" value="' + value + '" ' + event_string;
         html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';
@@ -82,20 +82,14 @@
 
         var feedback = document.getElementById(id);
 
-        feedback.className = feedback.className.replace('fa fa-warning', "");
-        feedback.className = feedback.className.replace('fa fa-check', "");
+        feedback.classList.remove("is-valid");
+        feedback.classList.remove("is-invalid");
 
         if (isValid) {
-            feedback.className += ' fa fa-check';
-            feedback.style.color = 'green';
+            feedback.classList.add("is-valid");
         } else {
-            feedback.className += ' fa fa-warning';
-            feedback.style.color = 'orange';
+            feedback.classList.add("is-invalid");
         }
-
-        feedback.className = feedback.className.replace(/  +/g, " ");
-
-
     };
 
     HtmlElements.createImageButton = function (imageName, method, argsString, className, tooltip) {
@@ -138,16 +132,17 @@
             displayName = displayName.replace('_', ' ').capitalize();
         }
 
-        var html = '<div class="btn ' + className + '"';
+        var html = '<button class="btn ' + className + '"';
         html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' id="' + id + '" ';
         html += ' style="' + style + '" ';
+        html += ' type="button" ';
         html += ' onclick="app.navigator.currentScreen.' + method + '(\'' + name + '\',this);" ';
         html += '>';
 
         html += '<i class="' + icon + '"></i> ';
         html += displayName;
-        html += '</div>';
+        html += '</button>';
 
         return {html: html, id: id};
 
@@ -160,10 +155,10 @@
         var html = '';
         html += '<div ';
 
-        html += ' style="border-top:1px solid #aaaaaa;text-align:left; margin-top:5px;" ';
+        html += ' style="border-top:1px solid #aaaaaa;text-align:left; margin-top:10px; margin-bottom:6px; padding-top:5px;" ';
         html += ' id="' + id + '" ';
         html += '>';
-        html += '<h3 style="font-size:20px;">';
+        html += '<h3 style="font-size:20px;color:#999999;">';
         html += ' ' + title + ' ';
         html += '</h3>';
         html += '</div>';
@@ -206,7 +201,7 @@
         html += '>';
         html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
-        html += ' class="" ';
+        html += ' class="form-control" ';
         html += checked ? ' checked="checked" ' : '';
         html += ' style="cursor:pointer;" ';
         html += ' id="' + id + '" ';
@@ -266,8 +261,8 @@
             var item = items[i];
 
             html += '<option';
-          //  html += ' class="" ';
-            if(item == value){
+            //  html += ' class="" ';
+            if (item == value) {
                 html += ' selected="selected"';
             }
             html += '>';
@@ -313,55 +308,85 @@
         var id = "htmlElementId-" + PIXI.utils.uid();
 
 
-        var html = '<div class="' + className + ' ' + (options.feedback ? 'has-feedback' : '') + '">';
+        var html = '<div class="' + className + '">';
         html += '<label ';
         html += '>';
         html += displayName + ': </label>';
 
-        html += '<div id="' + id + '" class="input-group colorpicker-component" style="margin-left:4px;' + style + '">';
+        html += '<div id="' + id + '" class="input-group color-pickers" style="margin-left:4px;' + style + '" >';
         html += ' <input ';
+        //    html += ' id="' + id + '" ';
         html += ' class="form-control" ';
         html += ' type="text" ';
         html += ' value="' + value + '" ';
         html += ' />';
-        html += '<span class="input-group-addon"><i></i></span>';
+        html += '<span class="input-group-text colorpicker-input-addon"><i></i></span>';
+        html += '</div>';
+
         html += '</div>';
 
 
         return {html: html, id: id, feedbackID: null, options: options};
 
     };
+    
+    HtmlElements.getPickerOptions = function(){
+        return JSON.parse(JSON.stringify(HtmlElements.colorPickerOptions));
+    };
+
+    HtmlElements.colorPickerOptions = {
+        useAlpha: true,
+        customClass: 'colorpicker-2x',
+        format: 'hex',
+        extensions: [
+            {
+                name: 'swatches', // extension name to load
+                options: {// extension options
+                    colors: {
+                        'transparent': 'transparent',
+                        'black': '#000000',
+                        'gray': '#888888',
+                        'white': '#ffffff',
+                        'red': 'red',
+                        'default': '#777777',
+                        'primary': '#337ab7',
+                        'success': '#5cb85c',
+                        'info': '#5bc0de',
+                        'warning': '#f0ad4e',
+                        'danger': '#d9534f'
+                    }
+                }
+            }
+        ],
+        sliders: {
+            saturation: {
+                maxLeft: 200,
+                maxTop: 200
+            },
+            hue: {
+                maxTop: 200
+            },
+            alpha: {
+                maxTop: 200
+            }
+        }
+    };
 
     HtmlElements.activateColorPicker = function (picker) {
 
 
-        var colorPicker = $('#' + picker.id).colorpicker({
-            useAlpha: false,
-            customClass: 'colorpicker-2x',
-            sliders: {
-                saturation: {
-                    maxLeft: 200,
-                    maxTop: 200
-                },
-                hue: {
-                    maxTop: 200
-                },
-                alpha: {
-                    maxLeft: 0,
-                    maxTop: 100,
-                    callLeft: false,
-                    callTop: false
-                }}
-        });
+        var colorPicker = $('#' + picker.id).colorpicker(HtmlElements.colorPickerOptions);
 
-        colorPicker.on('changeColor', function (e) {
+        colorPicker.on('change', function (e) {
             'use strict';
 
-            var value = e.color.toHex();
+            var value = 'transparent';
+            if (e.color.original.color !== "transparent") {
+                value = e.color.toHexString();
+            }
 
             eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,null,null);');
-            //  
-            // that.onTextColorChange(e.color.toHex());
+
 
         });
 

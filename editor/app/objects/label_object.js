@@ -12,6 +12,7 @@
 
         this._padding = 20;
         this.type = 'LabelObject';
+        this.hasLabel = true;
 
         this.label = new Label(Style.DEFAULT_INPUT);
         this.label.txt = text;

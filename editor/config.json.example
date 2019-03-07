@@ -5,17 +5,25 @@
         "constraints": true,
         "customProperties": true,
         "playButton": true,
-        "animator": true
+        "animator": true,
+        "exportToFiles" : true,
+        "authentication" : false
     },
     "colors": {
 
     },
     "library": "../assets/images",
+    "fonts" : "../assets/fonts",
+    "import" : {
+        "filesURL": "../assets/data"
+    },
     "export": {
         "url": "app/php/export.php",
+        "writeDir" : "../assets/data",
         "callback": [
             "../tools/assets.php", 
             "../tools/fonts.php"
         ]
-    } 
+    } ,
+    "plugins": []
 }

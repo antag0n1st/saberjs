@@ -21,6 +21,7 @@
 
         this.createTabs();
         this.bindHTML();
+        
 
         this.htmlLibrary = new HtmlLibrary(this.imageLibraryContent, this.editor, 'dropImage');
 
@@ -186,26 +187,30 @@
 
         var html = '';
 
-        html += '<div class="big">';
-        html += '<input id="exportFileName" type="text" class="form-control" />';
-        html += '<div id="exportBtn" class="btn btn-info" style="margin-left:5px;"><i class="fa fa-arrow-up"></i>Export</div>';
-        html += '</div>';
-
         html += '<div class="big  "><label>Preview: </label> <input class="form-control" style="" id="previewScreenInput" type="text" value="' + this.editor.previewScreenName + '" onkeyup="app.navigator.currentScreen.changePreviewScreen(\'preview-screen\',this.value,this,0,\'previewScreenInput\');"></div>';
 
-        html += ' <div class="big" style="display: block;">';
-        html += '<label>Import</label>';
-        html += '<input id="importJSONBtn" type="file" class="form-control" />';
-        html += '</div>';
+        if (editorConfig.features.exportToFiles) {
 
-        html += '<div class="big" >';
-        html += '<label>Import:</label>';
-        html += '<select id="selectJSON" class="form-control">';
-        html += '</select>';
-        html += '</div>';
+            html += '<div class="big">';
+            html += '<input id="exportFileName" type="text" class="form-control" />';
+            html += '<button id="exportBtn" class="btn btn-info" style="margin-left:5px;"><i class="fa fa-arrow-up"></i>Export</button>';
+            html += '</div>';
+
+            html += ' <div class="big" style="display: block;">';
+            html += '<label>Import</label>';
+            html += '<input id="importJSONBtn" type="file" class="form-control" />';
+            html += '</div>';
+
+            html += '<div class="big" >';
+            html += '<label>Import:</label>';
+            html += '<select id="selectJSON" class="form-control">';
+            html += '</select>';
+            html += '</div>';
+
+        }
 
         html += '<div class="big">';
-        html += '<div id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i>Clear All</div>';
+        html += '<button id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i>Clear All</button>';
         html += '</div>';
 
 
@@ -239,7 +244,7 @@
 
         }
 
-        var buttonOpt = {name: 'add-guide', displayName: 'Add Guide', class: 'btn-info big', method: 'addGuideLine', icon: 'fa fa-plus'};
+        var buttonOpt = {name: 'add-guide', displayName: 'Add Guide', class: 'btn-info big', method: 'addGuideLine', icon: 'fa fa-plus' , style : 'margin-top:5px;'};
         html += HtmlElements.createButton(buttonOpt).html;
 
         document.getElementById('settingsContent').innerHTML = html;
@@ -250,30 +255,34 @@
         this.clearAll = document.getElementById('clearAll');
         this.clearAll.onclick = this.onClearAll.bind(this);
 
-        this.exportBtn = document.getElementById('exportBtn');
-        this.exportBtn.onclick = this.onExportBtn.bind(this);
 
-        this.selectJSON = document.getElementById('selectJSON');
-        this.selectJSON.onchange = this.onSelectJSON.bind(this);
+        if (editorConfig.features.exportToFiles) {
 
-        var fileName = this.editor.importer.fileName || '';
-        document.getElementById('exportFileName').value = fileName;
+            this.exportBtn = document.getElementById('exportBtn');
+            this.exportBtn.onclick = this.onExportBtn.bind(this);
 
-        fileName = fileName.replace('.json', '');
+            this.selectJSON = document.getElementById('selectJSON');
+            this.selectJSON.onchange = this.onSelectJSON.bind(this);
 
-        ajaxGet(ContentManager.baseURL + 'app/php/json-files.php', function (response) {
-            var html = '<option value="0" >none</option>';
-            for (var i = 0; i < response.length; i++) {
-                var file = response[i];
-                var selected = '';
-                if (fileName === file.name) {
-                    selected = 'selected="selected"';
+            var fileName = this.editor.importer.fileName || '';
+            document.getElementById('exportFileName').value = fileName;
+
+            fileName = fileName.replace('.json', '');
+
+            ajaxGet(ContentManager.baseURL + 'app/php/json-files.php', function (response) {
+                var html = '<option value="0" >none</option>';
+                for (var i = 0; i < response.length; i++) {
+                    var file = response[i];
+                    var selected = '';
+                    if (fileName === file.name) {
+                        selected = 'selected="selected"';
+                    }
+                    html += '<option ' + selected + ' value="' + file.url + '" >' + file.name + '</option>';
                 }
-                html += '<option ' + selected + ' value="' + file.url + '" >' + file.name + '</option>';
-            }
-            that.selectJSON.innerHTML = html;
-        });
+                that.selectJSON.innerHTML = html;
+            });
 
+        }
 
 
     };
@@ -340,7 +349,11 @@
         if (r === true) {
             this.editor.importer.clearStage();
             this.editor.setDefaultLayer();
-            document.getElementById('exportFileName').value = '';
+            
+            if (editorConfig.features.exportToFiles) {
+                document.getElementById('exportFileName').value = '';
+            }
+            
         }
     };
 
@@ -427,8 +440,8 @@
 
         store.set(ContentManager.baseURL + 'editor-saved-content', jsonString);
 
-        ContentManager.jsons[fileName.replace('.json','')] = data;
-        previewData = data.objects;
+        ContentManager.jsons[fileName.replace('.json', '')] = data;
+        
     };
 
     HtmlInterface.prototype.onImportJSONBtn = function (evt) {

@@ -1,8 +1,13 @@
 <?php
 
+// exportToFiles
+
+$json = file_get_contents('../../config.json');
+$editorConfig = json_decode($json);
+
 define('DS', DIRECTORY_SEPARATOR);
 
-define('ASSETS_DIR', '../assets/data');
+define('ASSETS_DIR', str_replace('/', DS, $editorConfig->import->filesURL));
 
 $main_dir = getcwd() . DS . '..' . DS . '..' . DS . ASSETS_DIR;
 
@@ -30,9 +35,11 @@ function beforeComma($string) {
 function create_url($dir) {
     global $main_dir;
     $url = str_replace($main_dir, '', $dir);
+    $url = str_replace("\\", "/", $url);
     $url = str_replace(DS, "/", $url);
+ 
     //  return $url;
-    return ASSETS_DIR . $url . '/';
+    return str_replace(DS, "/",ASSETS_DIR) . $url . '/';
 }
 
 function listFolderFiles($dir, $folder_name) {

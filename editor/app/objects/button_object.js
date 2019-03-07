@@ -12,6 +12,7 @@
 
         this._padding = 20;
         this.type = 'ButtonObject';
+        this.hasLabel = true;
 
         this.background = new NineSlice(imageName, '15');
         this.addChild(this.background);

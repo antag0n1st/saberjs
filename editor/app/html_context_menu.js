@@ -23,65 +23,41 @@
 
         var html = '';
 
-        html += '<div id="contextMenu" class="dropdown bootstrapMenu">';
-        html += '<ul class="dropdown-menu" style="position:static;display:block;font-size:0.9em;">';
+        html += '<div id="contextMenu"class="dropdown-menu" aria-labelledby="navbarDropdown" >';
 
-        if (object instanceof LabelObject || object instanceof ButtonObject || object instanceof InputObject) {
-            html += '<li role="presentation" >';
-            html += '<a id="contextEdit" href="#" role="menuitem">';
+        if (object.hasLabel) {
+            html += '<div id="contextEdit" class="dropdown-item" >';
             html += '<i class="fa fa-fw fa-lg fa-pencil"></i> ';
             html += '<span class="actionName">Edit Text</span>';
-            html += '</a>';
-            html += '</li>';
+            html += '</div>';
         }
 
+        // <div class="dropdown-divider"></div>
 
-        html += '<li role="presentation"  >';
-        html += '<a id="contextFindInTree" href="#" role="menuitem">';
+        html += '<div id="contextFindInTree" class="dropdown-item" >';
         html += '<i class="fa fa-fw fa-lg fa-search"></i> ';
         html += '<span class="actionName">Find In Tree</span>';
-        html += '</a>';
-        html += '</li>';
-
-//        if (object instanceof ImageObject) {
-//
-//            html += '<li role="presentation" >';
-//            html += '<a id="contextConvertToButton" href="#" role="menuitem">';
-//            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
-//            html += '<span class="actionName">Convert To Btn</span>';
-//            html += '</a>';
-//            html += '</li>';
-//
-//            html += '<li role="presentation" >';
-//            html += '<a id="contextConvertToInput" href="#" role="menuitem">';
-//            html += '<i class="fa fa-fw fa-lg fa-exchange"></i> ';
-//            html += '<span class="actionName">Convert To Input</span>';
-//            html += '</a>';
-//            html += '</li>';
-//
-//        }
+        html += '</div>';
 
         if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
-            html += '<li role="presentation" >';
-            html += '<a id="contextChangeImage" href="#" role="menuitem">';
+            html += '<div id="contextChangeImage" class="dropdown-item" >';
+
             html += '<i class="fa fa-fw fa-lg fa-picture-o"></i> ';
             html += '<span class="actionName">Change Image</span>';
-            html += '</a>';
-            html += '</li>';
+
+            html += '</div>';
         }
 
-        html += '<li role="presentation"  >';
-        html += '<a id="contextSaveAsPrefab" href="#" role="menuitem">';
+        html += '<div id="contextSaveAsPrefab" class="dropdown-item"  >';
         html += '<i class="fa fa-fw fa-lg fa-cube"></i> ';
         html += '<span class="actionName">Save as Prefab</span>';
-        html += '</a>';
-        html += '</li>';
+        html += '</div>';
 
-        html += '</ul>';
         html += ' </div>';
 
         var container = document.createElement("div");
         container.innerHTML = html;
+
         var cm = container.getElementsByTagName('div')[0];
         var oldContextMenu = document.getElementById('contextMenu');
         if (oldContextMenu) {
@@ -90,7 +66,7 @@
         document.body.appendChild(cm);
 
         // bind events here
-        if (object instanceof LabelObject || object instanceof ButtonObject || object instanceof InputObject) {
+        if (object.hasLabel) {
             var contextEdit = document.getElementById('contextEdit');
             contextEdit.onclick = this.onContextEditBtn.bind(this);
         }
@@ -119,38 +95,6 @@
         this.htmlInterface.contextMenuHtml = document.getElementById('contextMenu');
 
 
-
-        //        <li role="presentation" data-action="editDescription" class="disabled">
-        //            <a href="#" role="menuitem">
-        //                <i class="fa fa-fw fa-lg fa-pencil"></i> 
-        //                <span class="actionName">Edit description</span>
-        //            </a>
-        //        </li>
-
-        //        <li role="presentation" class="noActionsMessage disabled" style="display: none;">
-        //            <a href="#" role="menuitem">
-        //                <span>No available actions</span>
-        //            </a>
-        //        </li>
-
-        //        <li class="divider"></li>
-
-        //        <li role="presentation" data-action="setEditable" class="" style="">
-        //            <a href="#" role="menuitem">
-        //                <i class="fa fa-fw fa-lg fa-unlock"></i> 
-        //                <span class="actionName">Set editable</span>
-        //            </a>
-        //        </li>
-
-
-        //        <li role="presentation" class="noActionsMessage disabled" style="display: none;">
-        //            <a href="#" role="menuitem">
-        //                <span>No available actions</span>
-        //            </a>
-        //        </li>
-
-
-
     };
 
     HtmlContextMenu.prototype.open = function (point) {
@@ -165,7 +109,7 @@
 
         var size = app.device.windowSize();
         var canvasPadding = Config.canvas_padding.split(' ');
-        
+
         var w = size.width - canvasPadding[1] - canvasPadding[3];
         var h = size.height - canvasPadding[0] - canvasPadding[2];
 
@@ -354,12 +298,13 @@
         htmlLibrary.delegate = this;
         htmlLibrary.addFiles(app.libraryImages);
         htmlLibrary.show();
+        
+        htmlLibrary.displayContainer.style.height = '400px';
 
         var height = htmlLibrary.displayContainer.style.height;
         height = height.replace('px', '');
         height = Math.round(height);
-
-        this.imageBrowser.style.height = (height + 30) + 'px';
+        
         this.imageBrowser.style.top = '75px';
         this.imageBrowser.style.left = '25px';
 

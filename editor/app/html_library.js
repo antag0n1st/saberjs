@@ -90,8 +90,10 @@
             }
 
         }
-
-        this.displayContainer.style.height = (app.device.windowSize().height - 120) + 'px';
+        
+        if(!this.displayContainer.style.height){
+            this.displayContainer.style.height = (app.device.windowSize().height - 80) + 'px';
+        }        
 
 
     };

@@ -44,28 +44,13 @@
 
         this.textFontFamily.onchange = this.onFontFamily.bind(this);
 
-        this.textColorPicker = $('#colorPicker').colorpicker({
-            useAlpha: false,
-            customClass: 'colorpicker-2x',
-            sliders: {
-                saturation: {
-                    maxLeft: 200,
-                    maxTop: 200
-                },
-                hue: {
-                    maxTop: 200
-                },
-                alpha: {
-                    maxLeft: 0,
-                    maxTop: 100,
-                    callLeft: false,
-                    callTop: false
-                }}
-        });
-        this.textColorPicker.on('changeColor', function (e) {
+        var pickerOptions = HtmlElements.getPickerOptions();
+       
+        delete pickerOptions.extensions[0].options.colors.transparent;
 
-            that.onTextColorChange(e.color.toHex());
-
+        this.textColorPicker = $('#colorPicker').colorpicker(pickerOptions);
+        this.textColorPicker.on('change', function (e) {
+            that.onTextColorChange(e.color.toHexString());
         });
 
         /////////////////////
@@ -74,28 +59,9 @@
         this.textStrokeThickness.onwheel = this.onStrokeThicknessWheel.bind(this);
         this.textStrokeThickness.onkeyup = this.onStrokeThickness.bind(this);
 
-        this.textStrokeColorPicker = $('#strokeColorPicker').colorpicker({
-            useAlpha: false,
-            customClass: 'colorpicker-2x',
-            sliders: {
-                saturation: {
-                    maxLeft: 200,
-                    maxTop: 200
-                },
-                hue: {
-                    maxTop: 200
-                },
-                alpha: {
-                    maxLeft: 0,
-                    maxTop: 100,
-                    callLeft: false,
-                    callTop: false
-                }}
-        });
-        this.textStrokeColorPicker.on('changeColor', function (e) {
-
-            that.onStrokeColorChange(e.color.toHex());
-
+        this.textStrokeColorPicker = $('#strokeColorPicker').colorpicker(pickerOptions);
+        this.textStrokeColorPicker.on('change', function (e) {
+            that.onStrokeColorChange(e.color.toHexString());
         });
 
         ///////////////////////////////////////////////////////
@@ -109,28 +75,9 @@
         this.shadowAngle = document.getElementById('shadowAngle');
         this.shadowAngle.onkeyup = this.onShadowAngle.bind(this);
 
-        this.shadowColorPicker = $('#shadowColorPicker').colorpicker({
-            useAlpha: false,
-            customClass: 'colorpicker-2x',
-            sliders: {
-                saturation: {
-                    maxLeft: 200,
-                    maxTop: 200
-                },
-                hue: {
-                    maxTop: 200
-                },
-                alpha: {
-                    maxLeft: 0,
-                    maxTop: 100,
-                    callLeft: false,
-                    callTop: false
-                }}
-        });
-        this.shadowColorPicker.on('changeColor', function (e) {
-
-            that.onShadowColorChange(e.color.toHex());
-
+        this.shadowColorPicker = $('#shadowColorPicker').colorpicker(pickerOptions);
+        this.shadowColorPicker.on('change', function (e) {
+            that.onShadowColorChange(e.color.toHexString());
         });
 
         this.letterSpacing = document.getElementById('letterSpacing');
@@ -390,7 +337,12 @@
 
         var clickedObject = this.editor.selectedObjects[0];
 
-        clickedObject.label.txt = this.textUpdateArea.value;
+        if (clickedObject.text !== undefined) {
+            clickedObject.text = this.textUpdateArea.value;
+        } else {
+            clickedObject.label.txt = this.textUpdateArea.value;
+        }
+
         clickedObject.updateSize();
         clickedObject.updateFrame();
 
@@ -405,7 +357,7 @@
 
         this.textUpdatePanel.style.display = 'block';
 
-        this.textUpdateArea.value = object.label.txt;
+        this.textUpdateArea.value = object.text || object.label.txt;
         this.textFontSize.value = (object.label.style.fontSize + '').replace('px', '');
         this.textAlign.value = object.label.style.align;
         this.textColorPicker.colorpicker('setValue', object.label.style.fill);

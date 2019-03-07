@@ -16,11 +16,11 @@ MainScreen.prototype.onPlayButton = function (event, sender) {
         this.htmlInterface.activateTab('settings');
         return;
     }
-
-
-
-
-    this.htmlInterface.saveCurrentContent(function () {
+    
+    var data = this.importer.export();
+ 
+    previewData = data.objects;
+    
 
         var leftToolbar = document.getElementById('leftToolbar');
         var sideToolbar = document.getElementById('sideToolbar');
@@ -70,7 +70,7 @@ MainScreen.prototype.onPlayButton = function (event, sender) {
         screen.addChild(backBtn);
 
 
-    }, true);
+  //  }, true);
 
 
 };

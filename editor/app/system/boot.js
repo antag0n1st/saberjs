@@ -1,14 +1,3 @@
 // perform initial checks here
 
-window.addEventListener("load", function () {
-
-    Config.lang = 'en';
-
-    PIXI.utils.skipHello();
-
-    app = new App();
-    
-   // app.adjustToolbars();
-        
-
-}, false);
+// this code has moved in the html file

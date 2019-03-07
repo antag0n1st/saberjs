@@ -45,10 +45,9 @@
         this.initialLoad(function () {
 
             this.loadAssets();
-
-
+            
             ajaxGet(ContentManager.baseURL + 'app/php/fonts.php', function (response) {
-                
+                                
                 for (var i = 0; i < response.length; i++) {
                     var font = response[i];
                     ContentManager.addFont(font.name, font.url);

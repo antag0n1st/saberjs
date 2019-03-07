@@ -24,10 +24,13 @@
         this.originalScale = new V();
         this.originalRotation = 0;
 
+
         this.initialSize = 0;
 
         this.canResize = true;
+        this.canSelect = true;
         this.hasFrame = true;
+        this.hasLabel = false;
 
         this.type = 'Entity';
 
@@ -355,6 +358,10 @@
         o.visible = this.visible;
         o.tint = this.tint;
 
+        if (!this.canSelect) {
+            o.canSelect = false;
+        }
+
         if (this.properties) {
             o.properties = this.properties;
         }
@@ -391,6 +398,7 @@
         this.className = data.className || '';
         this.tint = data.tint || 0xffffff;
         this.visible = data.visible;
+        this.canSelect = (data.canSelect === undefined) ? true : data.canSelect;
 
         if (data.properties) {
 

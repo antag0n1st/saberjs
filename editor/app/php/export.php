@@ -1,6 +1,14 @@
 <?php
 
-$path = '../../../assets/data/';
+$json = file_get_contents('../../config.json');
+$editorConfig = json_decode($json);
+
+define('DS', DIRECTORY_SEPARATOR);
+
+define('ASSETS_DIR', str_replace('/', DS, $editorConfig->export->writeDir));
+
+
+$path = getcwd() . DS . '..' . DS . '..' . DS . ASSETS_DIR.DS;
 
 function create_subdirs($file) {
 
