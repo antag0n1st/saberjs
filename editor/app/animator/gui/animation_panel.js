@@ -12,6 +12,9 @@
         this.guiInitialize.call(this);
 
         this.animator = null;
+        
+        this.zoomLevel = 1;
+        
 
         this.keyframes = [];
         this.controls = [];
@@ -56,21 +59,34 @@
         this.scrollRight.position.set(app.width - this.rightScrollWidth, 0); // , this.rightScrollWidth , this.panelHeight
         this.scrollRight.delegate = this;
         this.addChild(this.scrollRight);
+        
+        
 
         this.playbar = new AnimationPlaybar(this);
         this.playbar.position.set(this.panelLeftWidth + 2 + this.panelPadding, 0);
         this.playbar.playHead.delegate = this;
         this.addChild(this.playbar);
+        
+        this.scrollBottom = new AnimationScrollBottom(this);
+        this.scrollBottom.position.x = this.panelLeftWidth + 2 + this.panelPadding;        
+        this.scrollBottom.position.y = this.panelHeight- this.panelBottomHeight;
+        this.scrollBottom.delegate = this;
+        this.addChild(this.scrollBottom);
 
         this.controls.push(this.playbar.playHead);
         this.controls.push(this.scrollRight.pad);
+        this.controls.push(this.scrollBottom.pad);
 
         this.setSensorSize(app.width, this.panelHeight);
     };
 
     AnimationPanel.prototype.onRightScrollMove = function (percent) {
         this.leftPanel.scroll(percent);
-        this.rightPanel.scroll(percent);
+        this.rightPanel.scrollY(percent);
+    };
+    
+    AnimationPanel.prototype.onBottomScrollMove = function (percent) {
+        this.rightPanel.scrollX(percent);
     };
 
     AnimationPanel.prototype.onScroll = function (direction) {
@@ -86,7 +102,7 @@
             percent = Math.clamp(percent, 0, 1);
             that.scrollRight.setPercent(percent);
             that.leftPanel.scroll(percent);
-            that.rightPanel.scroll(percent);
+            that.rightPanel.scrollY(percent);
 
         }, 100).run('smooth_time_table_scroll');
 
@@ -102,7 +118,10 @@
 
         this.scrollRight.build();
 
+        this.scrollBottom.totalLength =  this.panelRightWidth;
+        this.scrollBottom.contentLength = this.rightPanel.cellWidth;
 
+        this.scrollBottom.build();
 
         //this.rightPanel.build();
 

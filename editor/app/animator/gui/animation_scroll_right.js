@@ -34,6 +34,8 @@
     };
 
     AnimationScrollRight.prototype.build = function () {
+        
+        
         var height = this.panel.panelHeight;
 
         this.pad.width = this.panel.rightScrollWidth;
@@ -52,7 +54,7 @@
     AnimationScrollRight.prototype.setPercent = function (percent) {
 
         var h = this.panel.panelHeight - this.pad.height;    
-        var y = this.percent * h;
+        var y = percent * h;
         this.pad.y = y;
         this.percent = percent;
 
