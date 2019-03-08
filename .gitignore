@@ -3,7 +3,3 @@
 /node_modules
 /package-lock.json
 /config.js
-/config.php
-/editor/config.js
-/editor/config.json
-/editor/extra_scripts.php
