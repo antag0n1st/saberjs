@@ -6,7 +6,7 @@ include_once './config.php';
 
 ////////////////////////////////////////////////////////////////////////////////
 ?><!DOCTYPE HTML>
-<html>
+<html lang='en'>
     <head>
         <title>SaberEditor</title>
         <meta charset="UTF-8">
@@ -21,36 +21,36 @@ include_once './config.php';
 
         <?php
         foreach ($_css as $stylesheet) {
-            echo '<link href="' . $stylesheet . '?v=' . time() . '" rel="stylesheet" type="text/css"/>' . "\n\t\t";
+            echo '<link href="' . $stylesheet . '?v=' . time() . '" rel="stylesheet" />' . "\n\t\t";
         }
 
         echo "\n\t\t";
-
-        echo '<script>  var editorConfig =' . $json . ' ; </script> '. "\n\t\t";
-        echo '<script>  var Config =' . $_app_config_json . ' ; </script> '. "\n\t\t";
-        
+        echo '<script>  var editorConfig =' . $json . ' ; </script> ' . "\n\t\t";
+        echo "\n\t\t";
+        echo '<script>  var Config =' . $_app_config_json . ' ; </script> ' . "\n\t\t";
+        echo "\n\t\t";
 
         foreach ($_base_scripts as $script) {
-            echo '<script src="' . $script . '?v=' . time() . '" type="text/javascript"></script>' . "\n\t\t";
+            echo '<script src="' . $script . '?v=' . time() . '" ></script>' . "\n\t\t";
         }
 
         include './scripts.php';
-        
+
         foreach ($_javascripts as $jscript) {
-            echo '<script src="' . $jscript . '?v=' . time() . '" type="text/javascript"></script>' . "\n\t\t";
+            echo '<script src="' . $jscript . '?v=' . time() . '" ></script>' . "\n\t\t";
         }
 
         echo "\n\t\t";
 
         foreach ($_extra_scripts as $extra_script) {
-            echo '<script src="' . $extra_script . '?v=' . time() . '" type="text/javascript"></script>' . "\n\t\t";
+            echo '<script src="' . $extra_script . '?v=' . time() . '" ></script>' . "\n\t\t";
         }
 
         echo "\n\t\t";
         ?>
 
 
-        <style type="text/css">
+        <style>
             body{
                 background-color: white;
             }
