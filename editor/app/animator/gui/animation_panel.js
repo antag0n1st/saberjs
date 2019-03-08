@@ -33,6 +33,8 @@
 
         this.backgroundColor = 0xf5fae4;
         this.panelBorderColor = 0x8d8d8d;
+        
+        //TODO figure out when to build , what to build
 
         ////////////////
 
@@ -122,10 +124,6 @@
         this.scrollBottom.contentLength = this.rightPanel.cellWidth;
 
         this.scrollBottom.build();
-
-        //this.rightPanel.build();
-
-        //TODO build right scroll
 
     };
 

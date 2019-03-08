@@ -3,7 +3,6 @@
 
 include_once './config.php';
 
-
 ////////////////////////////////////////////////////////////////////////////////
 ?><!DOCTYPE HTML>
 <html lang='en'>
@@ -60,7 +59,7 @@ include_once './config.php';
 
     <body class="unselectable">   
 
-        <?php include_once './html.php'; ?>
+        <?php include_once $editorConfig->html_path; ?>
 
     </body>
 

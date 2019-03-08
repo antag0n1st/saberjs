@@ -2,36 +2,39 @@
 
 // used for caching
 
+define('DS', DIRECTORY_SEPARATOR);
+define('BASE_DIR', dirname(dirname(__FILE__)) . DS);
+
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
 $_config = [
-    'name' => 'Saber Editor',
+    'name' => 'editor',
     'features' =>
     [
-        'zoom' => true,
-        'constraints' => true,
-        'customProperties' => true,
+        'zoom' => false,
+        'constraints' => false,
+        'customProperties' => false,
         'playButton' => true,
-        'animator' => true,
-        'exportToFiles' => true,
-        'authentication' => false,
+        'animator' => false,
+        'exportToFiles' => false
     ],
     'colors' => [],
-    'library' => '../assets/images',
-    'fonts' => '../assets/fonts',
+    'library' => '../content/images',
+    'fonts' => '../client/assets/fonts',
     'import' =>
     [
-        'filesURL' => '../assets/data',
+        'filesURL' => '../jscore/assets/data',
     ],
     'export' =>
     [
         'url' => 'app/php/export.php',
-        'writeDir' => '../assets/data',
-        'callback' => ['../tools/assets.php', '../tools/fonts.php'],
+        'writeDir' => '../jscore/assets/data',
+        'callback' => ['../jscore/tools/assets.php', '../jscore/tools/fonts.php'],
     ],
     'plugins' => [],
+    'html_path' => 'html.php'
 ];
 
 $json = json_encode($_config);
@@ -53,7 +56,7 @@ $_app_config = [
     'MODE_PADDING' => 5,
     'window_mode' => 5,
     'window_mode_mobile' => NULL,
-    'canvas_padding' => '50 360 0 50',
+    'canvas_padding' => '0 0 0 0',
     'is_sound_on' => true,
     'debug_info' => true,
     'debug' => false,
@@ -90,28 +93,17 @@ $_css = [
 ];
 
 $_base_scripts = [
-    '../pixi.min.js',
-    '../lib.min.js'
+    '../jscore/pixi.min.js',
+    '../jscore/lib.min.js'
 ];
 
 $_extra_scripts = [
-    '../app/screens/dashboard_screen.js', // preview
-    'editor_ready.example.js', // hooks
-    'app/animator/gui/animation_gui.js',
-    'app/animator/gui/animation_panel.js',
-    'app/animator/gui/animation_control_panel.js',
-    'app/animator/animator.js',
-    'app/animator/animation.js',
-    'app/animator/animation_thread.js',
-    'app/animator/gui/animation_playbar.js',
-    'app/animator/gui/animation_play_head.js',
-    'app/animator/gui/animation_panel_left.js',
-    'app/animator/gui/animation_panel_right.js',
-    'app/animator/gui/animation_scroll_right.js',
-    'app/animator/gui/animation_scroll_bottom.js'
+    '../jscore/app/screens/dashboard_screen.js',
+    'mymathcore/editor_ready.js',
+    'mymathcore/mathcore.js',
+    'mymathcore/math_symbols.js',
+    'mymathcore/label_object.js',
+    'mymathcore/gui/drop_down_menu.js'
 ];
-
-
-///////////////////////////////// do other code here
 
 
