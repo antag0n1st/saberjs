@@ -1,5 +1,2 @@
-config.json
+config.php
 config.js
-editor_ready.js
-views/base_scripts.php
-views/extra_scripts.php

@@ -1,8 +1,6 @@
 <?php
 
-$json = file_get_contents('../../config.json');
-$editorConfig = json_decode($json);
-
+include_once '../../config.php';
 
 define('DS', DIRECTORY_SEPARATOR);
 

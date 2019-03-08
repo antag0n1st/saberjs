@@ -1,7 +1,6 @@
 <?php
 
-$json = file_get_contents('../../config.json');
-$editorConfig = json_decode($json);
+include_once '../../config.php';
 
 $atlas_array = [];
 

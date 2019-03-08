@@ -134,7 +134,9 @@
 
         }
 
-        onEditorReady(this);
+        if (this._onEditorReady) {
+            this._onEditorReady(this);
+        }
 
     };
 

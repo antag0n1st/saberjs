@@ -1,12 +1,8 @@
 <?php
 ////////////////////////////////////////////////////////////////////////////////
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
+include_once './config.php';
 
-$json = file_get_contents('./config.json');
-$editorConfig = json_decode($json);
 
 ////////////////////////////////////////////////////////////////////////////////
 ?><!DOCTYPE HTML>
@@ -23,11 +19,36 @@ $editorConfig = json_decode($json);
 
         <link rel="shortcut icon" sizes="256x256" href="assets/images/favicon.png" />
 
-        <?php include './views/css.php'; ?>
+        <?php
+        foreach ($_css as $stylesheet) {
+            echo '<link href="' . $stylesheet . '?v=' . time() . '" rel="stylesheet" type="text/css"/>' . "\n\t\t";
+        }
 
-        <?php include './views/base_scripts.php'; ?>
-        <?php include './views/scripts.php'; ?>
-        <?php include './views/extra_scripts.php'; ?>
+        echo "\n\t\t";
+
+        echo '<script>  var editorConfig =' . $json . ' ; </script> '. "\n\t\t";
+        echo '<script>  var Config =' . $_app_config_json . ' ; </script> '. "\n\t\t";
+        
+
+        foreach ($_base_scripts as $script) {
+            echo '<script src="' . $script . '?v=' . time() . '" type="text/javascript"></script>' . "\n\t\t";
+        }
+
+        include './scripts.php';
+        
+        foreach ($_javascripts as $jscript) {
+            echo '<script src="' . $jscript . '?v=' . time() . '" type="text/javascript"></script>' . "\n\t\t";
+        }
+
+        echo "\n\t\t";
+
+        foreach ($_extra_scripts as $extra_script) {
+            echo '<script src="' . $extra_script . '?v=' . time() . '" type="text/javascript"></script>' . "\n\t\t";
+        }
+
+        echo "\n\t\t";
+        ?>
+
 
         <style type="text/css">
             body{
@@ -39,7 +60,7 @@ $editorConfig = json_decode($json);
 
     <body class="unselectable">   
 
-        <?php include_once './views/html.php'; ?>
+        <?php include_once './html.php'; ?>
 
     </body>
 
