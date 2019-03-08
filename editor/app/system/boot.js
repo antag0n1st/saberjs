@@ -1,3 +1,9 @@
-// perform initial checks here
+window.addEventListener("load", function () {
 
-// this code has moved in the html file
+    Config.lang = 'en';
+
+    PIXI.utils.skipHello();
+
+    app = new App();
+
+}, false);
