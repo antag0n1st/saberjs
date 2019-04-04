@@ -122,7 +122,7 @@
 
             timeout(function () {
 
-                this.animator = new AnimationPanel();
+                this.animator = new AnimationPanel(this);
                 this.animator.zIndex = 11; // above the 
                 this.animator.position.set(0, app.height - this.animator.panelHeight);
                 this.addTouchable(this.animator);

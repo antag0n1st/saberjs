@@ -259,14 +259,21 @@
 
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
+            
+            var _value = item;
+            var _name = item;
+            
+            if(typeof item === "object"){
+                _value = item.value;
+                _name = item.name;
+            }
 
             html += '<option';
-            //  html += ' class="" ';
-            if (item == value) {
+            if (_value == value) {
                 html += ' selected="selected"';
             }
             html += '>';
-            html += item;
+            html += _name;
             html += '</option>';
 
         }

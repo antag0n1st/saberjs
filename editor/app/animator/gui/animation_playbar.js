@@ -18,7 +18,7 @@
         this.drawRect(0, 0, 1, this.panel.panelHeight, this.panel.panelBorderColor);
         this.drawRect(this.panel.panelRightWidth, 0, 1, this.panel.panelHeight, this.panel.panelBorderColor);
 
-        this.playHead = new AnimationPlayHead();
+        this.playHead = new AnimationPlayHead(panel);
         this.playHead.y = 25;
         this.playHead.x = 50;
         this.playHead.timelineLength = this.panel.panelRightWidth;

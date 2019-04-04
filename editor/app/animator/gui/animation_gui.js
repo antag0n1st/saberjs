@@ -11,8 +11,8 @@
         PIXI.Container.call(this);
 
     };
-    
-     AnimationGUI.prototype.drawRect = function (x, y, width, height, color, alpha) {
+
+    AnimationGUI.prototype.drawRect = function (x, y, width, height, color, alpha, layer) {
 
         var rect = new Sprite('white');
         rect.width = width;
@@ -20,7 +20,12 @@
         rect.tint = color;
         rect.position.set(x, y);
         rect.alpha = alpha || 1;
-        this.addChild(rect);
+        if (layer) {
+            layer.addChild(rect);
+        } else {
+            this.addChild(rect);
+        }
+
 
         return rect; // so that I might change the tint
 

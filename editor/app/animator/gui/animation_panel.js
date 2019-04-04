@@ -1,20 +1,23 @@
 (function (window, undefined) {
 
-    function AnimationPanel() {
-        this.initialize();
+    function AnimationPanel(editor) {
+        this.initialize(editor);
     }
 
     AnimationPanel.prototype = new AnimationGUI();
     AnimationPanel.prototype.guiInitialize = AnimationPanel.prototype.initialize;
 
-    AnimationPanel.prototype.initialize = function () {
+    AnimationPanel.prototype.initialize = function (editor) {
 
         this.guiInitialize.call(this);
 
         this.animator = null;
-        
+        this.editor = editor;
+
         this.zoomLevel = 1;
-        
+        this.factor = 0.6 * this.zoomLevel;
+        this.FPS = 30;
+
 
         this.keyframes = [];
         this.controls = [];
@@ -33,7 +36,7 @@
 
         this.backgroundColor = 0xf5fae4;
         this.panelBorderColor = 0x8d8d8d;
-        
+
         //TODO figure out when to build , what to build
 
         ////////////////
@@ -61,17 +64,17 @@
         this.scrollRight.position.set(app.width - this.rightScrollWidth, 0); // , this.rightScrollWidth , this.panelHeight
         this.scrollRight.delegate = this;
         this.addChild(this.scrollRight);
-        
-        
+
+
 
         this.playbar = new AnimationPlaybar(this);
         this.playbar.position.set(this.panelLeftWidth + 2 + this.panelPadding, 0);
         this.playbar.playHead.delegate = this;
         this.addChild(this.playbar);
-        
+
         this.scrollBottom = new AnimationScrollBottom(this);
-        this.scrollBottom.position.x = this.panelLeftWidth + 2 + this.panelPadding;        
-        this.scrollBottom.position.y = this.panelHeight- this.panelBottomHeight;
+        this.scrollBottom.position.x = this.panelLeftWidth + 2 + this.panelPadding;
+        this.scrollBottom.position.y = this.panelHeight - this.panelBottomHeight;
         this.scrollBottom.delegate = this;
         this.addChild(this.scrollBottom);
 
@@ -86,12 +89,28 @@
         this.leftPanel.scroll(percent);
         this.rightPanel.scrollY(percent);
     };
-    
+
     AnimationPanel.prototype.onBottomScrollMove = function (percent) {
         this.rightPanel.scrollX(percent);
     };
 
     AnimationPanel.prototype.onScroll = function (direction) {
+
+        if (this.editor.shortcuts.isCtrlPressed) {
+
+            this.zoomLevel += direction * 0.1;
+            this.zoomLevel = Math.clamp(this.zoomLevel, 0.1, 3);
+            
+            this.factor = 0.5 * this.zoomLevel;
+
+            this.rightPanel.zoomLevel = this.zoomLevel;
+            this.rightPanel.build();
+            this.scrollBottom.totalLength = this.panelRightWidth;
+            this.scrollBottom.contentLength = this.rightPanel.cellWidth;
+            this.scrollBottom.build();
+
+            return;
+        }
 
         var that = this;
 
@@ -111,16 +130,16 @@
     };
 
     AnimationPanel.prototype.build = function () {
+
         this.leftPanel.build();
         this.rightPanel.build();
 
-        //
         this.scrollRight.totalLength = this.leftPanel.panelHeight;
         this.scrollRight.contentLength = this.leftPanel.contentLength;
 
         this.scrollRight.build();
 
-        this.scrollBottom.totalLength =  this.panelRightWidth;
+        this.scrollBottom.totalLength = this.panelRightWidth;
         this.scrollBottom.contentLength = this.rightPanel.cellWidth;
 
         this.scrollBottom.build();
@@ -130,6 +149,8 @@
     AnimationPanel.prototype.show = function (actor) {
 
         this.animator = new Animator(actor);
+        // the animator will hold all the info
+
         this.build();
 
         this.isTouchable = true;
@@ -149,7 +170,7 @@
         Actions.stopByTag('animator_show');
 
         new TweenAlpha(this, 0, null, 200, function () {
-            this.object.removeChildren();
+            // this.object.removeChildren();
         }).run('animator_show');
 
         this.isOn = false;
