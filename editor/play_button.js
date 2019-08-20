@@ -1,43 +1,48 @@
 MainScreen.prototype.onPlayButton = function (event, sender) {
 
-//    trace("You need to implement this method");
-//    this.htmlInterface.saveCurrentContent(function () {
-//        app.navigator.add(new DashboardScreen());
-//    }, true);
-
     if (!this.previewScreenName) {
         toastr.error("Please specify a Preview Screen Name");
         this.htmlInterface.activateTab('settings');
         var input = document.getElementById('previewScreenInput');
         input.focus();
         return;
-    } else if(!window[this.previewScreenName]){
+    } else if (!window[this.previewScreenName]) {
         toastr.error("Please include the screen in the extra_scripts.php");
         this.htmlInterface.activateTab('settings');
         return;
     }
-    
+
     var data = this.importer.export();
- 
-    previewData = data.objects;
-    
+    if (this._exportAddapter) {
+        data = this._exportAddapter(data, this.importer);
+    }
 
-        var leftToolbar = document.getElementById('leftToolbar');
-        var sideToolbar = document.getElementById('sideToolbar');
-        var topToolbar = document.getElementById('topToolbar');
+    //TODO filter content here
 
-        leftToolbar.style.display = 'none';
-        sideToolbar.style.display = 'none';
-        topToolbar.style.display = 'none';
+    previewData = data;
 
-        Config.canvas_padding = '0 0 0 0';
+    var leftToolbar = document.getElementById('leftToolbar');
+    var sideToolbar = document.getElementById('sideToolbar');
+    var topToolbar = document.getElementById('topToolbar');
 
-        timeout(function () {
-            app.resize();
-        }, 100);
+    leftToolbar.style.display = 'none';
+    sideToolbar.style.display = 'none';
+    topToolbar.style.display = 'none';
 
-        var screen = new DashboardScreen();
-        app.navigator.add(screen);
+    Config.canvas_padding = '0 0 0 0';
+    Config.window_mode = Config.MODE_CENTERED;
+
+    if (this._onPlayButton) {
+        this._onPlayButton();
+    }
+
+    app.resize();
+
+    var that = this;
+
+    timeout(function () {
+        var screen = new window[that.previewScreenName]();
+        app.navigator.add(screen, 100);
 
         var backBtn = new Button('Exit', Style.DEFAULT_BUTTON, Button.TYPE_NINE_SLICE);
         var w = 70;
@@ -50,6 +55,15 @@ MainScreen.prototype.onPlayButton = function (event, sender) {
         backBtn.onMouseUp = function () {
 
             Config.canvas_padding = '50 360 0 50'; // top - right - bottom - left
+            Config.window_mode = Config.MODE_PADDING;
+
+
+            if (that._onBackButton) {
+                that._onBackButton();
+
+            }
+
+
 
             var leftToolbar = document.getElementById('leftToolbar');
             var sideToolbar = document.getElementById('sideToolbar');
@@ -69,8 +83,12 @@ MainScreen.prototype.onPlayButton = function (event, sender) {
         screen.addTouchable(backBtn);
         screen.addChild(backBtn);
 
+    }, 100);
 
-  //  }, true);
+
+
+
+    //  }, true);
 
 
 };

@@ -28,6 +28,8 @@ include_once './config.php';
         echo "\n\t\t";
         echo '<script>  var Config =' . $_app_config_json . ' ; </script> ' . "\n\t\t";
         echo "\n\t\t";
+        echo '<script>  var _extraScripts =' . json_encode($_extra_scripts) . ' ; </script> ' . "\n\t\t";
+        echo "\n\t\t";
 
         foreach ($_base_scripts as $script) {
             echo '<script src="' . $script . '?v=' . time() . '" ></script>' . "\n\t\t";

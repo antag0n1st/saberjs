@@ -2,6 +2,12 @@
 
     <div style="height: 50px;"></div>
 
+    <button id="duplicateButton" class="btn btn-sm btn-success" style="margin-left: 1px;"  type="button" >
+        <i class="fa fa-copy"></i>
+    </button>
+
+    <div style="width:100%;border-bottom:1px solid #555555; border-top:1px solid white; margin: 5px 0px 10px 0px; padding:0;" ></div>
+
     <div id="editorModes" style="display: inline;">
 
     </div>
@@ -79,13 +85,18 @@
         </div>
 
         <div id="prefabsPanel" class="form-inline none">
+            <div style="line-height: normal;margin-bottom: 15px;">
+                <input id="prefab-search-input" style="width: 70%; display: inline-block;" type="text" class="form-control" placeholder="Search ..." />
+                <button id="prefabs-explorer" style="display: inline-block;" class="btn btn-info"> <i class="fa fa-edit"></i> Edit </button>
+            </div>
+
             <div id="prefabsContent" class="libraryContent">
 
             </div>
         </div>
 
         <div id="imageLibraryPanel" class="none">
-
+            <input id="images-search-input" style="width: 100%;margin-bottom: 15px;" type="text" class="form-control" placeholder="Search ..." />
             <div id="imageLibraryContent" class="libraryContent" >
 
             </div>
@@ -101,64 +112,6 @@
 
 </div>
 
-
-<div id="textUpdatePanel" class="card">
-
-    <div id="textUpdatePanelHeader" class="card-header" style="cursor: move; height: 20px;">
-
-    </div>
-
-    <div class="card-body">
-        <textarea id="textUpdateArea" class="form-control"></textarea>
-    </div>
-
-    <div class="card-body" style="margin-bottom: 0px">
-        <label>Font</label>
-        <input id="textFontSize" class="form-control" style="width: 60px;">
-        <div id="colorPicker" class="input-group color-pickers" style="width: 140px; display: inline-flex;">
-            <input type="text" class="form-control" value="#DD0F20"/>
-            <span class="input-group-text colorpicker-input-addon"><i></i></span>
-        </div>
-        <select id="textFontFamily" class="form-control" style="width: 165px; display: inline;">
-        </select>                
-        <select id="textAlign" class="form-control" style="width: 90px; display: inline;">
-            <option value="left">Left</option>
-            <option value="center">Center</option>
-            <option value="right">Right</option>
-        </select>
-    </div>
-
-    <div class="card-body" style="margin-bottom: 0px">
-        <label>Stroke</label>
-        <input id="textStrokeThickness" class="form-control" style="width: 60px;">
-        <div id="strokeColorPicker" class="input-group color-pickers" style="width: 165px; display: inline-flex;">
-            <input type="text" class="form-control" value="#DD0F20"/>
-            <span class="input-group-text colorpicker-input-addon"><i></i></span>
-        </div>
-    </div>
-
-    <div class="card-body" style="margin-bottom: 0px">
-        <label>Shadow</label>
-        <input id="shadowDistance" class="form-control" style="width: 40px;">
-        <label> Angle</label>
-        <input id="shadowAngle" class="form-control" style="width: 60px;">
-        <div id="shadowColorPicker" class="input-group color-pickers" style="width: 165px; display: inline-flex;">
-            <input type="text" class="form-control" value="#DD0F20"/>
-            <span class="input-group-text colorpicker-input-addon"><i></i></span>
-        </div>
-    </div>
-
-    <div class="card-body">
-        <label>Letter Spacing</label>
-        <input id="letterSpacing" class="form-control" style="width: 60px;">
-        <label> Line Height</label>
-        <input id="lineHeight" class="form-control" style="width: 60px;">
-        <label> Texture Padding</label>
-        <input id="texturePadding" class="form-control" style="width: 60px;">
-    </div>
-
-
-</div>
 
 <div id="addLayerModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-sm" role="document">
@@ -246,15 +199,51 @@
     </div>
 </div>
 
-<div id="imageBrowser" style="position: absolute; background: white; width: 450px; padding: 0px 5px 5px 5px; display: none; border: 1px solid #555555;" >
+<div class="card" id="imageBrowser" style="position: absolute; width: 470px; display: none; top:75px;left:25px;" >
 
-    <div class="panel-heading" style="padding: 0; overflow: hidden;">
-        <div id="closeImageBrowser" class="btn btn-xs" style="float: right;">
+
+    <div id="imageBrowserHeader" class="card-header" style="padding: 0; overflow: hidden;cursor: move;">
+        <div id="closeImageBrowser" class="btn btn-xs" style="float: right; cursor: pointer;">
             <i class="fa fa-close"></i>
         </div>
     </div>
 
-    <div id="imageLibraryBrowseContent"  class="libraryContent"  >
+    <div id="imageLibraryBrowseContent"  class="libraryContent card-body"  >
 
     </div>
 </div>
+
+<div class="card" id="genericModal" style="position: absolute;
+     width: 470px; 
+     display: none;
+     top:75px;
+     left:25px;
+     -webkit-box-shadow: 4px 4px 24px 0px rgba(0,0,0,0.5);
+     -moz-box-shadow: 4px 4px 24px 0px rgba(0,0,0,0.5);
+     box-shadow: 4px 4px 24px 0px rgba(0,0,0,0.5);
+     " >
+
+    <div id="genericModalHeader" class="card-header" style="padding: 0; overflow: hidden;cursor: move;">
+        <div id="genericModalClose" class="btn btn-xs" style="float: right; cursor: pointer;">
+            <i class="fa fa-close"></i>
+        </div>
+    </div>
+
+    <!-- genericModalTitle -->
+
+    <div id="genericModalContent"  class="libraryContent card-body"  >
+
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load", function () {
+
+        Config.lang = 'en';
+
+        PIXI.utils.skipHello();
+
+        app = new App();
+
+    }, false);
+</script>

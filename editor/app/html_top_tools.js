@@ -15,110 +15,14 @@
 
     HtmlTopTools.prototype.bindHTML = function () {
 
-        // WORKING WITH LABEL
 
-        var that = this;
-
-
-        this.textUpdatePanel = document.getElementById('textUpdatePanel');
-        this.textUpdateArea = document.getElementById('textUpdateArea');
-        this.textUpdateArea.onkeyup = this.onTextareaKey.bind(this);
-        this.textUpdateArea.oninput = this.onTextareaKey.bind(this);
-
-        var size = app.device.windowSize();
-
-        var width = 300;
-        var height = 300;
-        var x = (size.width - 360) / 2 - width / 2;
-        var y = size.height / 2 - height / 2;
-        this.textUpdatePanel.style.left = x + 'px';
-        this.textUpdatePanel.style.top = y + 'px';
-
-        this.textFontSize = document.getElementById('textFontSize');
-        this.textFontFamily = document.getElementById('textFontFamily');
-        this.textAlign = document.getElementById('textAlign');
-
-        this.textFontSize.onkeyup = this.onFontSizeKey.bind(this);
-        this.textFontSize.onwheel = this.onFontSizeWheel.bind(this);
-        this.textAlign.onchange = this.onTextAlignChange.bind(this);
-
-        this.textFontFamily.onchange = this.onFontFamily.bind(this);
-
-        var pickerOptions = HtmlElements.getPickerOptions();
-       
-        delete pickerOptions.extensions[0].options.colors.transparent;
-
-        this.textColorPicker = $('#colorPicker').colorpicker(pickerOptions);
-        this.textColorPicker.on('change', function (e) {
-            that.onTextColorChange(e.color.toHexString());
-        });
-
-        /////////////////////
-
-        this.textStrokeThickness = document.getElementById('textStrokeThickness');
-        this.textStrokeThickness.onwheel = this.onStrokeThicknessWheel.bind(this);
-        this.textStrokeThickness.onkeyup = this.onStrokeThickness.bind(this);
-
-        this.textStrokeColorPicker = $('#strokeColorPicker').colorpicker(pickerOptions);
-        this.textStrokeColorPicker.on('change', function (e) {
-            that.onStrokeColorChange(e.color.toHexString());
-        });
-
-        ///////////////////////////////////////////////////////
-        // drop shadow
-
-
-        this.shadowDistance = document.getElementById('shadowDistance');
-        this.shadowDistance.onwheel = this.onShadowDistanceWheel.bind(this);
-        this.shadowDistance.onkeyup = this.onShadowDistance.bind(this);
-
-        this.shadowAngle = document.getElementById('shadowAngle');
-        this.shadowAngle.onkeyup = this.onShadowAngle.bind(this);
-
-        this.shadowColorPicker = $('#shadowColorPicker').colorpicker(pickerOptions);
-        this.shadowColorPicker.on('change', function (e) {
-            that.onShadowColorChange(e.color.toHexString());
-        });
-
-        this.letterSpacing = document.getElementById('letterSpacing');
-        this.letterSpacing.onkeyup = this.onLetterSpacing.bind(this);
-
-        this.lineHeight = document.getElementById('lineHeight');
-        this.lineHeight.onkeyup = this.onLineHeight.bind(this);
-
-        this.texturePadding = document.getElementById('texturePadding');
-        this.texturePadding.onkeyup = this.onTexturePadding.bind(this);
-
-        ////////////////////
-
-        var fonts = '';
-
-        font += '<option value="\'Times New Roman\', Times, serif">Times New Roman, Times, serif</option>';
-        fonts += '<option value="\'Arial Black\', Gadget, sans-serif">Arial Black, Gadget, sans-serif</option>';
-        fonts += '<option value="Impact, Charcoal, sans-serif">Impact, Charcoal, sans-serif</option>';
-        fonts += '<option value="\'Comic Sans MS\', cursive, sans-serif">Comic Sans MS, cursive, sans-serif</option>';
-        fonts += '<option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva, sans-serif</option>';
-
-        this.textFontFamily.innerHTML = '';
-
-
-
-        for (var property in Fonts) {
-            if (Fonts.hasOwnProperty(property)) {
-                var font = Fonts[property];
-
-                var opt = document.createElement('option');
-                opt.value = font.fontFamily;
-                opt.innerHTML = font.fontFamily;
-                this.textFontFamily.appendChild(opt);
-
-            }
-        }
-
-        this.textFontFamily.innerHTML += fonts;
+        
 
         this.saveButton = document.getElementById('saveButton');
         this.saveButton.onclick = this.onSaveBtn.bind(this);
+
+        this.duplicateButton = document.getElementById('duplicateButton');
+        this.duplicateButton.onclick = this.onDuplicateButton.bind(this);
 
         if (editorConfig.features.playButton) {
             this.playButton = document.getElementById('playButton');
@@ -153,241 +57,39 @@
         this.alignButtons = document.getElementById('alignButtons');
         this.spacingButtons = document.getElementById('spacingButtons');
         this.zIndexButtons = document.getElementById('zIndexButtons');
+
+
     };
 
-    ///////////////////////// LABEL EDIT PANEL /////////////////////////////////
-
-    HtmlTopTools.prototype.onTextColorChange = function (colorHex) {
-        var clickedObject = this.editor.selectedObjects[0];
-        if (clickedObject) {
-            clickedObject.label.style.fill = colorHex;
-        }
-    };
-
-    HtmlTopTools.prototype.onStrokeColorChange = function (colorHex) {
-        var clickedObject = this.editor.selectedObjects[0];
-        if (clickedObject) {
-            clickedObject.label.style.stroke = colorHex;
-        }
-    };
-
-    HtmlTopTools.prototype.onShadowColorChange = function (colorHex) {
-        var clickedObject = this.editor.selectedObjects[0];
-        if (clickedObject) {
-            clickedObject.label.style.dropShadowColor = colorHex;
-        }
-    };
-
-    HtmlTopTools.prototype.onStrokeThickness = function (e) {
-        var clickedObject = this.editor.selectedObjects[0];
-        if (clickedObject) {
-            clickedObject.label.style.strokeThickness = Math.round(this.textStrokeThickness.value);
-        }
-    };
-
-    HtmlTopTools.prototype.onShadowDistance = function (e) {
-        var clickedObject = this.editor.selectedObjects[0];
-        if (clickedObject) {
-            var value = Math.round(this.shadowDistance.value);
-            clickedObject.label.style.dropShadowDistance = value;
-            if (value) {
-                clickedObject.label.style.dropShadow = true;
-            } else {
-                clickedObject.label.style.dropShadow = false;
-            }
-        }
-    };
-
-    HtmlTopTools.prototype.onShadowAngle = function (e) {
-        var clickedObject = this.editor.selectedObjects[0];
-        if (clickedObject) {
-            var angle = Math.round(this.shadowAngle.value);
-            angle = Math.degreesToRadians(angle);
-            clickedObject.label.style.dropShadowAngle = angle;
-        }
-    };
-
-    HtmlTopTools.prototype.onTextAlignChange = function (e) {
-        var clickedObject = this.editor.selectedObjects[0];
-        clickedObject.label.style.align = this.textAlign.value;
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-    };
-
-    HtmlTopTools.prototype.onFontSizeWheel = function (e) {
-        var fontSize = (this.textFontSize.value + '').replace('px', '');
-        fontSize = Math.round(fontSize);
-        if (e.wheelDelta > 0) {
-            fontSize += 1;
-        } else {
-            fontSize -= 1;
-        }
-
-        var clickedObject = this.editor.selectedObjects[0];
-
-        fontSize = (fontSize < 10) ? 10 : fontSize;
-        fontSize = (fontSize > 600) ? 600 : fontSize;
-
-        clickedObject.label.style.fontSize = fontSize + 'px';
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-
-        this.textFontSize.value = fontSize;
-    };
-
-    HtmlTopTools.prototype.onStrokeThicknessWheel = function (e) {
-
-        var value = Math.round(this.textStrokeThickness.value);
-        if (e.wheelDelta > 0) {
-            value += 1;
-        } else {
-            value -= 1;
-        }
-        var clickedObject = this.editor.selectedObjects[0];
-        clickedObject.label.style.strokeThickness = value;
-
-        this.textStrokeThickness.value = value;
-
-    }; // onStrokeThicknessWheel
-
-    HtmlTopTools.prototype.onShadowDistanceWheel = function (e) {
-
-        var value = Math.round(this.shadowDistance.value);
-        if (e.wheelDelta > 0) {
-            value += 1;
-        } else {
-            value -= 1;
-        }
-
-        var clickedObject = this.editor.selectedObjects[0];
-        clickedObject.label.style.dropShadowDistance = value;
-        if (value) {
-            clickedObject.label.style.dropShadow = true;
-        } else {
-            clickedObject.label.style.dropShadow = false;
-        }
-        this.shadowDistance.value = value;
-    };
-    //onShadowDistanceWheel
-
-
-    HtmlTopTools.prototype.onFontSizeKey = function (e) {
-
-        var fontSize = (this.textFontSize.value + '').replace('px', '');
-        fontSize = Math.round(fontSize);
-        fontSize = (fontSize < 10) ? 10 : fontSize;
-        fontSize = (fontSize > 600) ? 600 : fontSize;
-
-        var clickedObject = this.editor.selectedObjects[0];
-
-        clickedObject.label.style.fontSize = fontSize + 'px';
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-    };
-
-    HtmlTopTools.prototype.onFontFamily = function (e) {
-
-        var clickedObject = this.editor.selectedObjects[0];
-
-        clickedObject.label.style.fontFamily = this.textFontFamily.value;
-
-        clickedObject.label.updateText();
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-    };
-
-
-    HtmlTopTools.prototype.onLetterSpacing = function () {
-        var clickedObject = this.editor.selectedObjects[0];
-
-        var value = Math.round(this.letterSpacing.value);
-        value = Math.clamp(value, -100, 100) || 0;
-
-        clickedObject.label.style.letterSpacing = value;
-
-        clickedObject.label.updateText();
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-    };
-
-    HtmlTopTools.prototype.onLineHeight = function () {
-        var clickedObject = this.editor.selectedObjects[0];
-
-        clickedObject.label.style.lineHeight = Math.round(this.lineHeight.value);
-
-        clickedObject.label.updateText();
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-    };
-
-    HtmlTopTools.prototype.onTexturePadding = function () {
-        var clickedObject = this.editor.selectedObjects[0];
-
-        clickedObject.label.style.padding = Math.round(this.texturePadding.value);
-
-        clickedObject.label.updateText();
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-    };
-
-
-
-
-    HtmlTopTools.prototype.onTextareaKey = function (e) {
-
-        var clickedObject = this.editor.selectedObjects[0];
-
-        if (clickedObject.text !== undefined) {
-            clickedObject.text = this.textUpdateArea.value;
-        } else {
-            clickedObject.label.txt = this.textUpdateArea.value;
-        }
-
-        clickedObject.updateSize();
-        clickedObject.updateFrame();
-
-    };
-    ///////////////////////////
-
-    HtmlTopTools.prototype.onLabelDragStart = function (ev) {
-        ev.dataTransfer.setData("action", 'dropLabel');
-    };
-
-    HtmlTopTools.prototype.showTextEdit = function (object) {
-
-        this.textUpdatePanel.style.display = 'block';
-
-        this.textUpdateArea.value = object.text || object.label.txt;
-        this.textFontSize.value = (object.label.style.fontSize + '').replace('px', '');
-        this.textAlign.value = object.label.style.align;
-        this.textColorPicker.colorpicker('setValue', object.label.style.fill);
-        this.textFontFamily.value = object.label.style.fontFamily;
-
-        this.textStrokeThickness.value = object.label.style.strokeThickness;
-        this.textStrokeColorPicker.colorpicker('setValue', object.label.style.stroke);
-
-        this.shadowAngle.value = Math.round(Math.radiansToDegrees(object.label.style.dropShadowAngle));
-        this.shadowDistance.value = object.label.style.dropShadowDistance;
-        this.shadowColorPicker.colorpicker('setValue', object.label.style.dropShadowColor);
-
-        this.lineHeight.value = object.label.style.lineHeight;
-        this.letterSpacing.value = object.label.style.letterSpacing;
-        this.texturePadding.value = object.label.style.padding;
-
-        this.textUpdateArea.focus();
-    };
-
-
-
-    HtmlTopTools.prototype.hideTextEdit = function () {
-        this.textUpdatePanel.style.display = 'none';
-    };
-
-    /////////////////////////////////////////////////////////////////////////////
+    
 
     HtmlTopTools.prototype.onSaveBtn = function () {
-        this.editor.htmlInterface.saveCurrentContent();
+        if (this.editor._customSave) {
+            this.editor._customSave();
+        } else {
+            this.editor.htmlInterface.saveCurrentContent();
+        }
+
     };
+
+    HtmlTopTools.prototype.onDuplicateButton = function () {
+     
+        if (this.editor.selectedObjects.length) {
+            
+            for (var i = 0; i < this.editor.selectedObjects.length; i++) {
+                var o = this.editor.selectedObjects[i];
+                if(o.type === "MessageBoxObject"){
+                    toastr.warning("Can't duplicate a Question Message Box");
+                    return;
+                }
+            }
+            
+            this.editor.copySelection();
+            this.editor.paste();
+        }
+    };
+
+
 
     // This method is inivoked when the zoom slider is moved
     HtmlTopTools.prototype.onZoomSlider = function (data) {
@@ -528,12 +230,23 @@
             a5 = "active";
         }
 
-        var html = HtmlElements.createImageButton('_icon_select', 'htmlInterface.htmlTopTools.onModeChange', "0", 'image-button ' + a1, 'Select Mode').html;
-        html += HtmlElements.createImageButton('_icon_polygon', 'htmlInterface.htmlTopTools.onModeChange', "1", 'image-button ' + a2, 'Polygon Mode').html;
-        html += HtmlElements.createImageButton('_icon_points', 'htmlInterface.htmlTopTools.onModeChange', "2", 'image-button ' + a3, 'Points Mode').html;
-        html += HtmlElements.createImageButton('_icon_lines', 'htmlInterface.htmlTopTools.onModeChange', "3", 'image-button ' + a4, 'Lines Mode').html;
-        html += HtmlElements.createImageButton('_icon_bezier', 'htmlInterface.htmlTopTools.onModeChange', "4", 'image-button ' + a5, 'Bezier Mode').html;
 
+
+        var html = '';
+        
+        html += HtmlElements.createImageButton('_icon_select', 'htmlInterface.htmlTopTools.onModeChange', "0", 'image-button ' + a1, 'Select Mode').html;
+
+        if (editorConfig.features.shapeModes) {
+            html += HtmlElements.createImageButton('_icon_polygon', 'htmlInterface.htmlTopTools.onModeChange', "1", 'image-button ' + a2, 'Polygon Mode').html;
+            html += HtmlElements.createImageButton('_icon_points', 'htmlInterface.htmlTopTools.onModeChange', "2", 'image-button ' + a3, 'Points Mode').html;
+            html += HtmlElements.createImageButton('_icon_lines', 'htmlInterface.htmlTopTools.onModeChange', "3", 'image-button ' + a4, 'Lines Mode').html;
+            html += HtmlElements.createImageButton('_icon_bezier', 'htmlInterface.htmlTopTools.onModeChange', "4", 'image-button ' + a5, 'Bezier Mode').html;
+
+        }
+
+        if (this._extraModes) {
+            html = this._extraModes(this.editor, html);
+        }
 
         this.editorModes.innerHTML = html;
     };

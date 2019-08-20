@@ -125,6 +125,10 @@ body{
     vertical-align: middle;
 }
 
+.libraryItem.back:hover{
+    background-color: #eeeeee;
+}
+
 .libraryItem:hover{
     border: 1px solid #bbed27;
     cursor: pointer;
@@ -143,8 +147,8 @@ body{
     line-height: initial;
     font-size: 12px;
     bottom: 0px;
-    left: 5px;
-    width: 80px;
+    width: 90px;
+    margin-left: -5px;
     height: 27px;
     text-align: center;
     display: flex;
@@ -152,13 +156,51 @@ body{
     margin: auto;
     padding: 0px;
     border: none;
-
+    background-color: rgba(255,255,255,0.9);
 }
 
 .libFooter label{
+    line-height: 12px;
     overflow-wrap: break-word;
-    width: 60px;
+    width: 88px;
 }
+
+/*************************************/
+
+.folder {
+    height: 30px;
+    width: 90%;
+    cursor: pointer;
+    padding-top: 4px;
+    margin: 0 0 0 5px;
+}
+
+.folder:hover{
+    border: none;
+    background-color: rgba(255,255,255,60);
+}
+
+.folder img{
+    height: 28px;
+}
+
+.folder .libFooter{
+    position: relative;
+    text-align: left;
+    display: inline-block;
+    margin: 0 0 3px 0;    
+    background: none;
+    width: auto;
+}
+
+.folder label{
+    width: auto;
+    font-size: 14px;
+    padding-top: 5px;
+    cursor: pointer;
+}
+
+/*************************************/
 
 .libraryContent{
     overflow-y: scroll;
@@ -194,7 +236,7 @@ body{
     padding: 0.5rem;
 }
 
-#contextMenu{
+.contextMenu{
     z-index: 10000; 
     position: absolute; 
     display: none; 
@@ -203,15 +245,17 @@ body{
     top: 50%;
 }
 
-#contextMenu i{
+.contextMenu i{
     font-size: 18px;
 }
 
-#contextMenu .dropdown-item{
+.contextMenu .dropdown-item{
     padding-left: 10px;
     padding-bottom: 10px;
+    
+     padding-top: 3px;
+    padding-bottom: 3px;
 }
-
 
 .content{
     text-align: right;
@@ -228,16 +272,24 @@ body{
 }
 
 .content div.big input {
-    width: 240px;
+    width: 240px;  
+    line-height: normal;
 }
 
 .content div.big select {
     width: 240px;
+    padding-top: 2px;
 }
 
-.content div.big label {
-    display: inline-block;
+.content div.big input , .content div.big select{
+    height: 35px;
 }
+
+.content div.big label , .content div.small label {
+    display: inline-block;
+    font-size: 13px;
+}
+
 
 .content div.big input[type=checkbox]{
     width: 20px;
@@ -266,9 +318,11 @@ div.inline-small label{
     width: 80px;
 }
 
-.content div.small label{    
-    display: inline-block;
+.content div.small input , .content div.small select{
+    height: 32px;
 }
+
+
 
 .content div.small input[type=checkbox]{
     font-size: inherit;
@@ -394,3 +448,45 @@ div.inline-small label{
 label{
     font-weight: 500;    
 }
+
+
+/***************************************************************/
+/****** DROP DOWN SUB MENU *******/
+
+.shortcutsExplain{
+    
+}
+
+.shortcutsExplain b{
+    width: 200px;
+    display: inline-block;
+}
+
+.shortcutsExplain li{
+    margin-bottom: 5px;
+    list-style: none;
+    padding: 5px;
+}
+
+.shortcutsExplain li:nth-of-type(odd){
+    background: #f9f5f9;
+}
+
+.navbar-nav li:hover > ul.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu {
+    position:relative;
+}
+.dropdown-submenu>.dropdown-menu {
+    top:0;
+    left:100%;
+    margin-top:-6px;
+}
+
+/* rotate caret on hover */
+.dropdown-menu > li > a:hover:after {
+    text-decoration: underline;
+    transform: rotate(-90deg);
+} 

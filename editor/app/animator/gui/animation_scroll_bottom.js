@@ -58,7 +58,6 @@
         this.pad.x = x;
         this.percent = percent;
         
-        log(w)
 
 //        var h = this.panel.panelHeight - this.pad.height;    
 //        var y = this.percent * h;

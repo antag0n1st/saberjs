@@ -32,12 +32,19 @@
     };
 
     LabelObject.prototype.updateSize = function () {
+        var w = this.label.width + this._padding;
+        if (this.properties.width) {
+            w = this.properties.width;
+        }
+
         this.sensor = null;
-        this.setSensorSize(this.label.width + this._padding, this.label.height + this._padding);
+        this.setSensorSize(w, this.label.height + this._padding);
     };
 
 
     LabelObject.prototype.onUpdate = function (dt) {
+
+        Entity.prototype.onUpdate.call(this, dt);
 
         if (this.anchor.x !== this.label.anchor.x || this.anchor.y !== this.label.anchor.y) {
             this.label.anchor.x = this.anchor.x;
@@ -51,24 +58,11 @@
         var o = this.basicExport();
 
         o.txt = this.label.txt;
+        o.style = this._exportStyle();
 
-        o.style = {
-            fill: this.label.style.fill,
-            fontFamily: this.label.style.fontFamily,
-            fontSize: this.label.style.fontSize,
-            align: this.label.style.align,
-            stroke: this.label.style.stroke,
-            strokeThickness: this.label.style.strokeThickness,
-            dropShadow: this.label.style.dropShadow,
-            dropShadowDistance: this.label.style.dropShadowDistance,
-            dropShadowAngle: this.label.style.dropShadowAngle,
-            dropShadowColor: this.label.style.dropShadowColor,
-            wordWrap: this.label.style.wordWrap,
-            wordWrapWidth: this.label.style.wordWrapWidth,
-            letterSpacing: this.label.style.letterSpacing,
-            lineHeight: this.label.style.lineHeight,
-            padding: this.label.style.padding
-        };
+        if (this._exportMap) {
+            o = this._exportMap(o);
+        }
 
         return o;
 
@@ -87,6 +81,11 @@
                     // do stuff
                 }
             }
+
+            if (this._importMap) {
+                this._importMap(data);
+            }
+
         }
 
 

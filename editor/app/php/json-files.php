@@ -4,8 +4,6 @@
 
 include_once '../../config.php';
 
-define('DS', DIRECTORY_SEPARATOR);
-
 define('ASSETS_DIR', str_replace('/', DS, $editorConfig->import->filesURL));
 
 $main_dir = getcwd() . DS . '..' . DS . '..' . DS . ASSETS_DIR;

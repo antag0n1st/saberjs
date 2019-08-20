@@ -13,6 +13,7 @@
         this._padding = 20;
         this.type = 'ButtonObject';
         this.hasLabel = true;
+        this.hasImage = true;
 
         this.background = new NineSlice(imageName, '15');
         this.addChild(this.background);
@@ -99,23 +100,7 @@
         o.txt = this.label.txt;
         o.backgroundName = this.backgroundName;
 
-        o.style = {
-            fill: this.label.style.fill,
-            fontFamily: this.label.style.fontFamily,
-            fontSize: this.label.style.fontSize,
-            align: this.label.style.align,
-            stroke: this.label.style.stroke,
-            strokeThickness: this.label.style.strokeThickness,
-            dropShadow: this.label.style.dropShadow,
-            dropShadowDistance: this.label.style.dropShadowDistance,
-            dropShadowAngle: this.label.style.dropShadowAngle,
-            dropShadowColor: this.label.style.dropShadowColor,
-            wordWrap: this.label.style.wordWrap,
-            wordWrapWidth: this.label.style.wordWrapWidth,
-            letterSpacing: this.label.style.letterSpacing,
-            lineHeight: this.label.style.lineHeight,
-            padding: this.label.style.padding
-        };
+        o.style = this._exportStyle();
 
         return o;
 
@@ -256,6 +241,12 @@
 
     ButtonObject.prototype.isPaddingValid = function () {
         return true;
+    };
+    
+    ButtonObject.prototype._setImage = function (name) {
+        this.backgroundName = name;
+        this.background.imageName = name;
+        this.background.buildBackground();
     };
 
     window.ButtonObject = ButtonObject;

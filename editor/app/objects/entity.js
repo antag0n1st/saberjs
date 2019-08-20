@@ -6,17 +6,46 @@
 
     Entity.prototype = new Sprite();
     Entity.prototype.spriteInitialize = Entity.prototype.initialize;
+
+    Entity.HANDLE_TOP = 0;
+    Entity.HANDLE_RIGHT = 1;
+    Entity.HANDLE_BOTTOM = 2;
+    Entity.HANDLE_LEFT = 3;
+
     Entity.prototype.initialize = function (name) {
 
         this.spriteInitialize(name);
 
         this.id = '_change_it_before_use-' + PIXI.utils.uid();
+        this.name = '';
+        this.mode = 'editor';
 
         this.isSelected = false;
         this.frameSensors = [];
+        this.frameStretchSensors = [];
 
         this.rotationHandle = null;
         this.rotationHandleDistance = 40;
+
+        this._snapAngles = [
+            0,
+            0.7853981633974483,
+            1.5707963267948966,
+            2.356194490192345,
+            3.141592653589793,
+            3.9269908169872414,
+            4.71238898038469,
+            5.497787143782138,
+            6.283185307179586,
+            -0.7853981633974483,
+            -1.5707963267948966,
+            -2.356194490192345,
+            -3.141592653589793,
+            -3.9269908169872414,
+            -4.71238898038469,
+            -5.497787143782138,
+            -6.283185307179586
+        ];
 
         this.padding = 0;
 
@@ -24,17 +53,43 @@
         this.originalScale = new V();
         this.originalRotation = 0;
 
+        this.initial_point = new V();
 
-        this.initialSize = 0;
+        this.shape = null;
+        this.path = null;
 
-        this.canResize = true;
-        this.canSelect = true;
-        this.hasFrame = true;
-        this.hasLabel = false;
+        this.initialSize = 0; // for the resize handles
+        this._initialStretch = 0; // for the stretch handles
+
+        this.canResize = true; // resize handles
+        this.canStretch = false; // width/height handles
+        this.canSelect = true; // if the object can be selected
+        this.canMove = true; // its possible to have a static non movable object
+        this.canDelete = true; // if it can be deleted from the scene
+        this.canExport = true; // if it can be exported ( the scene will be exported without this object )        
+        this.hasFrame = true; // if the selection frame should be drawn
+        this.hasLabel = false; // if it contains a label object
+        this.hasRotationHandle = true; // if the rotation handle is drawn
+        this.canPrefab = true; /// if the object can be saved as a Prefab
+        this.canDrop = true; // if it can be moved inside an other object
+
+        this._drawStretchRight = true;
+        this._drawStretchTop = true;
+        this._drawStretchLeft = false;
+        this._drawStretchBottom = false;
+
+        this.hasImage = false; // if the object has an image        
+        this.canTransform = false; //TODO remove this from here this is for mymathcore
+
+        //TODO remove this from here this is for mymathcore 
+        this.isFlipped = false;
+        this.isXOut = false;
+        this._xOutElement = null;
 
         this.type = 'Entity';
 
         this.handleTypeTouched = '';
+        this._handleID = 0;
 
         this.constraintX = null;
         this.constraintY = null;
@@ -42,7 +97,7 @@
         this.className = '';
 
         this.properties = {};
-
+        this._data = null;
 
     };
 
@@ -66,6 +121,34 @@
         var circle4 = new SAT.Circle(new V(), handleSize);
         this.frameSensors.push(circle4);
 
+        if (this.frameStretchSensors.length) {
+            this.frameStretchSensors = [];
+        }
+
+        var shSize = 30;
+
+        //TODO set strech frames
+
+        var hand1 = new SAT.Box(new V(), shSize, shSize).toPolygon();
+        hand1.translate(-shSize / 2, -shSize - 2);
+        hand1.type = Entity.HANDLE_TOP;
+        this.frameStretchSensors.push(hand1);
+
+        var hand2 = new SAT.Box(new V(), shSize, shSize).toPolygon();
+        hand2.translate(3, -shSize / 2);
+        hand2.type = Entity.HANDLE_RIGHT;
+        this.frameStretchSensors.push(hand2);
+
+        var hand3 = new SAT.Box(new V(), shSize, shSize).toPolygon();
+        hand3.translate(-shSize / 2, 2);
+        hand3.type = Entity.HANDLE_BOTTOM;
+        this.frameStretchSensors.push(hand3);
+
+        var hand4 = new SAT.Box(new V(), shSize, shSize).toPolygon();
+        hand4.translate(-shSize - 2, -shSize / 2);
+        hand4.type = Entity.HANDLE_LEFT;
+        this.frameStretchSensors.push(hand4);
+
         this.rotationHandle = new SAT.Circle(new V(), handleSize);
 
     };
@@ -77,19 +160,34 @@
     };
 
     Entity.prototype.dragBy = function (position) {
-        var p = new V().copy(position);
-        var angle = this.sumAllAngles();
-        p.rotate(-angle + this.rotation);
-        this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
+        if (this.canMove) {
+            var p = new V().copy(position);
+            var angle = this.sumAllAngles();
+            p.rotate(-angle + this.rotation);
+            this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
+        }
     };
+
 
     Entity.prototype.select = function () {
         this.isSelected = true;
         this.updateFrame();
+
+        this._onSelect();
     };
 
     Entity.prototype.deselect = function () {
         this.isSelected = false;
+
+        this._onDeselect();
+    };
+
+    Entity.prototype._onSelect = function () {
+
+    };
+
+    Entity.prototype._onDeselect = function () {
+
     };
 
     Entity.prototype.drawFrame = function (graphics) {
@@ -103,7 +201,7 @@
         var rotation = this.sumAllAngles();
 
         // DRAW FRAME
-        graphics.lineStyle(2, 000000, 1);
+        graphics.lineStyle(2, 0x000000, 1);
         graphics.beginFill(0xFF700B, 0);
         graphics.moveTo(p.x + this.frameSensors[0].pos.x, p.y + this.frameSensors[0].pos.y);
         for (var i = this.frameSensors.length - 1; i >= 0; i--) {
@@ -125,24 +223,59 @@
             graphics.endFill();
         }
 
-        // DRAW ROTATE HANDLE
-        var rh = this.rotationHandle.pos;
-        graphics.beginFill(0xFFFF0B, 1);
+        if (this.hasRotationHandle) {
+            // DRAW ROTATE HANDLE
+            var rh = this.rotationHandle.pos;
+            graphics.beginFill(0xFFFF0B, 1);
 
-        var rhp = new V(p.x + rh.x, p.y + rh.y);
+            var rhp = new V(p.x + rh.x, p.y + rh.y);
 
-        var d = Math.getDistance(p, rhp) - this.rotationHandleDistance;
+            var d = Math.getDistance(p, rhp) - this.rotationHandleDistance;
 
-        var st = new V();
-        st.setLength(d);
-        st.setAngle(rotation + Math.degreesToRadians(90));
+            var st = new V();
+            st.setLength(d);
+            st.setAngle(rotation + Math.degreesToRadians(90));
 
-        graphics.moveTo(p.x + st.x, p.y + st.y);
-        graphics.lineTo(rhp.x, rhp.y);
+            graphics.moveTo(p.x + st.x, p.y + st.y);
+            graphics.lineTo(rhp.x, rhp.y);
 
-        graphics.drawCircle(p.x + rh.x, p.y + rh.y, this.rotationHandle.r);
-        graphics.endFill();
+            graphics.drawCircle(p.x + rh.x, p.y + rh.y, this.rotationHandle.r);
+            graphics.endFill();
+        }
 
+        if (this.canStretch) {
+
+            graphics.lineStyle(2, 0x126c87, 0);
+            graphics.beginFill(0xf4eb42, 0.9);
+
+            for (var i = 0; i < this.frameStretchSensors.length; i++) {
+                var r = this.frameStretchSensors[i];
+
+                if ((r.type === Entity.HANDLE_TOP && this._drawStretchTop)
+                        || (r.type === Entity.HANDLE_RIGHT && this._drawStretchRight)
+                        || (r.type === Entity.HANDLE_BOTTOM && this._drawStretchBottom)
+                        || (r.type === Entity.HANDLE_LEFT && this._drawStretchLeft)
+                        ) {
+
+                    this.drawStretchHandle(p, r, graphics);
+                }
+
+            }
+
+            graphics.endFill();
+        }
+
+    };
+
+    Entity.prototype.drawStretchHandle = function (p, r, graphics) {
+
+        var path = [
+            new PIXI.Point(p.x + r.pos.x + r.points[0].x, p.y + r.pos.y + r.points[0].y),
+            new PIXI.Point(p.x + r.pos.x + r.points[1].x, p.y + r.pos.y + r.points[1].y),
+            new PIXI.Point(p.x + r.pos.x + r.points[2].x, p.y + r.pos.y + r.points[2].y),
+            new PIXI.Point(p.x + r.pos.x + r.points[3].x, p.y + r.pos.y + r.points[3].y)
+        ];
+        graphics.drawPolygon(path);
     };
 
     Entity.prototype.renderPolygon = function (polygon, graphics) {
@@ -189,6 +322,34 @@
 
         }
 
+        for (var i = 0; i < this.frameStretchSensors.length; i++) {
+            var stretchFrame = this.frameStretchSensors[i];
+            stretchFrame.pos.set(cp.x + pp.x, cp.y + pp.y);
+
+            var s1 = this.frameSensors[i];
+            var s2 = this.frameSensors[i + 1] || this.frameSensors[0];
+
+            var x = s1.pos.x - (s1.pos.x - s2.pos.x) / 2;
+            var y = s1.pos.y - (s1.pos.y - s2.pos.y) / 2;
+            stretchFrame.pos.set(x, y);
+
+
+            var angle = Math.getAngle(s1.pos, s2.pos);
+
+            if (stretchFrame.type === Entity.HANDLE_RIGHT) {
+                angle += Math.degreesToRadians(-90);
+            } else if (stretchFrame.type === Entity.HANDLE_BOTTOM) {
+                angle += Math.degreesToRadians(-180);
+            } else if (stretchFrame.type === Entity.HANDLE_LEFT) {
+                angle += Math.degreesToRadians(-270);
+            }
+
+            stretchFrame.rotate(angle - stretchFrame._angle || 0);
+            stretchFrame._angle = angle;
+        }
+
+        ///////////
+
         var rh = new V();
         var d = Math.getDistance(this.frameSensors[0].pos, this.frameSensors[3].pos) - this.scale.y * this._height * this.anchor.y;
 
@@ -219,9 +380,34 @@
             }
         }
 
-        if (SAT.pointInCircle(p, this.rotationHandle)) {
-            this.handleTypeTouched = 'rotate';
-            return true;
+        if (this.canStretch) {
+
+            // check resize handles
+            for (var i = 0; i < this.frameStretchSensors.length; i++) {
+
+                var handle = this.frameStretchSensors[i];
+
+                if ((handle.type === Entity.HANDLE_TOP && this._drawStretchTop)
+                        || (handle.type === Entity.HANDLE_RIGHT && this._drawStretchRight)
+                        || (handle.type === Entity.HANDLE_BOTTOM && this._drawStretchBottom)
+                        || (handle.type === Entity.HANDLE_LEFT && this._drawStretchLeft)
+                        ) {
+
+                    if (SAT.pointInPolygon(p, handle)) {
+                        this.handleTypeTouched = 'stretch';
+                        this._handleID = handle.type;
+                        return true;
+                    }
+                }
+
+            }
+        }
+
+        if (this.hasRotationHandle) {
+            if (SAT.pointInCircle(p, this.rotationHandle)) {
+                this.handleTypeTouched = 'rotate';
+                return true;
+            }
         }
 
         return false;
@@ -232,6 +418,17 @@
 
         if (this.handleTypeTouched === 'resize') {
             this._downResize(event, editor);
+        } else if (this.handleTypeTouched === "stretch") {
+
+            if (this._handleID === Entity.HANDLE_RIGHT || this._handleID === Entity.HANDLE_LEFT) {
+                this._initialStretch = event.point.x;
+            } else {
+                this._initialStretch = event.point.y;
+            }
+
+            if (this._onStretchStarted) {
+                this._onStretchStarted(this._handleID, editor);
+            }
         }
 
     };
@@ -248,6 +445,29 @@
             this._moveRotate(event, editor);
         } else if (this.handleTypeTouched === 'resize') {
             this._moveResize(event, editor);
+        } else if (this.handleTypeTouched === "stretch") {
+
+            if (this._handleID === Entity.HANDLE_TOP) {
+                if (this._onStretch) {
+                    var amount = this._initialStretch - event.point.y;
+                    this._onStretch(amount, this._handleID, editor);
+                }
+            } else if (this._handleID === Entity.HANDLE_RIGHT) {
+                if (this._onStretch) {
+                    var amount = event.point.x - this._initialStretch;
+                    this._onStretch(amount, this._handleID, editor);
+                }
+            } else if (this._handleID === Entity.HANDLE_LEFT) {
+                if (this._onStretch) {
+                    var amount = this._initialStretch - event.point.x;
+                    this._onStretch(amount, this._handleID, editor);
+                }
+            } else if (this._handleID === Entity.HANDLE_BOTTOM) {
+                if (this._onStretch) {
+                    var amount = event.point.y - this._initialStretch;
+                    this._onStretch(amount, this._handleID, editor);
+                }
+            }
         }
 
     };
@@ -276,9 +496,9 @@
 
         var r = Math.getAngle(event.point, gp) + Math.degreesToRadians(90) - rotation + this.rotation;
 
-        var values = [Math.degreesToRadians(0), Math.degreesToRadians(90), Math.degreesToRadians(180), Math.degreesToRadians(270)];
 
-        r = this.snapTo(r, values, Math.degreesToRadians(5));
+
+        r = this.snapTo(r, this._snapAngles, Math.degreesToRadians(5));
 
         this.rotation = r;
         this.updateFrame();
@@ -318,14 +538,22 @@
 
     Entity.prototype.snapTo = function (value, values, tolerance) {
 
+        var angle = value;
+
+        angle = value % 6.283185307179586;
+        
+        if(angle < 0 ){
+            angle += 6.283185307179586;
+        }
+
         for (var i = 0; i < values.length; i++) {
             var v = values[i];
-            if (value < (v + tolerance) && value > (v - tolerance)) {
+            if (angle < (v + tolerance) && angle > (v - tolerance)) {
                 return v;
             }
         }
 
-        return value;
+        return angle;
     };
 
     Entity.prototype.basicExport = function (o) {
@@ -357,6 +585,9 @@
         o.className = this.className;
         o.visible = this.visible;
         o.tint = this.tint;
+        o.name = this.name;
+        o.isFlipped = this.isFlipped;
+        o.isXOut = this.isXOut;
 
         if (!this.canSelect) {
             o.canSelect = false;
@@ -376,13 +607,62 @@
 
         for (var i = 0; i < this.children.length; i++) {
             var c = this.children[i];
-            if (c.export) {
+            if (c.export && c.canExport) {
                 o.children.push(c.export());
             }
         }
 
         return o;
 
+    };
+
+    Entity.prototype.setTexture = function (imageName) {
+
+        if (imageName) {
+
+            var o = this;
+
+            if (this.foreground) {
+                o = this.foreground;
+            }
+
+            o.imageName = imageName;
+
+            if (this.isFlipped) {
+                var t = this.createFlippedTexture(imageName);
+                o.texture = t;
+            } else {
+                Sprite.prototype.setTexture.call(o, imageName);
+            }
+
+        }
+
+    };
+
+    Entity.prototype.createFlippedTexture = function (imageName) {
+
+        if (PIXI.utils.TextureCache[imageName + '_systemFlippedImage_']) {
+            return PIXI.utils.TextureCache[imageName + '_systemFlippedImage_'];
+        }
+
+        var s = new Sprite(imageName);
+        var tx = s.texture;
+        s.scale.x = -1;
+        s.x = s.width;
+
+        var renderTexture = PIXI.RenderTexture.create(tx.width, tx.height);
+        app.pixi.renderer.render(s, renderTexture);
+
+        var c = app.pixi.renderer.plugins.extract.canvas(renderTexture);
+
+        var t = PIXI.Texture.fromCanvas(c);
+
+        renderTexture.destroy(true);
+        s.destroy();
+
+        PIXI.utils.TextureCache[imageName + '_systemFlippedImage_'] = t;
+
+        return t;
     };
 
     Entity.prototype.setBasicData = function (data) {
@@ -396,15 +676,25 @@
         this.alpha = data.alpha;
         this.type = data.type;
         this.className = data.className || '';
-        this.tint = data.tint || 0xffffff;
+        this.tint = parseInt(data.tint) || 0xffffff;
         this.visible = data.visible;
+        this.name = data.name;
         this.canSelect = (data.canSelect === undefined) ? true : data.canSelect;
+        this.isFlipped = (data.isFlipped === undefined) ? false : data.isFlipped;
+        this.isXOut = (data.isXOut === undefined) ? false : data.isXOut;
+
+        this.initial_point.copy(this.position);
 
         if (data.properties) {
 
             for (var key in data.properties) {
                 if (data.properties.hasOwnProperty(key)) {
-                    this.properties[key] = data.properties[key];
+                    if (Number.isNaN(data.properties[key])) {
+                        this.properties[key] = 0;
+                    } else {
+                        this.properties[key] = data.properties[key];
+                    }
+
                 }
             }
 
@@ -418,9 +708,64 @@
             this.constraintY = new Constraint(this, 'y', data.constraintY);
         }
 
-        if (!data.id.startsWith('_change_it_before_use-')) {
-            this.id = data.id;
+        if (!data.id.startsWith('_change_it_before_use-') && data.id) {
+            this.id = data.id.trim().toLowerCase();
         }
+
+        this._data = data;
+
+    };
+
+    Entity.prototype._exportStyle = function () {
+
+        var style = {};
+
+        if (this.label) {
+            style = {
+                fill: this.label.style.fill,
+                fontFamily: this.label.style.fontFamily,
+                fontSize: this.label.style.fontSize,
+                align: this.label.style.align,
+                stroke: this.label.style.stroke,
+                strokeThickness: this.label.style.strokeThickness,
+                dropShadow: this.label.style.dropShadow,
+                dropShadowDistance: this.label.style.dropShadowDistance,
+                dropShadowAngle: this.label.style.dropShadowAngle,
+                dropShadowColor: this.label.style.dropShadowColor,
+                wordWrap: this.label.style.wordWrap,
+                wordWrapWidth: this.label.style.wordWrapWidth,
+                letterSpacing: this.label.style.letterSpacing,
+                lineHeight: this.label.style.lineHeight,
+                padding: this.label.style.padding
+            };
+        }
+
+        return style;
+
+    };
+
+    Entity.prototype.onUpdate = function (dt) {
+        this._resolvePropBind(dt);
+    };
+
+    Entity.prototype._propBindCalls = []; // shared object
+
+    Entity.prototype._resolvePropBind = function () {
+        if (this._propBindCalls.length > 0 && this.isSelected) {
+            var editor = this._propBindCalls.pop();
+            if (this._propBindCalls.length === 0) {
+                this.bindProperties(editor);
+            }
+        }
+    };
+
+    Entity.prototype.bindCommonProperties = function (editor) {
+
+    };
+
+    Entity.prototype._delayedPropertiesBind = function (editor) {
+
+        this._propBindCalls.push(editor);
 
     };
 
@@ -457,7 +802,6 @@
                 method: 'addCustomProperty',
                 style: ''
             };
-
 
             html += HtmlElements.createButton(buttonOpt).html;
 
@@ -513,6 +857,57 @@
 
     Entity.prototype.build = function () {
         throw "This object needs to write a build method";
+    };
+
+    Entity.prototype.setOutline = function (hasOutline, thickness, color) {
+
+        if (hasOutline) {
+            var filter = new PIXI.filters.OutlineFilter(thickness || 8, color || 0xFF0000, 0.5);
+            this.filters = [filter];
+            filter.padding = 20;
+            this.cacheAsBitmap = true;
+        } else {
+            this.filters = [];
+            this.cacheAsBitmap = false;
+        }
+
+    };
+
+    Entity.prototype.setGlow = function (should_glow) {
+
+        if (should_glow) {
+
+            var glow = new PIXI.filters.GlowFilter(15, 5, 2, 0x19a852, 0.2);
+            glow.padding = 20;
+            var filters = [glow];
+            this.filters = filters;
+
+            // this.cacheAsBitmap = true;
+
+        } else {
+            // this.cacheAsBitmap = false;
+            this.filters = [];
+        }
+
+    };
+
+    Entity.prototype.onImportFinished = function () {
+
+        if (this.isXOut) {
+            var x = new XOut(this);
+            this.addChild(x);
+            this._xOutElement = x;
+        }
+
+
+    };
+
+    Entity.prototype._updateAnchor = function () {
+
+    };
+
+    Entity.prototype._setImage = function (name) {
+        console.warn('Implement _setImage for this object to set - ' + name);
     };
 
     window.Entity = Entity;

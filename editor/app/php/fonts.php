@@ -2,8 +2,6 @@
 
 include_once '../../config.php';
 
-define('DS', DIRECTORY_SEPARATOR);
-
 define('ASSETS_DIR', str_replace('/', DS, $editorConfig->fonts));
 //define('ASSETS_DIR', '../assets/fonts');
 

@@ -21,7 +21,28 @@
 
         this.isAnimating = true;
 
-        this.loadingBar = new LoadingBar(null,null,0);
+        this.loadingBar = new LoadingBar({
+            background: 'white',
+            backgroundIsSliced: true,
+            backgroundWidth: 800,
+            backgroundHeight: 40,
+            backgroundPadding: '1 1 1 1',
+            backgroundTint: 0x555555,
+
+            foreground: 'white',
+            foregroundIsSliced: true,
+            foregroundWidth: 800,
+            foregroundHeight: 40,
+            foregroundPadding: '1 1 1 1',
+            foregroundTint: 0xc5c8f3,
+
+            offsetX: 0,
+            offsetY: 0,
+
+            isAnimated: false,
+            animationSpeed: 0,
+            showPercent: true
+        });
         this.addChild(this.loadingBar);
 
         this.lastLoadedCount = 0;
@@ -36,7 +57,7 @@
         var height = app.height;
 
         this.logo.position.set(mid_x ,  height * 0.45);
-        this.loadingBar.position.set(mid_x - 300, height * 0.75); // 300 is half the loading bar width
+        this.loadingBar.position.set(mid_x , height * 0.75); // 300 is half the loading bar width
 
         this.background.position.set(-10,-10);
         this.background.width = app.width * 1.2;

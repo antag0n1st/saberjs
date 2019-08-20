@@ -20,7 +20,7 @@
         var settings = {
             clearBeforeRender: Config.should_clear_stage,
             preserveDrawingBuffer: true,
-            resolution: 1,
+            resolution: 1, //this.device.isRetina ? 2 : 1,
             width: this.width,
             height: this.height,
             backgroundColor: Config.background_color
@@ -45,29 +45,45 @@
         this.initialLoad(function () {
 
             this.loadAssets();
-            
+
+            if (this._loadExtraAssets) {
+                this._loadExtraAssets();
+            }
+
             ajaxGet(ContentManager.baseURL + 'app/php/fonts.php', function (response) {
-                                
+
+                Fonts.fonts = [];
+
                 for (var i = 0; i < response.length; i++) {
                     var font = response[i];
-                    ContentManager.addFont(font.name, font.url);
+
+                    var junction_font = new FontFace(font.name, 'url(\'' + font.url + '\')');
+
+                    junction_font.load().then(function (loaded_face) {
+                        document.fonts.add(loaded_face);
+                        Fonts.fonts.push(loaded_face);
+                        // loaded_face holds the loaded FontFace
+
+                    }).catch(function (error) {
+                        // error occurred
+                        console.log(error);
+                    });
                 }
 
                 ajaxGet('app/php/library.php', function (resources) {
-                    
+
                     app.libraryImages = resources['structure'];
 
                     app.addToLoader(resources['structure']);
-                    
+
                     for (var i = 0; i < resources.atlases.length; i++) {
                         var url = resources.atlases[i];
-                        
-                     url = ContentManager.baseURL + url;
+
+                        url = ContentManager.baseURL + url;
                         ContentManager.loader.add(url, url);
                         ContentManager.countToLoad += 2;
                         ContentManager.isResourcesLoaded = false;
-                        
-                        // ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
+
                     }
 
                     ContentManager.downloadResources(function () {
@@ -89,7 +105,7 @@
 
 
         });
-        
+
         this.texturesBase64Cache = [];
 
 
@@ -104,10 +120,10 @@
             if (resource.children) {
                 this.addToLoader(resource.children);
             } else if (resource.url) {
-                if(!resource.frame){
+                if (!resource.frame) {
                     ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
                 }
-                
+
             }
 
         }
@@ -119,12 +135,13 @@
         ContentManager.addImage('_loading_bar_bg', 'initial/_loading_bar_bg.png');
         ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
         ContentManager.addImage('white', 'initial/white.png');
+        ContentManager.addImage('favicon', 'favicon.png');
         ContentManager.addImage('black', 'initial/black.png');
 
         ContentManager.downloadResources(function () {
-            
+
             // PIXI.loader.resources._editor_config.data
-            
+
             var screen = new LoadingScreen();
             app.navigator.add(screen);
 
@@ -212,7 +229,7 @@
             screen._onResize(this.width, this.height);
         }
 
-         this.adjustToolbars();
+        this.adjustToolbars();
 
     };
 
@@ -220,7 +237,7 @@
         var topToolbar = document.getElementById('topToolbar');
         var sideToolbar = document.getElementById('sideToolbar');
         var leftToolbar = document.getElementById('leftToolbar');
-        
+
         topToolbar.style.visibility = 'visible';
         sideToolbar.style.visibility = 'visible';
         leftToolbar.style.visibility = 'visible';
@@ -232,7 +249,7 @@
 
         sideToolbar.style.width = canvasPadding[1] + 'px';
         sideToolbar.style.height = (app.device.windowSize().height) + 'px';
-        
+
         leftToolbar.style.width = canvasPadding[3] + 'px';
         leftToolbar.style.height = (app.device.windowSize().height) + 'px';
     };

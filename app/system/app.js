@@ -29,13 +29,10 @@
         }
 
         var settings = {
-            clearBeforeRender: Config.should_clear_stage,
-            preserveDrawingBuffer: false,
             resolution: 1,
             width: this.width,
             height: this.height,
-            backgroundColor: Config.background_color ? Config.background_color : null,
-            transparent: Config.background_color ? false : true,
+            transparent: true,
             forceCanvas: useCanvas
         };
 
@@ -60,6 +57,7 @@
             ContentManager.downloadResources(function () {
 
                 app.navigator.currentScreen.loadingBar.setPercent(1, true);
+                
                 if (window[Config.initialScreen]) {
                     var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
                     app.navigator.add(screen);
@@ -75,7 +73,6 @@
 
             }, this);
 
-
         });
 
         if (Config.debug) {
@@ -88,16 +85,13 @@
             app.handleVisibility(state === "visible");
         });
 
-
-
     };
 
     App.prototype.initialLoad = function (callback) {
 
-        ContentManager.addImage('_loading_bar_bg', 'initial/_loading_bar_bg.png');
-        ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
+        //ContentManager.addImage('logo', 'logo.png');
+		
         ContentManager.addImage('white', 'initial/white.png');
-        ContentManager.addImage('black', 'initial/black.png');
         ContentManager.addImage('rotate_device_to_landscape', 'initial/rotate_device_to_landscape.png');
         ContentManager.addImage('rotate_device_to_portrait', 'initial/rotate_device_to_portrait.png');
 
@@ -200,7 +194,6 @@
             this.debugStage();
         }
 
-
     };
 
     App.prototype.adjustCanvasPositionCentered = function (canvas) {
@@ -222,7 +215,6 @@
 
     };
 
-
     App.prototype.handleVisibility = function (isVisible) {
 
         if (app.navigator.currentScreen) {
@@ -239,11 +231,42 @@
 
     };
 
-    App.prototype.resize = function () {
+    App.prototype.resize = function (autoLayout) {
+        
+        var isAutoLayout = true;
+
+        if (autoLayout === undefined) {
+            isAutoLayout = Config.is_canvas_auto_layout;
+        } else {
+            isAutoLayout = autoLayout;
+        }
+
+        var ww = app.windowWidth;
+        var wh = app.windowHeight;
+
+        var wasLandscape = app.windowWidth > app.windowHeight;
+        var isLandscape = app.windowWidth > app.windowHeight;
 
         this.device.calculateSizes();
 
-        if (Config.is_canvas_auto_layout) {
+
+        if (!app.device.isKeyboardTheSource) {
+            isAutoLayout = true;
+
+            if (app.device.isKeyboardUp) {
+                
+                window.scrollTo(0, 0);
+
+                // lets check if it is a rotation
+
+                app.navigator.currentScreen.inputField.blur();
+                app.device.isKeyboardUp = false;
+                app.device.isKeyboardTheSource = true;
+
+            }
+        }
+
+        if (isAutoLayout) {
             this.pixi.view.style.width = Math.ceil(this.canvasWidth) + "px";
             this.pixi.view.style.height = Math.ceil(this.canvasHeight) + "px";
             this.pixi.renderer.resize(this.width, this.height);
@@ -263,13 +286,15 @@
             screen._onResize(this.width, this.height);
         }
 
-        if (Config.is_canvas_auto_layout) {
-//TODO implement the rotate layer
+        if (isAutoLayout) {
+            //TODO implement the rotate layer
             if (this.rotate_layer) {
                 this.checkRotation();
                 this.rotate_layer.onResize();
             }
         }
+
+        app.device.isKeyboardTheSource = false;
 
     };
 

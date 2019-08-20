@@ -59,7 +59,7 @@
         this.data = data;
         this.fileName = data.fileName;
         this.editor.previewScreenName = data.previewScreenName || '';
-        
+
     };
 
     EditorImporter.prototype.importObjects = function (objects, contentLayer) {
@@ -69,13 +69,11 @@
         contentLayer = (contentLayer === undefined) ? this.editor.content : contentLayer;
 
         var importedObjects = [];
-        
-       
+
+
 
         for (var i = 0; i < objects.length; i++) {
             var o = objects[i];
-            
-         
 
             var object = new window[o.type]();
             object.graphics = this.editor.graphics;
@@ -94,38 +92,60 @@
 
         batch.execute();
 
+        this.propagateImport(contentLayer.children)
+
         return importedObjects;
+
+    };
+
+    EditorImporter.prototype.propagateImport = function (children) {
+
+        for (var i = children.length - 1; i >= 0; i--) {
+            var c = children[i];
+            if (c.onImport) {
+                c.onImport();
+            }
+            
+            if (c.onImportFinished) {
+                c.onImportFinished();
+            }
+            this.propagateImport(c.children);
+        }
 
     };
 
     EditorImporter.prototype.importChildren = function (parent, children, batch) {
         var unwrappedObjects = [];
-        
-     
-        
+
+
+
         for (var i = 0; i < children.length; i++) {
             var o = children[i];
 
             if (o.imageName && !PIXI.utils.TextureCache[o.imageName]) {
                 o.imageName = '_missing_image';
             }
-            
+
             if (o.backgroundName && !PIXI.utils.TextureCache[o.backgroundName]) {
                 o.backgroundName = '_missing_image';
             }
-            
-            var object = new window[o.type]();
-            object.graphics = this.editor.graphics;
-            object.build(o);
 
-            var command = new CommandAdd(object, parent, this.editor);
-            batch.add(command);
+            if (window[o.type]) {
+                var object = new window[o.type]();
+                object.graphics = this.editor.graphics;
+                object.build(o);
 
-            if (o.children.length) {
-                this.importChildren(object, o.children, batch);
+                var command = new CommandAdd(object, parent, this.editor);
+                batch.add(command);
+
+                if (o.children.length) {
+                    this.importChildren(object, o.children, batch);
+                }
+
+                unwrappedObjects.push(object);
+            } else {
+                console.warn("There is a missing object type: "+o.type + ' name: '+o.name);
             }
-
-            unwrappedObjects.push(object);
 
         }
         return unwrappedObjects;
@@ -136,11 +156,11 @@
         var data = {};
 
         data.objects = this.exportObjects();
-        
-        if(this.hasMissingImage(data.objects)){
+
+        if (this.hasMissingImage(data.objects)) {
             return false;
-        };
-        
+        }
+
         data.screenPosition = {
             x: this.editor._screenPosition.x,
             y: this.editor._screenPosition.y
@@ -152,19 +172,19 @@
     };
 
     EditorImporter.prototype.hasMissingImage = function (objects) {
+        
         for (var i = 0; i < objects.length; i++) {
             var object = objects[i];
             if (object.imageName === "_missing_image") {
                 return true;
             }
+            
             if (object.children) {
                 var has = this.hasMissingImage(object.children);
                 if (has) {
                     return true;
                 }
             }
-
-
         }
 
         return false;

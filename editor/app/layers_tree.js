@@ -37,6 +37,44 @@
 
         var editor = this.editor;
 
+        var types = {
+            Layer: {},
+            ImageObject: {
+                icon: 'fa fa-picture-o'
+            },
+            LabelObject: {
+                icon: 'fa fa-font'
+            },
+            InputObject: {
+                icon: 'fa fa-keyboard-o'
+            },
+            ButtonObject: {
+                icon: 'fa fa-square-o'
+            },
+            ContainerObject: {
+                icon: 'fa fa-th-large'
+            },
+            GenericObject: {
+                icon: 'fa fa-cube'
+            },
+            PolygonObject: {
+                icon: 'fa fa-object-ungroup'
+            },
+            GenericPoint: {
+                icon: 'fa fa-circle-o'
+            },
+            LineObject: {
+                icon: 'fa fa-arrows-h'
+            },
+            default : {
+                    icon: 'fa fa-cube'
+            }
+        };
+        
+        if(this.editor._setLayerTreeTypes){
+           types = this.editor._setLayerTreeTypes(types);
+        }
+
         this.tree = $('#layersTree').jstree({
             plugins: ["dnd", "contextmenu", 'search', 'changed', 'types'],
             core: {
@@ -52,36 +90,7 @@
                 }
             },
             contextmenu: contextmenu,
-            types: {
-                Layer: {},
-                ImageObject: {
-                    icon: 'fa fa-picture-o'
-                },
-                LabelObject: {
-                    icon: 'fa fa-font'
-                },
-                InputObject: {
-                    icon: 'fa fa-keyboard-o'
-                },
-                ButtonObject: {
-                    icon: 'fa fa-square-o'
-                },
-                ContainerObject: {
-                    icon: 'fa fa-th-large'
-                },
-                GenericObject: {
-                    icon: 'fa fa-cube'
-                },
-                PolygonObject: {
-                    icon: 'fa fa-object-ungroup'
-                },
-                GenericPoint: {
-                    icon: 'fa fa-circle-o'
-                },
-                LineObject: {
-                    icon: 'fa fa-arrows-h'
-                }
-            }
+            types: types
 
         }).bind("move_node.jstree", function (e, data) {
 
@@ -223,9 +232,8 @@
                     menu.edit = {
                         label: "Edit",
                         action: function (data) {
-                            //TODO
-                            // edit the layer
 
+                            // edit the layer
 
                             $("#addLayerModal").modal('show');
 
@@ -331,6 +339,7 @@
             data: {
                 id: object.id
             },
+//            icon : 'fa fa-cube',
             id: object.id
         };
 

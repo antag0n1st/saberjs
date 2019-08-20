@@ -14,7 +14,6 @@
 
         this.imageName = '';
 
-
         this.properties = {
             width: 600,
             spacing: 10,
@@ -31,7 +30,6 @@
 
         if (data) {
             this.setBasicData(data);
-            //this.setTexture(data.imageName);
         }
 
         this.enableSensor();
@@ -64,11 +62,12 @@
 
         var method = 'onSelectedObjectPropertyChange';
 
-        var opt0 = {name: 'width', value: Math.round(this.properties.width), method: method};
-        var opt1 = {name: 'spacing', value: Math.round(this.properties.spacing), method: method, class: 'small'};
-        var opt2 = {name: 'hSpacing', value: Math.round(this.properties.hSpacing), method: method, class: 'small'};
-        var opt3 = {name: 'xOffset', value: Math.round(this.properties.xOffset), method: method, class: 'small'};
-        var opt4 = {name: 'yOffset', value: Math.round(this.properties.yOffset), method: method, class: 'small'};
+        var opt0 = {name: 'width', value: this.properties.width, method: method , range: [0,]};
+        var opt1 = {name: 'spacing', value: this.properties.spacing, method: method, class: 'small', range: [0,]};
+        var opt2 = {name: 'hSpacing', value: this.properties.hSpacing, method: method, class: 'small',range:[0,]};
+        var opt3 = {name: 'xOffset', value: this.properties.xOffset, method: method, class: 'small'};
+        var opt4 = {name: 'yOffset', value: this.properties.yOffset, method: method, class: 'small'};
+        
         var opt5 = {name: 'alignment', value: this.properties.alignment, method: method, items: ['center', 'top', 'bottom', 'compact']};
         var opt6 = {name: 'wrap', displayName: 'Wrap', class: '', method: method, checked: this.properties.wrap, isDisabled: false};
         var optBtn = {name: 'layout', displayName: 'Layout Now', class: '', icon: 'fa fa-th', method: 'layoutObjects', tooltip: 'It will layout all the containing elements', style: 'margin-top:5px;'};

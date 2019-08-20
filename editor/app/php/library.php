@@ -4,9 +4,6 @@ include_once '../../config.php';
 
 $atlas_array = [];
 
-define('DS', DIRECTORY_SEPARATOR);
-
-
 define('ASSETS_DIR', str_replace('/', DS, $editorConfig->library));
 
 $main_dir = getcwd() . DS . '..' . DS . '..' . DS . ASSETS_DIR;

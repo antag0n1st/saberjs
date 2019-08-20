@@ -12,48 +12,58 @@
 
         this.imageBrowser = document.getElementById('imageBrowser');
 
-
     };
 
     HtmlContextMenu.prototype.build = function (objects) {
 
-
+        // https://www.codeply.com/go/ji5ijk6yJ4/bootstrap-4-dropdown-submenu-on-hover-(navbar)
 
         var object = objects[0];
 
-        var html = '';
-
-        html += '<div id="contextMenu"class="dropdown-menu" aria-labelledby="navbarDropdown" >';
+        var html = '<div id="contextMenu" class="contextMenu" >';
+        html += '<nav class="navbar navbar-expand-md navbar-light bg-light" style="padding:0px;">';
+        html += '<div class="collapse navbar-collapse" id="navbarNavDropdown">';
+        html += '<ul class="navbar-nav">';
+        html += '<li class="nav-item dropdown">';
+        html += '<ul id="contextPanel" class="dropdown-menu" style="display:block;line-height:normal;">';
+        // shell start
 
         if (object.hasLabel) {
-            html += '<div id="contextEdit" class="dropdown-item" >';
+            html += '<li id="contextEdit" class="dropdown-item" >';
             html += '<i class="fa fa-fw fa-lg fa-pencil"></i> ';
             html += '<span class="actionName">Edit Text</span>';
-            html += '</div>';
+            html += '</li>';
         }
 
-        // <div class="dropdown-divider"></div>
-
-        html += '<div id="contextFindInTree" class="dropdown-item" >';
+        html += '<li id="contextFindInTree" class="dropdown-item">';
         html += '<i class="fa fa-fw fa-lg fa-search"></i> ';
         html += '<span class="actionName">Find In Tree</span>';
-        html += '</div>';
+        html += '';
+        html += '</li>';
 
-        if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
-            html += '<div id="contextChangeImage" class="dropdown-item" >';
+        //if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
+        if (object.hasImage) {
+            html += '<li id="contextChangeImage" class="dropdown-item" >';
 
             html += '<i class="fa fa-fw fa-lg fa-picture-o"></i> ';
             html += '<span class="actionName">Change Image</span>';
 
-            html += '</div>';
+            html += '</li>';
         }
 
-        html += '<div id="contextSaveAsPrefab" class="dropdown-item"  >';
+        html += '<li id="contextSaveAsPrefab" class="dropdown-item"  >';
         html += '<i class="fa fa-fw fa-lg fa-cube"></i> ';
         html += '<span class="actionName">Save as Prefab</span>';
-        html += '</div>';
+        html += '</li>';
 
+        if (this._onContextMenuBuild) {
+            html = this._onContextMenuBuild(objects, html);
+        }
+
+        // shell end
+        html += '</ul></li></ul></div></nav>';
         html += ' </div>';
+
 
         var container = document.createElement("div");
         container.innerHTML = html;
@@ -65,23 +75,20 @@
         }
         document.body.appendChild(cm);
 
+
+
         // bind events here
+
+        if (this._onContextMenuBind) {
+            this._onContextMenuBind();
+        }
+
         if (object.hasLabel) {
             var contextEdit = document.getElementById('contextEdit');
             contextEdit.onclick = this.onContextEditBtn.bind(this);
         }
 
-//        if (object instanceof ImageObject) {
-//
-//            var contextConvertToButton = document.getElementById('contextConvertToButton');
-//            contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
-//
-//            var contextConvertToInput = document.getElementById('contextConvertToInput');
-//            contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
-//
-//        }
-
-        if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
+        if (object.hasImage) {
             var contextChangeImage = document.getElementById('contextChangeImage');
             contextChangeImage.onclick = this.onContextChangeImage.bind(this);
         }
@@ -99,12 +106,6 @@
 
     HtmlContextMenu.prototype.open = function (point) {
 
-        //TODO do the math to show it properly on the screen
-
-        if (this.editor.selectedObjects.length !== 1) {
-            return;
-        }
-
         this.build(this.editor.selectedObjects);
 
         var size = app.device.windowSize();
@@ -116,9 +117,22 @@
         var x = point.x * (w / app.width) + 60;
         var y = point.y * (h / app.height) + 50;
 
+        var m = this.htmlInterface.contextMenuHtml;
+
+
         this.htmlInterface.contextMenuHtml.style.display = 'block';
+        var cp = document.getElementById('contextPanel')
+
+        var h = cp.getBoundingClientRect().height;
+
+        var yOffset = 0;
+
+        if (y + h > size.height) {
+            yOffset = size.height - (y + h);
+        }
+
         this.htmlInterface.contextMenuHtml.style.left = x + 'px';
-        this.htmlInterface.contextMenuHtml.style.top = y + 'px';
+        this.htmlInterface.contextMenuHtml.style.top = y + yOffset + 'px';
 
     };
 
@@ -140,7 +154,7 @@
 
         // only if the object is a label
         if (this.editor.selectedObjects[0] && this.editor.selectedObjects[0].label) {
-            this.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
+            this.htmlInterface.textEditor.showTextEdit(this.editor.selectedObjects[0]);
         }
 
     };
@@ -163,6 +177,7 @@
     };
 
     HtmlContextMenu.prototype.onContextConvertToBtn = function () {
+
         var object = this.editor.selectedObjects[0];
 
         this.editor.deselectAllObjects();
@@ -225,70 +240,11 @@
     };
 
     HtmlContextMenu.prototype.onContextSaveAsPrefab = function () {
-
-        if (this.editor.selectedObjects.length === 1) {
-
-            var prefabs = store.get('prefabs-' + ContentManager.baseURL);
-
-            if (prefabs) {
-                prefabs = JSON.parse(prefabs);
-            } else {
-                prefabs = [];
-            }
-
-            var sampleObject = this.editor.selectedObjects[0];
-
-            if (sampleObject instanceof PolygonObject) {
-                var graphics = new PIXI.Graphics();
-                sampleObject.draw(graphics);
-                sampleObject = graphics;
-            }
-
-////////////////////////////////
-
-
-            var object = this.editor.selectedObjects[0].export();
-
-            var bounds = sampleObject.getBounds();
-            var renderTexture = PIXI.RenderTexture.create(bounds.width, bounds.height);
-
-            var localP = new V().copy(sampleObject.position);
-            var p = new V().copy(sampleObject.getGlobalPosition());
-
-            var dx = -bounds.left + p.x;
-            var dy = -bounds.top + p.y;
-
-            sampleObject.position.set(dx, dy);
-            app.pixi.renderer.render(sampleObject, renderTexture);
-            sampleObject.position.set(localP.x, localP.y);
-
-            var url = app.pixi.renderer.plugins.extract.base64(renderTexture);
-
-            renderTexture.destroy(true);
-
-            /////////////////////////////////////////////////////////
-
-
-            object.prefabPreviewImageURL = url;
-
-            prefabs.push(object);
-            var json = JSON.stringify(prefabs);
-
-            store.set('prefabs-' + ContentManager.baseURL, json);
-
-            toastr.success("Object was saved as Prefab.");
-
-            this.editor.htmlInterface.onPrefabs();
-
-        } else {
-            toastr.error("Only one selected object can be saved as Prefabs.");
-        }
-
+        this.editor.htmlInterface.prefabExplorer.show();
         this.close();
     };
 
     HtmlContextMenu.prototype.onContextChangeImage = function () {
-
 
         this.close();
 
@@ -298,15 +254,12 @@
         htmlLibrary.delegate = this;
         htmlLibrary.addFiles(app.libraryImages);
         htmlLibrary.show();
-        
+
         htmlLibrary.displayContainer.style.height = '400px';
 
         var height = htmlLibrary.displayContainer.style.height;
         height = height.replace('px', '');
         height = Math.round(height);
-        
-        this.imageBrowser.style.top = '75px';
-        this.imageBrowser.style.left = '25px';
 
         this.imageBrowser.style.display = 'block';
 
@@ -319,59 +272,18 @@
     };
 
     HtmlContextMenu.prototype.onLibraryItemClicked = function (event, library) {
-
-        var id = event.target.id.replace(library.id + '_i_m_a_g_e_', '');
+        
+        var id = event.target.dataset.id;
+        
+        var data = library.getItemByID(id);      
 
         event.preventDefault();
 
         this.closeImageBrowser();
 
-        /// change the new image
-
         var object = this.editor.selectedObjects[0];
 
-
-        if (object.imageName) {
-
-            var sx = object.scale.x;
-            var sy = object.scale.y;
-
-            var texture = PIXI.utils.TextureCache[id];
-            object.setTexture(id);
-
-            object.width = texture.width;
-            object.height = texture.height;
-
-
-
-            if (object.updateSize) {
-                object.scale.set(sx, sy);
-                object.updateSize();
-            } else {
-
-                object.setSensorSize(object.width, object.height);
-
-                object._sensorTranslationX = 0;
-                object._sensorTranslationY = 0;
-                object._sensorTranslationScaleX = sx;
-                object._sensorTranslationScaleY = sy;
-                object._sensorRotation = 0;
-                object.updateFrame();
-
-                object.scale.set(sx, sy);
-
-            }
-
-            object.updateFrame();
-
-        } else if (object.background) {
-            // update the nine slice
-
-            object.backgroundName = id;
-            object.background.imageName = id;
-            object.background.buildBackground();
-
-        }
+        object._setImage(data.name);
 
     };
 

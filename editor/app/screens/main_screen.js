@@ -18,15 +18,13 @@
 
         this.screen_initialize();
 
-
-
         this.mouseDownPosition = new V();
         this.screenMouseOffset = new V();
         this.isPointInAnimator = false;
+        this.remotePrefabs = [];
 
         this.content = new PIXI.Container();
         this.addChild(this.content);
-
 
         this.mode = MainScreen.MODE_SELECT;
         this.modes = [
@@ -84,6 +82,7 @@
         this.targetDropObject = null; // the object in which we are going to drop the children.
         this.clipboard = null;
         this.previewScreenName = '';
+        this.selectionChangeQueue = [];
 
         this.activeLayer = null;
 
@@ -106,7 +105,14 @@
         this.addTouchable(this); // let the screen be a touchable
 
         // IMPORTING STUFF
-        this.htmlInterface.htmlLibrary.addFiles(app.libraryImages);
+
+        // add ids
+
+        this.addIdsToData(app.libraryImages);
+
+        this.htmlInterface.imagesLibrary.sort(app.libraryImages);
+        this.htmlInterface.imagesLibrary.addFiles(app.libraryImages);
+
         this.htmlInterface.activateTab('imageLibrary');
         this.importSavedData();
         this.setDefaultLayer();
@@ -122,7 +128,7 @@
 
             timeout(function () {
 
-                this.animator = new AnimationPanel(this);
+                this.animator = new AnimationPanel();
                 this.animator.zIndex = 11; // above the 
                 this.animator.position.set(0, app.height - this.animator.panelHeight);
                 this.addTouchable(this.animator);
@@ -142,24 +148,27 @@
 
     MainScreen.prototype.onGalleryObjectDropped = function (id) {
 
-        if (id === "GenericObject") {
+        var data = this.htmlInterface.objectsGalery.getItemByID(id);
+        var name = data.name;
+
+        if (name === "GenericObject") {
             var object = new GenericObject();
             object.build();
-        } else if (id === "LabelObject") {
+        } else if (name === "LabelObject") {
             var object = new LabelObject('Text');
             object.build();
-        } else if (id === "ContainerObject") {
+        } else if (name === "ContainerObject") {
             var object = new ContainerObject();
             object.build();
-        } else if (id === "ButtonObject") {
+        } else if (name === "ButtonObject") {
             var object = new ButtonObject('_default_button');
             object.build();
-        } else if (id === "InputObject") {
+        } else if (name === "InputObject") {
             var object = new InputObject('_default_input');
             object.build();
+        } else if (this._onGalleryObjectDropped) {
+            var object = this._onGalleryObjectDropped(name, data);
         }
-
-        // _default_button
 
         if (object) {
             this.placeObjectOnScreen(object);
@@ -169,47 +178,82 @@
 
     };
 
-    MainScreen.prototype.onPrefabDropped = function (data) {
-
-        var index = data.getData('index');
-
-        var prefabs = store.get('prefabs-' + ContentManager.baseURL);
-        prefabs = JSON.parse(prefabs);
-
-        var prefab = prefabs[index];
-
+    MainScreen.prototype.onPrefabDropped = function (id) {
 
         var cp = new V().copy(this.activeLayer.getGlobalPosition());
         var p = V.substruction(app.input.point, cp);
         p.scale(1 / this.activeLayer.scale.x);
 
 
-        prefab.position.x = p.x;
-        prefab.position.y = p.y;
+        var prefabData = this.htmlInterface.prefabs.getItemByID(id);
+
+        var prefabID = prefabData.id;
+
+        // check if it is private prefab
+
+        if (prefabData.prefabData) {
+            // its a local prefab
+            this.addPrefabToStage(JSON.parse(prefabData.prefabData), p);
+
+        } else {
+
+            var url = '../api/editor/get-prefabs-data';
+
+            var cache = this.mathcore.remotePrefabsData;
+
+            var _this = this;
+
+            if (cache[prefabID]) {
+                this.addPrefabToStage(JSON.parse(cache[prefabID]), p);
+            } else {
+
+                var loader = new DataLoader();
+                loader.position.set(p.x, p.y);
+                this.activeLayer.addChild(loader);
+
+                ajaxPost(url, {ids: [prefabID]}, function (response) {
+                    var prefabData = JSON.parse(response[0].data);
+                    cache[prefabID] = JSON.stringify(prefabData);
+                    _this.addPrefabToStage(prefabData, p);
+                    loader.removeFromParent();
+                });
+
+            }
+
+        }
 
 
-        var io = this.importer.importObjects([prefab], this.activeLayer);
+    };
+
+    MainScreen.prototype.addPrefabToStage = function (prefabData, p) {
+
+        var objectsToImport = [];
+
+        for (var i = 0; i < prefabData.children.length; i++) {
+            var pd = prefabData.children[i];
+            pd.position.x += p.x;
+            pd.position.y += p.y;
+            objectsToImport.push(pd);
+        }
+
+        var io = this.importer.importObjects(objectsToImport, this.activeLayer);
 
         this.deselectAllObjects();
         for (var i = 0; i < io.length; i++) {
             this.addObjectToSelection(io[i]);
         }
-
     };
 
     MainScreen.prototype.onLibraryImageDropped = function (id) {
 
-        var object = new ImageObject(id);
+        // find the object to get more data
+
+        var data = this.htmlInterface.imagesLibrary.getItemByID(id);
+
+        var object = new ImageObject(data.name);
+        object.graphics = this.graphics;
         object.build();
         this.placeObjectOnScreen(object);
-    };
-
-    MainScreen.prototype.onLabelDropped = function () {
-
-        var object = new LabelObject('Text');
-        object.build();
-        this.placeObjectOnScreen(object);
-
     };
 
     MainScreen.prototype.placeObjectOnScreen = function (object, p) {
@@ -237,7 +281,11 @@
 
     MainScreen.prototype.onFilesReaded = function (files, reader) {
 
-        this.htmlInterface.htmlLibrary.addFiles(files);
+        //TODO this is not used anymore
+
+        return;
+
+        this.htmlInterface.imagesLibrary.addFiles(files);
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
@@ -246,7 +294,7 @@
 
         ContentManager.downloadResources(function () {
 
-            this.htmlInterface.htmlLibrary.show();
+            this.htmlInterface.imagesLibrary.show();
 
         }, this);
     };
@@ -329,7 +377,7 @@
                 // return true;
             }
 
-            //TODO the method of checking the selection needs to change
+            //  method of checking the selection needs to change
             var rectangle = object.getSensor();
             if ((object._checkPolygon && object._checkPolygon(this.selectionRectangle)) || SAT.testPolygonPolygon(this.selectionRectangle, rectangle)) {
 
@@ -466,7 +514,41 @@
 
     };
 
+    MainScreen.prototype.updateModifiers = function (event) {
+
+        if (event.originalEvent) {
+
+            if (event.originalEvent.getModifierState) {
+
+                this.shortcuts.isCtrlPressed = event.originalEvent.getModifierState("Control");
+                this.shortcuts.isShiftPressed = event.originalEvent.getModifierState("Shift");
+                this.shortcuts.isAltPressed = event.originalEvent.getModifierState("Alt");
+
+            } else {
+
+                if (event.originalEvent.ctrlKey !== undefined) {
+                    this.shortcuts.isCtrlPressed = event.originalEvent.ctrlKey;
+                }
+
+                if (event.originalEvent.altKey !== undefined) {
+                    this.shortcuts.isAltPressed = event.originalEvent.altKey;
+                }
+
+                if (event.originalEvent.shiftKey !== undefined) {
+                    this.shortcuts.isShiftPressed = event.originalEvent.shiftKey;
+                }
+
+            }
+
+        }
+
+    };
+
     MainScreen.prototype.onMouseDown = function (event, sender) {
+
+        // this should solve the non-fireing of the key up event
+
+        this.updateModifiers(event);
 
         if (editorConfig.features.animator && this.animator) {
             var s = this.animator.getSensor();
@@ -493,9 +575,15 @@
         }
 
         this.modes[this.mode].onMouseDown(event, sender);
+
+        if (this._onMouseDown) {
+            this._onMouseDown(event, sender);
+        }
     };
 
     MainScreen.prototype.onMouseMove = function (event, sender) {
+
+        this.updateModifiers(event);
 
         if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
             this.animator.onMouseMove(event, sender);
@@ -517,9 +605,15 @@
         }
 
         this.modes[this.mode].onMouseMove(event, sender);
+
+        if (this._onMouseMove) {
+            this._onMouseMove(event, sender);
+        }
     };
 
     MainScreen.prototype.onMouseUp = function (event, sender) {
+
+        this.updateModifiers(event);
 
         if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
             this.isPointInAnimator = false;
@@ -596,25 +690,29 @@
             }
         }
 
-        var scale = 0.1;
-        if (event.point.y < 0) {
-            scale = -0.1;
+        if (editorConfig.features.zoom) {
+            var scale = 0.1;
+            if (event.point.y < 0) {
+                scale = -0.1;
+            }
+            var p = new V(app.input.point.x, app.input.point.y);
+
+            if (Actions.isRunning('zoom')) {
+                this._zoom = Math.roundDecimal(this._toZoomScale, 1);
+            }
+
+            var toScale = this._zoom + scale;
+
+            toScale = Math.clamp(toScale, -0.8, 3);
+
+            this._toZoomScale = toScale;
+
+            this.htmlInterface.htmlTopTools.zoomSlider.setValue(toScale);
+
+            this.htmlInterface.htmlTopTools.zoomInAt(toScale, p, 200);
         }
-        var p = new V(app.input.point.x, app.input.point.y);
 
-        if (Actions.isRunning('zoom')) {
-            this._zoom = Math.roundDecimal(this._toZoomScale, 1);
-        }
 
-        var toScale = this._zoom + scale;
-
-        toScale = Math.clamp(toScale, -0.8, 3);
-
-        this._toZoomScale = toScale;
-
-        this.htmlInterface.htmlTopTools.zoomSlider.setValue(toScale);
-
-        this.htmlInterface.htmlTopTools.zoomInAt(toScale, p, 200);
     };
 
     MainScreen.prototype.onMouseCancel = function (event, sender) {
@@ -629,7 +727,12 @@
             var clipboard = [];
 
             for (var i = 0; i < this.selectedObjects.length; i++) {
-                clipboard.push(this.selectedObjects[i].export());
+                var o = this.selectedObjects[i];
+                if (o.type === "MessageBoxObject") {
+                    toastr.warning("Can't copy a Question Message Box");
+                    return;
+                }
+                clipboard.push(o.export());
             }
 
             if (clipboard.length) {
@@ -725,10 +828,13 @@
     MainScreen.prototype.onShow = function () {
         Config.canvas_padding = '50 360 0 50';
         app.resize();
+
+        // lets register the kibo
+        this.shortcuts.kibo.registerMe();
     };
 
     MainScreen.prototype.onHide = function () {
-
+        this.shortcuts.kibo.unregisterMe();
     };
 
     MainScreen.prototype.onAfterHide = function () {
@@ -747,6 +853,13 @@
 
         var x = app.input.point.x - this._screenPosition.x;
         var y = app.input.point.y - this._screenPosition.y;
+
+        if (this.selectionChangeQueue.length > 0) {
+            this.selectionChangeQueue.pop();
+            if (this.selectionChangeQueue.length === 0) {
+                this._onSelectionChange();
+            }
+        }
 
         this.infoLabel.txt = 'x: ' + Math.round(x) + ' y: ' + Math.round(y);
 
@@ -774,6 +887,9 @@
             this.targetDropObject.drawFrame(this.graphics);
         }
 
+        if (this._onDraw) {
+            this._onDraw(this.graphics);
+        }
 
     };
 
@@ -970,6 +1086,13 @@
     MainScreen.prototype.onSelectionChange = function () {
         // build the align buttons
 
+        this.selectionChangeQueue.push(0);
+
+    };
+
+    MainScreen.prototype._onSelectionChange = function () {
+        // build the align buttons
+
         if (this.selectedObjects.length > 1) {
             this.htmlInterface.htmlTopTools.showAlignButtons(this.selectedObjects);
         } else {
@@ -1009,10 +1132,6 @@
         return isInputFocused || isAreaFocused;
     };
 
-    MainScreen.prototype.focusOnCanvas = function () {
-        document.activeElement.blur();
-    };
-
     MainScreen.prototype.isIdUnique = function (id, children, count) {
 
         children = children || this.content.children;
@@ -1040,11 +1159,108 @@
 
     };
 
-    MainScreen.prototype.onSelectedObjectPropertyChange = function (property, value, element, inputType, feedbackID) {
+    MainScreen.prototype.onSelectedObjectPropertyChange = function (property, value, element, inputType, feedbackID, range) {
+
+        //TODO Filter the values here
+
+        value = this.cleanUpValuesByType(inputType, value, element, range, feedbackID);
+
         for (var i = 0; i < this.selectedObjects.length; i++) {
             var object = this.selectedObjects[i];
             object._onPropertyChange(this, property, value, element, inputType, feedbackID);
         }
+
+    };
+
+    MainScreen.prototype.cleanUpValuesByType = function (inputType, value, element, range, feedbackID) {
+
+        switch (inputType) {
+
+            case HtmlElements.TYPE_CHECKBOX:
+                value = element.checked;
+                break;
+            case HtmlElements.TYPE_DROPDOWN:
+                break;
+            case HtmlElements.TYPE_COLORPICKER:
+                break;
+            case HtmlElements.TYPE_INPUT_STRING:
+                value = String(value) || '';
+                break;
+            case HtmlElements.TYPE_INPUT_NUMBER:
+
+                var oldValue = value;
+                value = Number(value) || 0;
+
+                var shouldCheck = true;
+
+                if (shouldCheck && oldValue !== value.toString()) {
+                    HtmlElements.setFeedback(feedbackID, false);
+                    if (element.setCustomValidity) {
+                        element.setCustomValidity("Invalid Value");
+                        element.reportValidity();
+                    }
+                    shouldCheck = false;
+                }
+
+                var beforeRange = value;
+                value = Math.clamp(value, range[0], range[1]);
+
+                if (shouldCheck && beforeRange !== value) {
+                    HtmlElements.setFeedback(feedbackID, false);
+                    if (element.setCustomValidity) {
+                        element.setCustomValidity("Out of range! " + range[0] + " : " + range[1]);
+                        element.reportValidity();
+                    }
+                } else if (shouldCheck) {
+                    if (element.setCustomValidity) {
+                        element.setCustomValidity("");
+                    }
+                    HtmlElements.setFeedback(feedbackID, true);
+                }
+
+                value = Math.roundDecimal(value, 2);
+                HtmlElements.setFeedback(feedbackID, oldValue === value.toString());
+
+                break;
+            case HtmlElements.TYPE_INPUT_INTEGER:
+
+                var oldValue = value;
+                value = Math.round(value) || 0;
+
+                var shouldCheck = true;
+
+                if (shouldCheck && oldValue !== value.toString()) {
+                    HtmlElements.setFeedback(feedbackID, false);
+                    if (element.setCustomValidity) {
+                        element.setCustomValidity("Invalid Value");
+                        element.reportValidity();
+                    }
+                    shouldCheck = false;
+                }
+
+                var beforeRange = value;
+                value = Math.clamp(value, range[0], range[1]);
+
+                if (shouldCheck && beforeRange !== value) {
+                    HtmlElements.setFeedback(feedbackID, false);
+                    if (element.setCustomValidity) {
+                        element.setCustomValidity("Out of range! " + range[0] + " : " + range[1]);
+                        element.reportValidity();
+                    }
+                } else if (shouldCheck) {
+                    if (element.setCustomValidity) {
+                        element.setCustomValidity("");
+                    }
+                    HtmlElements.setFeedback(feedbackID, true);
+                }
+
+                break;
+            default:
+
+                break;
+        }
+
+        return value;
     };
 
     MainScreen.prototype.setMode = function (mode) {
@@ -1144,6 +1360,16 @@
 
     MainScreen.prototype.blank = function () {
         // used to call it , and do nothing
+    };
+
+    MainScreen.prototype.addIdsToData = function (items) {
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            item.id = PIXI.utils.uid()
+            if (item.children) {
+                this.addIdsToData(item.children);
+            }
+        }
     };
 
     window.MainScreen = MainScreen; // make it available in the main scope

@@ -13,6 +13,7 @@
         this._padding = 20;
         this.type = 'InputObject';
         this.hasLabel = true;
+        this.hasImage = true;
 
         this.background = new NineSlice(imageName, '15');
         this.addChild(this.background);
@@ -41,7 +42,7 @@
             sensorWidth: 0,
             sensorHeight: 0,
             hasPlaceholder: false,
-            hasNext : false,
+            hasNext: false,
             placeholderColor: '#555555'
         };
 
@@ -100,13 +101,7 @@
         o.txt = this.label.txt;
         o.backgroundName = this.backgroundName;
 
-        o.style = {
-            fill: this.label.style.fill,
-            fontFamily: this.label.style.fontFamily,
-            fontSize: this.label.style.fontSize,
-            padding: 4,
-            align: this.label.style.align
-        };
+        o.style = this._exportStyle();
 
         return o;
 
@@ -133,13 +128,13 @@
         this.background.padding = this.properties.padding;
         this.background.setSize(this.properties.width, this.properties.height);
 
-       // this.label.visible = this.properties.hasPlaceholder;
-       
-       if(this.properties.hasPlaceholder){
-           // change the color
-       } else {
-           
-       }
+        // this.label.visible = this.properties.hasPlaceholder;
+
+        if (this.properties.hasPlaceholder) {
+            // change the color
+        } else {
+
+        }
 
         this.enableSensor();
 
@@ -153,13 +148,13 @@
     };
 
     InputObject.prototype.bindProperties = function (editor) {
-        
-        var eHTML = Entity.prototype.bindProperties.call(this,editor);
+
+        var eHTML = Entity.prototype.bindProperties.call(this, editor);
 
         var html = '';
 
         var method = 'onSelectedObjectPropertyChange';
-        
+
         var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
         var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
         var opt2 = {name: 'padding', value: Math.round(this.properties.padding), class: 'big', method: method, feedback: true};
@@ -168,15 +163,15 @@
 
         var opt7 = {name: 'hasPlaceholder', checked: this.properties.hasPlaceholder, method: method, displayName: 'Is Active'};
         var opt8 = {name: 'hasNext', checked: this.properties.hasNext, method: method, displayName: 'Has Next'};
-        
-        var opt9 = {name: 'placeholderColor', method: method, displayName: 'Color' , value: this.properties.placeholderColor };
+
+        var opt9 = {name: 'placeholderColor', method: method, displayName: 'Color', value: this.properties.placeholderColor};
 
         html += HtmlElements.createInput(opt0).html;
         html += HtmlElements.createInput(opt1).html;
 
         var padding = HtmlElements.createInput(opt2);
         var colorPicker = HtmlElements.createColorPicker(opt9);
-        
+
         html += padding.html;
         html += HtmlElements.createCheckbox(opt8).html;
         html += HtmlElements.createSection('Placeholder').html;
@@ -195,8 +190,8 @@
     };
 
     InputObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
-        
-       
+
+
 
         if (property === 'padding') {
             HtmlElements.setFeedback(feedbackID, this.isPaddingValid());
@@ -223,6 +218,12 @@
 
     InputObject.prototype.isPaddingValid = function () {
         return true;
+    };
+
+    InputObject.prototype._setImage = function (name) {
+        this.backgroundName = name;
+        this.background.imageName = name;
+        this.background.buildBackground();
     };
 
     window.InputObject = InputObject;

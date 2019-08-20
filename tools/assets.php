@@ -88,7 +88,7 @@ function listFolderFiles($dir) {
                         $url = ltrim($url, '/');
                         $content .= "ContentManager.addImage('" . $basic . "','" . $url . $ff . "');\n";
                     }
-                } else if (endsWith($ff, '.json')) {
+                } else if (endsWith($ff, '.json') or endsWith($ff, '.txt')) {
                     // looking for json files 
                     $basic = beforeComma($ff);
                     $content .= "ContentManager.addFile('" . $basic . "','" . create_url($dir) . $ff . "');\n";

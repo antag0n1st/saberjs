@@ -13,7 +13,7 @@
         this.guiInitialize();
         this.panel = panel;
 
-        this.zoomLevel = panel.zoomLevel;
+
 
 
         var w = this.panel.panelRightWidth;
@@ -45,9 +45,12 @@
 
         var duration = this.panel.animator.animation.duration;
 
-        var factor = this.panel.factor;
+        var factor = 0.2;
 
         var oneSec = 1000 * factor;
+
+        var secs = Math.floor(duration / 1000);
+
 
         this.cellWidth = duration * factor;
 
@@ -65,57 +68,23 @@
             rect.position.set(0, i * this.cellHeight + padding * i + padding);
             this.content.addChild(rect);
 
-//            for (var j = 1; j < secs; j++) {
-//                var label = new Label(Style.DEFAULT_LABEL);
-//                label.txt = "" + j;
-//                label.style.fill = 0xffffff;
-//                label.style.fontFamily = 'Arial';
-//                label.style.fontSize = 22;
-//                label.anchor.set(0.5, 0.5);
-//                label.position.set(j * oneSec, rect.y + this.cellHeight / 2);
-//                this.content.addChild(label);
-//
-//            }
+            for (var j = 1; j < secs; j++) {
+                var label = new Label(Style.DEFAULT_LABEL);
+                label.txt = "" + j;
+                label.style.fill = 0xffffff;
+                label.style.fontFamily = 'Arial';
+                label.style.fontSize = 22;
+                label.anchor.set(0.5, 0.5);
+                label.position.set(j * oneSec, rect.y + this.cellHeight / 2);
+                this.content.addChild(label);
 
-
-            // lets draw all the line
+            }
 
 
 
         }
 
         this.contentLength = this.content.getBounds().height;
-
-        var step = oneSec / this.panel.FPS;
-
-        var half = this.panel.FPS / 2;
-
-        var count = Math.floor(this.cellWidth / step);
-
-
-
-        for (var i = 0; i < count; i++) {
-
-            var alpha = 0.5;
-            var w = 1;
-            var color = 0xaaaaaa;
-            var x = i * step;
-
-            if (i % half === 0) {
-                alpha = 1;
-                color = 0xffffff;
-            }
-
-            if (i % this.panel.FPS === 0) {
-                alpha = 1;
-                w = 3;
-                x -= 1; // so that it is centered
-            }
-
-            this.drawRect(x, 0, w, this.contentLength, color, alpha, this.content);
-        }
-
-
 
     };
 

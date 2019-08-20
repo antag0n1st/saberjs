@@ -23,8 +23,7 @@ module.exports = function (grunt) {
 
                     'lib.min.js': [
 
-                        "lib/external/howler.core.js",
-                        "lib/external/font.js",
+                        "lib/external/howler.core.min.js",
                         "lib/external/sat.js",
                         "lib/external/kibo.js",
                         "lib/external/visibility.core.js",

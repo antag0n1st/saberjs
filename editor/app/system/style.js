@@ -31,7 +31,7 @@
 //    wordWrapWidth: 100,
 //    leading: 0
 
-    var Style = Style || function () {
+    var Style = window.Style || function () {
         throw "can't initialize this class";
     };
     

@@ -1,20 +1,18 @@
 (function (window, undefined) {
 
-    function AnimationPlayHead(panel) {
-        this.initialize(panel);
+    function AnimationPlayHead() {
+        this.initialize();
     }
 
     AnimationPlayHead.prototype = new Sprite();
     AnimationPlayHead.prototype.spriteInitialize = AnimationPlayHead.prototype.initialize;
     //DELEGATE
     // onPlayHeadMove(percent,x)
-    AnimationPlayHead.prototype.initialize = function (panel) {
+    AnimationPlayHead.prototype.initialize = function () {
 
         this.spriteInitialize('_play_head');
         this.centered();
         this.enableSensor();
-
-        this.panel = panel;
 
         this.percent = 0;
         this.timelineLength = 0;
@@ -31,20 +29,9 @@
     };
 
     AnimationPlayHead.prototype.onMouseMove = function (event, sender) {
-        var x = this.lastX + event.point.x - this.lastP.x;
+        this.x = this.lastX + event.point.x - this.lastP.x;
 
-        // var duration = this.panel.animator.animation.duration;
-
-        var factor = this.panel.factor;
-
-        var oneSec = 1000 * factor;
-
-
-        // snap
-        var step = oneSec / this.panel.FPS;
-        x = Math.round(x / step) * step;
-
-        x = Math.clamp(x, 0, this.timelineLength);
+        var x = Math.clamp(this.x, 0, this.timelineLength);
         this.x = x;
         this.percent = x / this.timelineLength;
 

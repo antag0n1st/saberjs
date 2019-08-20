@@ -8,10 +8,19 @@ window.addEventListener("load", function () {
 
     app = new App();
     
-    for (var i = 1; i < 10; i++) {
+    //GlobalData.read();
+    
+    for (var i = 1; i < 15; i++) {
         timeout(function () {
-            app.resize();
-        }, 500 * i);
+            if(!app.device.isKeyboardUp){
+                app.resize(true); // do it with auto layout
+            }            
+        }, 100 * i);
     }
 
 }, false);
+
+// why was this ?
+//document.addEventListener('focusout', function() {
+//  window.scrollTo(0, 0);
+//});

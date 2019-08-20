@@ -20,7 +20,6 @@
         
         if (data) {
             this.setBasicData(data);
-            //this.setTexture(data.imageName);
         }
         
         this.enableSensor();

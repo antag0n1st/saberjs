@@ -22,6 +22,9 @@
 
         this.editor.htmlInterface.contextMenu.close();
         this.editor.htmlInterface.contextMenu.closeImageBrowser();
+        
+        this.editor.htmlInterface.prefabExplorer.hide();
+        this.editor.htmlInterface.genericModal.style.display = 'none';
 
         // check if we are touching a handle of the selected objects
         if (this.editor.checkSelectedObjects(this.editor.selectedObjects, event)) {
@@ -31,13 +34,13 @@
         var object = null;
         // recursivly check if an object was clicked down
         if (this.editor.activeLayer.visible) {
-            object = this.editor.checkPointInChildren(this.editor.activeLayer.children, event , this.editor.shortcuts.isAltPressed);
+            object = this.editor.checkPointInChildren(this.editor.activeLayer.children, event, this.editor.shortcuts.isAltPressed);
         }
 
         if (object) {
 
             if (this.editor.shortcuts.isShiftPressed) {
-             
+                this.editor.clickedObject = object;
             } else if (this.editor.shortcuts.isCtrlPressed) {
 
                 if (object.isSelected) {
@@ -49,6 +52,12 @@
                     } else {
                         // if it is under the same parent , then we can add it to the selection
                         this.editor.addObjectToSelection(object);
+                        
+                        for (var i = 0; i < this.editor.selectedObjects.length; i++) {
+                            var obj = this.editor.selectedObjects[i];
+                            obj.save();
+                        }
+                       
                     }
                 }
 
@@ -109,8 +118,10 @@
 
                 if (!isSelected) {
                     this.editor.targetDropObject = object;
-                    app.input.restoreCursor();
+                    event.originalEvent.preventDefault();
                     app.input.setCursor('cell');
+
+
                 } else if (this.editor.targetDropObject) {
                     this.editor.targetDropObject = null;
                 }
@@ -120,6 +131,7 @@
                 if (this.editor.targetDropObject) {
                     this.editor.targetDropObject = null;
                 }
+                // log("Restore")
                 app.input.restoreCursor();
             }
             return;
@@ -176,7 +188,7 @@
 
     ModeSelect.prototype.onMouseUp = function (event, sender) {
 
-
+        //  log("restore 2")
         app.input.restoreCursor();
 
         if (this.editor.shortcuts.isShiftPressed) {
@@ -188,19 +200,29 @@
                 for (var i = 0; i < this.editor.selectedObjects.length; i++) {
                     var object = this.editor.selectedObjects[i];
 
-                    var objectAP = object.getGlobalPosition();
 
-                    object.removeFromParent();
-                    this.editor.targetDropObject.addChild(object);
+                    if (object.canDrop) {
+                        var objectAP = object.getGlobalPosition();
 
-                    var p = V.substruction(objectAP, targetAP);
+                        object.removeFromParent();
+                        this.editor.targetDropObject.addChild(object);
 
-                    p.scale(1 / this.editor.activeLayer.scale.x);
+                        var p = V.substruction(objectAP, targetAP);
 
-                    object.position.set(p.x, p.y);
+                        p.scale(1 / this.editor.activeLayer.scale.x);
+
+                        object.position.set(p.x, p.y);
+
+                        if (this.editor.targetDropObject._onItemDropped) {
+                            this.editor.targetDropObject._onItemDropped(object);
+                        }
+                        
+                        toastr.success("You placed "+object.type +' into '+this.editor.targetDropObject.type);
+                    }
+
                 }
 
-                this.editor.deselectAllObjects();
+               // this.editor.deselectAllObjects();
 
             }
 
@@ -223,11 +245,11 @@
             //   if (object.properties) {
             //      this.editor.htmlInterface.activateTab('properties');
             //  } else {
-            this.editor.htmlInterface.activateTab('commonProperties');
+            this.editor.htmlInterface.activateTab('properties');
             //  }
 
         } else {
-            this.editor.htmlInterface.htmlTopTools.hideTextEdit();
+            this.editor.htmlInterface.textEditor.hideTextEdit();
         }
 
         if (this.editor.handlesClickedObject) {
@@ -296,3 +318,5 @@
     window.ModeSelect = ModeSelect;
 
 }(window));
+
+

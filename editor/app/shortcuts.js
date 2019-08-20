@@ -48,14 +48,41 @@
 
             that.onDelete();
         });
+        
+        this.kibo.down('backspace', function () {
+            
+            if (editor.isInputActive()) {
+                return true;
+            }
+            
+            return false;
+            
+//            if(editor.selectedObjects.length && editor.isInputActive()){
+//                return true;
+//            }
+//            
+//            if(editor.selectedObjects.length && !editor.isInputActive()){
+//                return false;
+//            }
+//            
+//            if(editor.selectedObjects.length <= 0){
+//                return false;
+//            }
+            
+        });
 
-        this.kibo.up('backspace', function () {
+        this.kibo.up('backspace', function (event) {
 
             if (editor.isInputActive()) {
                 return false;
             }
 
             that.onDelete();
+            
+            
+            event.preventDefault();
+            event.stopPropagation();
+            
         });
 
         this.kibo.down('space', function () {
@@ -68,31 +95,31 @@
             app.input.restoreCursor();
         });
 
-        this.kibo.down('ctrl', function () {
-            that.isCtrlPressed = true;
-            return false;
-        });
-
-        this.kibo.up('ctrl', function () {
-            that.isCtrlPressed = false;
-            return false;
-        });
-
-        this.kibo.down('alt', function () {
-            that.isAltPressed = true;
-        });
-
-        this.kibo.up('alt', function () {
-            that.isAltPressed = false;
-        });
-
-        this.kibo.down('shift', function () {
-            that.isShiftPressed = true;
-        });
-
-        this.kibo.up('shift', function () {
-            that.isShiftPressed = false;
-        });
+//        this.kibo.down('ctrl', function () {
+//            that.isCtrlPressed = true;
+//            return false;
+//        });
+//
+//        this.kibo.up('ctrl', function () {
+//            that.isCtrlPressed = false;
+//            return false;
+//        });
+//
+//        this.kibo.down('alt', function () {
+//            that.isAltPressed = true;
+//        });
+//
+//        this.kibo.up('alt', function () {
+//            that.isAltPressed = false;
+//        });
+//
+//        this.kibo.down('shift', function () {
+//            that.isShiftPressed = true;
+//        });
+//
+//        this.kibo.up('shift', function () {
+//            that.isShiftPressed = false;
+//        });
 
         this.kibo.down('left', function () {
             if (!editor.isInputActive()) {
@@ -138,7 +165,8 @@
 
         this.kibo.down('ctrl s', function () {
             if (!editor.isInputActive()) {
-                editor.htmlInterface.saveCurrentContent();
+                editor.htmlInterface.htmlTopTools.onSaveBtn();
+              //  editor.htmlInterface.saveCurrentContent();
                 return false;
             }
         });
@@ -172,6 +200,8 @@
         this.kibo.up('z', function () {
             that.isZPressed = false;
         });
+        
+      
 
         this.kibo.down('any number', function (e) {
             if (!editor.isInputActive()) {
@@ -182,6 +212,7 @@
             }
 
         });
+        
 
     };
 
@@ -215,6 +246,7 @@
             var so = this.editor.selectedObjects[i];
             var command = new CommandDelete(so, this.editor);
             batch.add(command);
+
         }
 
         this.editor.commands.add(batch);
@@ -226,14 +258,22 @@
     };
 
     Shortcuts.prototype.onEsc = function () {
+        
         this.editor.deselectAllObjects();
-        this.editor.htmlInterface.htmlTopTools.hideTextEdit();
+        this.editor.htmlInterface.textEditor.hideTextEdit();
         this.editor.setMode(MainScreen.MODE_SELECT);
 
         this.editor.htmlInterface.contextMenu.close();
         this.editor.htmlInterface.contextMenu.closeImageBrowser();
+        
+        this.editor.htmlInterface.prefabExplorer.hide();
+        this.editor.htmlInterface.genericModal.style.display = 'none';
 
         $(".color-pickers").colorpicker('hide');
+        
+        if(this.editor._onEsc){
+            this.editor._onEsc();
+        };
 
     };
 

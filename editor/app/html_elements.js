@@ -5,9 +5,16 @@
         throw "Can't initialize html elements";
     }
 
-    HtmlElements.INPUT_TYPE_ALL = 0;
-    HtmlElements.INPUT_TYPE_NUMBER = 1;
-    HtmlElements.INPUT_TYPE_BOOLEAN = 2;
+//    HtmlElements.INPUT_TYPE_ALL = 0;
+//    HtmlElements.INPUT_TYPE_NUMBER = 1;
+//    HtmlElements.INPUT_TYPE_BOOLEAN = 2;
+
+    HtmlElements.TYPE_INPUT_STRING = 0;
+    HtmlElements.TYPE_INPUT_NUMBER = 1; // default
+    HtmlElements.TYPE_INPUT_INTEGER = 2;
+    HtmlElements.TYPE_CHECKBOX = 3;
+    HtmlElements.TYPE_DROPDOWN = 4;
+    HtmlElements.TYPE_COLORPICKER = 5;
 
     // name,displayName , value, class, event, isDisabled, tooltip, method, inputType
     var sample = {
@@ -20,10 +27,11 @@
         tooltip: '',
         method: '',
         feedback: false,
-        inputType: HtmlElements.INPUT_TYPE_ALL,
+        type: HtmlElements.INPUT_TYPE_ALL,
         buttonClass: '',
         buttonAction: '',
-        style: ''
+        style: '',
+        range: [Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
     };
 
     HtmlElements.createInput = function (options) {
@@ -41,10 +49,14 @@
         var className = options.class || 'big';
         var method = options.method || "propertiesBinder.onPropertyChange";
         var tooltip = options.tooltip || "";
-        var inputType = options.inputType || HtmlElements.INPUT_TYPE_ALL;
+        var inputType = (options.type === undefined) ? HtmlElements.TYPE_INPUT_NUMBER : options.type;
         var name = options.name || '';
         var style = options.style || '';
         var displayName = options.displayName || name;
+        var range = options.range || [Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+        range[0] = (range[0] === undefined) ? Number.MIN_SAFE_INTEGER : range[0];
+        range[1] = (range[1] === undefined) ? Number.MAX_SAFE_INTEGER : range[1];
+
         if (displayName === name) {
             displayName = displayName.replace('_', ' ').capitalize();
         }
@@ -65,8 +77,12 @@
         html += ' class="form-control" ';
         html += ' style="' + style + '" ';
         html += ' id="' + id + '" ';
+        html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' type="text" value="' + value + '" ' + event_string;
-        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\');" ';
+        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
+        html += ' onwheel="app.navigator.currentScreen.propertiesBinder.onPropertyInputWheel(event,\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
+        //"propertiesBinder.onPropertyChange";
+        // onPropertyInputWheel
         html += ' />';
 
         html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\'' + id + '\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
@@ -158,7 +174,7 @@
         html += ' style="border-top:1px solid #aaaaaa;text-align:left; margin-top:10px; margin-bottom:6px; padding-top:5px;" ';
         html += ' id="' + id + '" ';
         html += '>';
-        html += '<h3 style="font-size:20px;color:#999999;">';
+        html += '<h3 style="font-size:20px;color:#999999;margin-bottom:0px;">';
         html += ' ' + title + ' ';
         html += '</h3>';
         html += '</div>';
@@ -181,6 +197,7 @@
 
         var className = options.class || 'big';
         var method = options.method || "propertiesBinder.onPropertyChange";
+        var tooltip = options.tooltip || "";
 
         var name = options.name || '';
         var displayName = options.displayName || name;
@@ -196,23 +213,61 @@
 
         var html = '<div class="' + className + ' ' + (options.feedback ? 'has-feedback' : '') + '">';
         html += '<label ';
+        html += tooltip ? 'title="' + tooltip + '"' : '';
+
         html += ' style="cursor:pointer;" ';
         html += 'for="' + id + '"';
         html += '>';
         html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
+        html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' class="form-control" ';
         html += checked ? ' checked="checked" ' : '';
         html += ' style="cursor:pointer;" ';
         html += ' id="' + id + '" ';
         html += ' type="checkbox" ';
-        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,\'checkbox\',null);" ';
+        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + HtmlElements.TYPE_CHECKBOX + ',null);" ';
         html += ' />';
 
         html += '</div>';
 
         return {html: html, id: id, feedbackID: null};
 
+    };
+
+    HtmlElements.createImageUpload = function (options) {
+
+
+        // var key = options.key || '';
+        var tooltip = options.tooltip || '';
+
+        var className = options.class || 'big';
+        //   var method = options.method || "propertiesBinder.onPropertyChange";
+        var tooltip = options.tooltip || "";
+
+        var name = options.name || '';
+        var displayName = options.displayName || name;
+        if (displayName === name) {
+            displayName = displayName.replace('_', ' ').capitalize();
+        }
+
+        var id = "htmlElementId-" + PIXI.utils.uid();
+
+
+        var html = '<div class="' + className + '">';
+        html += '<label ';
+        html += tooltip ? 'title="' + tooltip + '"' : '';
+
+        html += ' style="cursor:pointer;" ';
+        html += 'for="' + id + '"';
+        html += '>';
+        html += displayName + ': &nbsp; </label>';
+
+        html += '<input onchange="app.navigator.currentScreen.mathcore.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
+
+        html += "</div>";
+
+        return {html: html, id: id};
     };
 
 
@@ -231,6 +286,7 @@
         var className = options.class || 'big';
         var method = options.method || "propertiesBinder.onPropertyChange";
         var items = options.items || [];
+        var tooltip = options.tooltip || "";
 
         var name = options.name || '';
         var displayName = options.displayName || name;
@@ -238,40 +294,41 @@
             displayName = displayName.replace('_', ' ').capitalize();
         }
 
-        //TODO selected value
         var value = options.value;
-
-
         var id = "htmlElementId-" + PIXI.utils.uid();
-
 
         var html = '<div class="' + className + '">';
         html += '<label ';
+        html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' style="cursor:pointer;" ';
         html += '>';
         html += displayName + ': </label> ';
 
         html += '<select';
         html += ' class="form-control" ';
+        html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' id="' + id + '" ';
-        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,\'select\',null);" ';
+        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + HtmlElements.TYPE_DROPDOWN + ',null);" ';
         html += '>';
 
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            
-            var _value = item;
+
             var _name = item;
-            
-            if(typeof item === "object"){
-                _value = item.value;
+            var _value = item;
+
+            if (item.name) {
                 _name = item.name;
+                _value = item.value;
             }
 
             html += '<option';
+            // 
             if (_value == value) {
                 html += ' selected="selected"';
             }
+
+            html += ' value="' + _value + '" ';
             html += '>';
             html += _name;
             html += '</option>';
@@ -279,8 +336,6 @@
         }
 
         html += '</select>';
-
-
         html += '</div>';
 
         return {html: html, id: id, feedbackID: null};
@@ -322,7 +377,6 @@
 
         html += '<div id="' + id + '" class="input-group color-pickers" style="margin-left:4px;' + style + '" >';
         html += ' <input ';
-        //    html += ' id="' + id + '" ';
         html += ' class="form-control" ';
         html += ' type="text" ';
         html += ' value="' + value + '" ';
@@ -336,15 +390,14 @@
         return {html: html, id: id, feedbackID: null, options: options};
 
     };
-    
-    HtmlElements.getPickerOptions = function(){
+
+    HtmlElements.getPickerOptions = function () {
         return JSON.parse(JSON.stringify(HtmlElements.colorPickerOptions));
     };
 
     HtmlElements.colorPickerOptions = {
         useAlpha: true,
         customClass: 'colorpicker-2x',
-        format: 'hex',
         extensions: [
             {
                 name: 'swatches', // extension name to load
@@ -381,22 +434,31 @@
 
     HtmlElements.activateColorPicker = function (picker) {
 
-
         var colorPicker = $('#' + picker.id).colorpicker(HtmlElements.colorPickerOptions);
 
-        colorPicker.on('change', function (e) {
-            'use strict';
+        colorPicker.on('colorpickerUpdate', function (e) {
+      
+          e.colorpicker.setValue(e.color.original.color);
+          e.colorpicker.trigger('change', e.color, e.color.original.color)
+            
+        });        
 
-            var value = 'transparent';
-            if (e.color.original.color !== "transparent") {
-                value = e.color.toHexString();
+        colorPicker.on('change', function (e) {
+
+            if (e && e.color && e.color.original) {
+
+                'use strict';
+                var value = 'transparent';
+
+                if (e.color.original.color !== "transparent") {
+                    value = e.color.toHexString();
+                }
+
+                eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,' + HtmlElements.TYPE_COLORPICKER + ',null);');
+
             }
 
-            eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,null,null);');
-
-
         });
-
 
     };
 

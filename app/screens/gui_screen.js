@@ -146,7 +146,6 @@
 
         Layout.hbox(items, 400, 1450, 600, 5, 'compact');
 
-
     };
 
     GuiScreen.prototype.onUpdate = function (dt) {
