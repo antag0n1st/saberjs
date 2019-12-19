@@ -147,7 +147,7 @@
     };
 
     MainScreen.prototype.onGalleryObjectDropped = function (id) {
-
+        
         var data = this.htmlInterface.objectsGalery.getItemByID(id);
         var name = data.name;
 
@@ -197,28 +197,28 @@
 
         } else {
 
-            var url = '../api/editor/get-prefabs-data';
-
-            var cache = this.mathcore.remotePrefabsData;
-
-            var _this = this;
-
-            if (cache[prefabID]) {
-                this.addPrefabToStage(JSON.parse(cache[prefabID]), p);
-            } else {
-
-                var loader = new DataLoader();
-                loader.position.set(p.x, p.y);
-                this.activeLayer.addChild(loader);
-
-                ajaxPost(url, {ids: [prefabID]}, function (response) {
-                    var prefabData = JSON.parse(response[0].data);
-                    cache[prefabID] = JSON.stringify(prefabData);
-                    _this.addPrefabToStage(prefabData, p);
-                    loader.removeFromParent();
-                });
-
-            }
+//            var url = '../api/editor/get-prefabs-data';
+//
+//            var cache = this.mathcore.remotePrefabsData;
+//
+//            var _this = this;
+//
+//            if (cache[prefabID]) {
+//                this.addPrefabToStage(JSON.parse(cache[prefabID]), p);
+//            } else {
+//
+//                var loader = new DataLoader();
+//                loader.position.set(p.x, p.y);
+//                this.activeLayer.addChild(loader);
+//
+//                ajaxPost(url, {ids: [prefabID]}, function (response) {
+//                    var prefabData = JSON.parse(response[0].data);
+//                    cache[prefabID] = JSON.stringify(prefabData);
+//                    _this.addPrefabToStage(prefabData, p);
+//                    loader.removeFromParent();
+//                });
+//
+//            }
 
         }
 

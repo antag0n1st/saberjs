@@ -150,7 +150,7 @@
 
         var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
         var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
-        var opt2 = {name: 'padding', value: Math.round(this.properties.padding), class: 'big', method: method, feedback: true};
+        var opt2 = {name: 'padding', value: this.properties.padding, class: 'big', method: method, feedback: true , type: HtmlElements.TYPE_INPUT_STRING};
         var opt3 = {name: 'offsetX', value: Math.round(this.properties.offsetX), class: 'small', displayName: 'Offset X', method: method};
         var opt4 = {name: 'offsetY', value: Math.round(this.properties.offsetY), class: 'small', displayName: 'Offset Y', method: method};
         var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'width', method: method};
@@ -195,6 +195,8 @@
     };
 
     ButtonObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
+        
+      
 
         if (property === 'padding') {
             HtmlElements.setFeedback(feedbackID, this.isPaddingValid());
@@ -208,14 +210,15 @@
         }
 
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
-
+            
             if (this.properties.isNineSlice) {
                 this.background.padding = this.properties.padding;
                 this.background.setSize(this.properties.width, this.properties.height);
                 this.canResize = true;
             } else {
-                this.properties.width = Images[this.background.imageName].texture.width;
-                this.properties.height = Images[this.background.imageName].texture.height;
+                log(this.background.imageName)
+                this.properties.width = PIXI.utils.TextureCache[this.background.imageName].width;
+                this.properties.height = PIXI.utils.TextureCache[this.background.imageName].height;
                 
                 this.background.padding = '2';
                 this.canResize = false;

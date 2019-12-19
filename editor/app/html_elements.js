@@ -263,7 +263,7 @@
         html += '>';
         html += displayName + ': &nbsp; </label>';
 
-        html += '<input onchange="app.navigator.currentScreen.mathcore.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
+       // html += '<input onchange="app.navigator.currentScreen.mathcore.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
 
         html += "</div>";
 

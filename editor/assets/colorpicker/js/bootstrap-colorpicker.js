@@ -3749,6 +3749,10 @@ var SliderHandler = function () {
         if (!sliders.hasOwnProperty(sliderName)) {
           continue;
         }
+        
+        if(sliders[sliderName].visible === false){
+             this.colorpicker.picker.find(sliders[sliderName].selector).css('display','none');
+        }
 
         sliderClasses.push(sliders[sliderName].selector);
       }
@@ -3896,7 +3900,7 @@ var SliderHandler = function () {
     value: function released(e) {
       this.colorpicker.lastEvent.alias = 'released';
       this.colorpicker.lastEvent.e = e;
-
+      
       // e.stopPropagation();
       // e.preventDefault();
 
@@ -4102,18 +4106,23 @@ var PopupHandler = function () {
   }, {
     key: 'isOrIsInside',
     value: function isOrIsInside(container, element) {
+                                          
       if (!container || !element) {
         return false;
       }
 
       element = (0, _jquery2.default)(element);
-
-      return element.is(container) || container.find(element).length > 0;
+      
+      var is = element.is(container) || container.find(element).length > 0;
+                                           
+      return is;
     }
   }, {
     key: 'onClickingInside',
     value: function onClickingInside(e) {
-      this.clicking = this.isClickingInside(e);
+    
+      this.clicking = this.isClickingInside(e);   
+    
     }
   }, {
     key: 'createPopover',
@@ -4219,6 +4228,10 @@ var PopupHandler = function () {
         // Add event to hide on outside click
         (0, _jquery2.default)(this.root.document).on('mousedown.colorpicker touchstart.colorpicker', _jquery2.default.proxy(this.hide, this));
         (0, _jquery2.default)(this.root.document).on('mousedown.colorpicker touchstart.colorpicker', _jquery2.default.proxy(this.onClickingInside, this));
+        
+        (0, _jquery2.default)(this.root.document).on('mouseup.colorpicker touchend.colorpicker', _jquery2.default.proxy(function(){
+           this.clicking = false;
+        }, this));
       }
 
       /**
@@ -4240,12 +4253,14 @@ var PopupHandler = function () {
   }, {
     key: 'hide',
     value: function hide(e) {
+        
       if (this.isHidden() || this.showing || this.hidding) {
         return;
       }
-
-      var cp = this.colorpicker,
-          clicking = this.clicking || this.isClickingInside(e);
+      
+      
+      var cp = this.colorpicker;
+      var clicking = this.clicking || this.isClickingInside(e);
 
       this.hidding = true;
       this.showing = false;
@@ -4689,7 +4704,7 @@ var InputHandler = function () {
       this.colorpicker.lastEvent.e = e;
 
       var val = this.getValue();
-
+      
       if (val !== e.value) {
         this.colorpicker.setValue(val);
       }
@@ -6085,6 +6100,9 @@ var PickerHandler = function () {
       }
 
       this.picker.find('.colorpicker-alpha-color').css('background', alphaBg);
+      
+                                          
+      
     }
   }, {
     key: 'options',

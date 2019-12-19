@@ -20,7 +20,7 @@
         var settings = {
             clearBeforeRender: Config.should_clear_stage,
             preserveDrawingBuffer: true,
-            resolution: 1, //this.device.isRetina ? 2 : 1,
+            resolution: 1,
             width: this.width,
             height: this.height,
             backgroundColor: Config.background_color

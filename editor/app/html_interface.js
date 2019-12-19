@@ -32,20 +32,16 @@
 
         this.objectsGalery = new HtmlLibrary(this.objectsGaleryContent, this.editor, 'dropObject');
         this.objectsGalery.addFiles([
-            {name: "LabelObject", url: 'assets/images/_text_icon.png'},
-            {name: "ContainerObject", url: 'assets/images/_container.png'},
-            {name: "GenericObject", url: 'assets/images/_cube.png'},
-            {name: "ButtonObject", url: 'assets/images/_button.png'},
-            {name: "InputObject", url: 'assets/images/_input_field_icon.png'}
-
+            {id:'LabelObject', name: "LabelObject", url: 'assets/images/_text_icon.png'},
+            {id: "ContainerObject",name: "ContainerObject", url: 'assets/images/_container.png'},
+            {id: "GenericObject",name: "GenericObject", url: 'assets/images/_cube.png'},
+            {id: "ButtonObject",name: "ButtonObject", url: 'assets/images/_button.png'},
+            {id: "InputObject",name: "InputObject", url: 'assets/images/_input_field_icon.png'}
         ]);
 
         this.prefabs = new HtmlLibrary(this.prefabsContent, this.editor, 'dropPrefab');
         this.prefabs.heightOffset = -55;
         this.prefabs.itemsImageScale = false;
-
-        //TODO fix this
-        //this.prefabs.onDeleteButton = this.onDeletePrefab.bind(this);
 
         this.prefabExplorer = new PrefabExplorer(this.editor);
 
@@ -133,14 +129,11 @@
         var action = data.getData('action');
         var libraryID = data.getData('library_id');
 
-        //console.log({action,libraryID});
-
-        //   ev.dataTransfer.dropEffect = "none" ; // move link copy
 
     };
 
     HtmlInterface.prototype.canvasDrop = function (ev) {
-
+        
         ev.preventDefault();
 
         var p = app.input.getMousePoint(ev);
@@ -151,14 +144,10 @@
         var libraryID = data.getData('library_id');
         var id = data.getData('id');
         
-        if (action === 'dropImage') {
-            
-            this.editor.onLibraryImageDropped(id);
-            
-        } else if (action === 'dropObject') {
-            
-            this.editor.onGalleryObjectDropped(id);
-            
+        if (action === 'dropImage') {            
+            this.editor.onLibraryImageDropped(id);            
+        } else if (action === 'dropObject') {            
+            this.editor.onGalleryObjectDropped(id);            
         } else if (action === 'dropPrefab') {
             this.editor.onPrefabDropped(id);
         }

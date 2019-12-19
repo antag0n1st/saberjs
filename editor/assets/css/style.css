@@ -88,11 +88,24 @@ body{
 #side-toolbar-navigation{
     margin-bottom: 10px;
     background-color: white;
-    font-size: 15px;
+    font-size: 14px;
+}
+
+.nav-bar-toggle{
+    padding: 6px;   
+    margin: 0px;   
+    border: 1px solid #17a2b8;
+    color: white;
+    background-color: #17a2b8;
+    cursor: pointer;
+}
+
+.nav-bar-toggle:hover{
+    background-color: #118496;
 }
 
 .nav-bar-btn{
-    padding: 8px;   
+    padding: 6px;   
     margin: 0px;   
     border-left: 1px solid transparent;
     border-right: 1px solid transparent;
@@ -207,35 +220,6 @@ body{
     padding-top: 10px;
 }
 
-#textUpdatePanel{
-    position: absolute;
-    z-index: 200;
-    display: none;
-
-    -webkit-box-shadow: 4px 4px 24px 0px rgba(0,0,0,0.3);
-    -moz-box-shadow: 4px 4px 24px 0px rgba(0,0,0,0.3);
-    box-shadow: 4px 4px 24px 0px rgba(0,0,0,0.3);
-}
-
-#textUpdatePanel textarea{
-    width: 500px;
-    height: 100px;
-    resize: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    font-size: 16px;
-    display: inline;
-    clear: both;
-}
-
-#textUpdatePanel input {
-    display: inline-flex;
-}
-
-#textUpdatePanel .card-body{
-    padding: 0.5rem;
-}
-
 .contextMenu{
     z-index: 10000; 
     position: absolute; 
@@ -252,8 +236,8 @@ body{
 .contextMenu .dropdown-item{
     padding-left: 10px;
     padding-bottom: 10px;
-    
-     padding-top: 3px;
+
+    padding-top: 3px;
     padding-bottom: 3px;
 }
 
@@ -454,7 +438,7 @@ label{
 /****** DROP DOWN SUB MENU *******/
 
 .shortcutsExplain{
-    
+
 }
 
 .shortcutsExplain b{
@@ -490,3 +474,23 @@ label{
     text-decoration: underline;
     transform: rotate(-90deg);
 } 
+
+.color-block{
+    text-align:right;
+    padding:0px;
+    display:inline-block;
+    margin: 5px 0 0 5px;
+    width: 56px;
+    height: 40px;
+    border: 1px solid #d8d8d8;
+}
+
+.color-block i{
+    color: white;
+    padding: 0px;
+    margin: 5px;
+    cursor: pointer;
+}
+.color-block i:hover{
+    color: black;
+}
