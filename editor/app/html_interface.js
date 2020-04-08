@@ -8,8 +8,6 @@
     HtmlInterface.prototype.initialize = function (editor) {
         this.editor = editor;
 
-        this.activeTab = null;
-
         this.htmlTopTools = new HtmlTopTools(this.editor);
 
 
@@ -26,40 +24,29 @@
 
         this.imagesLibrary = new HtmlLibrary(this.imageLibraryContent, this.editor, 'dropImage');
         this.imagesLibrary.heightOffset = -55;
-
+        
         this.imagesSearchInput = document.getElementById('images-search-input');
         this.imagesSearchInput.onkeyup = this.onImagesSearch.bind(this);
 
         this.objectsGalery = new HtmlLibrary(this.objectsGaleryContent, this.editor, 'dropObject');
         this.objectsGalery.addFiles([
-            {id:'LabelObject', name: "LabelObject", url: 'assets/images/_text_icon.png'},
-            {id: "ContainerObject",name: "ContainerObject", url: 'assets/images/_container.png'},
-            {id: "GenericObject",name: "GenericObject", url: 'assets/images/_cube.png'},
-            {id: "ButtonObject",name: "ButtonObject", url: 'assets/images/_button.png'},
-            {id: "InputObject",name: "InputObject", url: 'assets/images/_input_field_icon.png'}
+            {name: "LabelObject", url: 'assets/images/_text_icon.png'},
+            {name: "ContainerObject", url: 'assets/images/_container.png'},
+            {name: "GenericObject", url: 'assets/images/_cube.png'},
+            {name: "ButtonObject", url: 'assets/images/_button.png'},
+            {name: "InputObject", url: 'assets/images/_input_field_icon.png'}
+
         ]);
 
         this.prefabs = new HtmlLibrary(this.prefabsContent, this.editor, 'dropPrefab');
         this.prefabs.heightOffset = -55;
         this.prefabs.itemsImageScale = false;
-
-        this.prefabExplorer = new PrefabExplorer(this.editor);
+        this.prefabs.onDeleteButton = this.onDeletePrefab.bind(this);
 
         this.prefabSearchInput = document.getElementById('prefab-search-input');
         this.prefabSearchInput.onkeyup = this.onPrefabsSearch.bind(this);
 
         this.tree = new LayersTree(this.editor, this);
-
-        this.textEditor = new TextEditor(this.editor, this);
-
-        var closeBtn = document.getElementById('genericModalClose');
-        var that = this;
-        closeBtn.onclick = function () {
-            that.genericModal.style.display = 'none';
-        };
-
-        this.genericModal = document.getElementById('genericModal');
-        this.dragElement(this.genericModal);
 
     };
 
@@ -98,7 +85,7 @@
 
 
         // textUpdatePanel
-
+        this.dragElement(document.getElementById('textUpdatePanel'));
         this.dragElement(document.getElementById('imageBrowser'));
 
 
@@ -124,16 +111,11 @@
 
     HtmlInterface.prototype.canvasAllowDrop = function (ev) {
         ev.preventDefault();
-
-        var data = ev.dataTransfer;
-        var action = data.getData('action');
-        var libraryID = data.getData('library_id');
-
-
     };
 
     HtmlInterface.prototype.canvasDrop = function (ev) {
-        
+
+
         ev.preventDefault();
 
         var p = app.input.getMousePoint(ev);
@@ -142,14 +124,15 @@
         var data = ev.dataTransfer;
         var action = data.getData('action');
         var libraryID = data.getData('library_id');
-        var id = data.getData('id');
-        
-        if (action === 'dropImage') {            
-            this.editor.onLibraryImageDropped(id);            
-        } else if (action === 'dropObject') {            
-            this.editor.onGalleryObjectDropped(id);            
+
+        if (action === 'dropImage') {
+            var id = data.getData('id').replace(libraryID + '_i_m_a_g_e_', '');
+            this.editor.onLibraryImageDropped(id);
+        } else if (action === 'dropObject') {
+            var id = data.getData('id').replace(libraryID + '_i_m_a_g_e_', '');
+            this.editor.onGalleryObjectDropped(id);
         } else if (action === 'dropPrefab') {
-            this.editor.onPrefabDropped(id);
+            this.editor.onPrefabDropped(data);
         }
 
     };
@@ -168,17 +151,13 @@
             var name = this.tabs[i];
             this[name + 'Tab'].className = this[name + 'Tab'].className.replace(/\bactive\b/g, "");
         }
-
-        this.activeTab = null;
     };
 
     HtmlInterface.prototype.activateTab = function (name, callback) {
-
         this.deactiveAllTabs();
         this.hideAllPanels();
         this[name + 'Tab'].className += ' active';
         this[name + 'Panel'].style.display = 'block';
-        this.activeTab = name;
         this['on' + name.capitalize()](callback);
     };
 
@@ -344,49 +323,90 @@
 
     HtmlInterface.prototype.onPrefabs = function () {
 
-        if (this.editor.remotePrefabs === null) {
-            var cnt = document.getElementById("prefabsContent");
-            cnt.style.height = '200px';
-            cnt.innerHTML = "Loading...";
-            return;
-        }
-
         // set files to the galery
         this.prefabSearchInput.value = '';
 
-        var localPrefabs = store.get('local-prefabs-' + ContentManager.baseURL);
-        var remotePrefabs = this.editor.remotePrefabs;
+        var prefabs = store.get('prefabs-' + ContentManager.baseURL);
 
-        var files = [];
+        if (prefabs) {
+            prefabs = JSON.parse(prefabs);
 
-        if (localPrefabs) {
-            localPrefabs = JSON.parse(localPrefabs);
-            if (localPrefabs.length) {
-                files.push({isSection: true, name: "Private Prefabs"});
+            var files = [];
+
+            if (prefabs.length) {
+                files.push({isSection: true, name: "Local"});
             }
 
-            for (var i = 0; i < localPrefabs.length; i++) {
-                var prefab = localPrefabs[i];
-                files.push(prefab);
+
+            for (var i = 0; i < prefabs.length; i++) {
+
+                var prefab = prefabs[i];
+                var object = JSON.parse(prefab.data);
+                var url = object.prefabPreviewImageURL;
+
+                var file = {
+                    name: object.type + "-" + i,
+                    url: url,
+                    title: prefab.name,
+                    data: {
+                        index: i,
+                        remote: false
+                    },
+                    canDelete: true,
+                    description: prefab.description
+                };
+
+                files.push(file);
             }
+
+            // set separator
+            if (this.editor.remotePrefabs.length) {
+                files.push({isSection: true, name: "Remote"});
+            }
+
+            for (var i = 0; i < this.editor.remotePrefabs.length; i++) {
+
+                var prefab = this.editor.remotePrefabs[i];
+                var object = JSON.parse(prefab.data);
+                var url = object.prefabPreviewImageURL;
+
+                var file = {
+                    name: object.type + "-" + i,
+                    url: url,
+                    title: prefab.name,
+                    data: {
+                        index: i,
+                        remote: true
+                    },
+                    canDelete: false,
+                    description: prefab.description
+                };
+
+                files.push(file);
+            }
+
+            this.prefabs.addFiles(files);
+
+            this.prefabs.show();
+
         }
 
 
-        if (remotePrefabs.length) {
-            files.push({isSection: true, name: "Public Prefabs"});
-        }
+    };
 
-        for (var i = 0; i < remotePrefabs.length; i++) {
-            var prefab = remotePrefabs[i];
-            files.push(prefab);
-        }
+    ////////////////////////////////// BIND METHODS
+    HtmlInterface.prototype.onDeletePrefab = function (e) {
 
-//        log(files)
+        var index = e.target.dataset.index;
 
-        this.prefabs.addFiles(files);
+        var prefabs = store.get('prefabs-' + ContentManager.baseURL);
+        prefabs = JSON.parse(prefabs);
+        prefabs.splice(index, 1);
 
-        this.prefabs.show();
+        var json = JSON.stringify(prefabs);
+        store.set('prefabs-' + ContentManager.baseURL, json);
 
+        this.onPrefabs();
     };
 
     // called when the clear button in the settings panel is clicked
@@ -646,14 +666,14 @@
 
 
     };
-
+    
     HtmlInterface.prototype.onImagesSearch = function (event) {
         this.imagesLibrary.filter(this.imagesSearchInput.value);
-    };
-
+    };   
+    
 
     HtmlInterface.prototype.onPrefabsSearch = function (event) {
-        this.prefabs.filter(this.prefabSearchInput.value, false);
+        this.prefabs.filter(this.prefabSearchInput.value);
     };
 
     HtmlInterface.prototype.dragElement = function (elmnt) {

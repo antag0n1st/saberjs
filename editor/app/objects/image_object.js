@@ -6,7 +6,7 @@
 
     ImageObject.prototype = new Entity();
     ImageObject.prototype.entityInitialize = ImageObject.prototype.initialize;
-
+    
     ImageObject.prototype.initialize = function (name) {
 
         this.entityInitialize(name);
@@ -46,7 +46,7 @@
     ImageObject.prototype.build = function (data) {
 
         if (data) {
-
+            
             this.setBasicData(data);
             this.setTexture(data.imageName);
 
@@ -116,36 +116,6 @@
 
 
 
-    };
-
-    ImageObject.prototype.bindProperties = function (editor) {
-
-        var eHTML = Entity.prototype.bindProperties.call(this, editor);
-
-        var html = '';
-
-        var method = 'onSelectedObjectPropertyChange';
-        
-        var color = PIXI.utils.hex2rgb(this.tint);
-        color = PIXI.utils.rgb2hex(color);
-        color = PIXI.utils.hex2string(color);
-        
-        var opt9 = {name: 'color', method: method, displayName: 'Color', value: color};
-        var colorPicker = HtmlElements.createColorPicker(opt9);
-
-        html += colorPicker.html;
-
-        editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
-
-        HtmlElements.activateColorPicker(colorPicker);
-
-    };
-
-    ImageObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
-        if (property === "color") {
-            this.tint = convertColor(value);
-        }
-        this.build();
     };
 
     window.ImageObject = ImageObject;

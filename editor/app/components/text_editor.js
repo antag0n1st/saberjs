@@ -19,6 +19,8 @@
 
         var div = document.createElement('div');
         div.className = 'card';
+        div.style.position = 'absolute';
+        div.style.display = 'none';
         div.id = 'textUpdatePanel';
 
         function createEvent(property, eventName) {

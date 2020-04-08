@@ -68,6 +68,7 @@
                         // error occurred
                         console.log(error);
                     });
+                    
                 }
 
                 ajaxGet('app/php/library.php', function (resources) {
@@ -84,6 +85,7 @@
                         ContentManager.countToLoad += 2;
                         ContentManager.isResourcesLoaded = false;
 
+                        // ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
                     }
 
                     ContentManager.downloadResources(function () {

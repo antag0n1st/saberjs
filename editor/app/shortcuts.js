@@ -95,31 +95,31 @@
             app.input.restoreCursor();
         });
 
-//        this.kibo.down('ctrl', function () {
-//            that.isCtrlPressed = true;
-//            return false;
-//        });
-//
-//        this.kibo.up('ctrl', function () {
-//            that.isCtrlPressed = false;
-//            return false;
-//        });
-//
-//        this.kibo.down('alt', function () {
-//            that.isAltPressed = true;
-//        });
-//
-//        this.kibo.up('alt', function () {
-//            that.isAltPressed = false;
-//        });
-//
-//        this.kibo.down('shift', function () {
-//            that.isShiftPressed = true;
-//        });
-//
-//        this.kibo.up('shift', function () {
-//            that.isShiftPressed = false;
-//        });
+        this.kibo.down('ctrl', function () {
+            that.isCtrlPressed = true;
+            return false;
+        });
+
+        this.kibo.up('ctrl', function () {
+            that.isCtrlPressed = false;
+            return false;
+        });
+
+        this.kibo.down('alt', function () {
+            that.isAltPressed = true;
+        });
+
+        this.kibo.up('alt', function () {
+            that.isAltPressed = false;
+        });
+
+        this.kibo.down('shift', function () {
+            that.isShiftPressed = true;
+        });
+
+        this.kibo.up('shift', function () {
+            that.isShiftPressed = false;
+        });
 
         this.kibo.down('left', function () {
             if (!editor.isInputActive()) {
@@ -260,14 +260,11 @@
     Shortcuts.prototype.onEsc = function () {
         
         this.editor.deselectAllObjects();
-        this.editor.htmlInterface.textEditor.hideTextEdit();
+        this.editor.htmlInterface.htmlTopTools.hideTextEdit();
         this.editor.setMode(MainScreen.MODE_SELECT);
 
         this.editor.htmlInterface.contextMenu.close();
         this.editor.htmlInterface.contextMenu.closeImageBrowser();
-        
-        this.editor.htmlInterface.prefabExplorer.hide();
-        this.editor.htmlInterface.genericModal.style.display = 'none';
 
         $(".color-pickers").colorpicker('hide');
         

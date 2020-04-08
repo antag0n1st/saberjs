@@ -22,9 +22,6 @@
 
         this.editor.htmlInterface.contextMenu.close();
         this.editor.htmlInterface.contextMenu.closeImageBrowser();
-        
-        this.editor.htmlInterface.prefabExplorer.hide();
-        this.editor.htmlInterface.genericModal.style.display = 'none';
 
         // check if we are touching a handle of the selected objects
         if (this.editor.checkSelectedObjects(this.editor.selectedObjects, event)) {
@@ -52,12 +49,6 @@
                     } else {
                         // if it is under the same parent , then we can add it to the selection
                         this.editor.addObjectToSelection(object);
-                        
-                        for (var i = 0; i < this.editor.selectedObjects.length; i++) {
-                            var obj = this.editor.selectedObjects[i];
-                            obj.save();
-                        }
-                       
                     }
                 }
 
@@ -249,7 +240,7 @@
             //  }
 
         } else {
-            this.editor.htmlInterface.textEditor.hideTextEdit();
+            this.editor.htmlInterface.htmlTopTools.hideTextEdit();
         }
 
         if (this.editor.handlesClickedObject) {

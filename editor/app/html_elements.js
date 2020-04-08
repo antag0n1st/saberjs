@@ -56,7 +56,7 @@
         var range = options.range || [Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
         range[0] = (range[0] === undefined) ? Number.MIN_SAFE_INTEGER : range[0];
         range[1] = (range[1] === undefined) ? Number.MAX_SAFE_INTEGER : range[1];
-
+        
         if (displayName === name) {
             displayName = displayName.replace('_', ' ').capitalize();
         }
@@ -79,10 +79,7 @@
         html += ' id="' + id + '" ';
         html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' type="text" value="' + value + '" ' + event_string;
-        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
-        html += ' onwheel="app.navigator.currentScreen.propertiesBinder.onPropertyInputWheel(event,\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
-        //"propertiesBinder.onPropertyChange";
-        // onPropertyInputWheel
+        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , ['+range[0]+','+range[1]+'] );" ';
         html += ' />';
 
         html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\'' + id + '\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
@@ -263,7 +260,7 @@
         html += '>';
         html += displayName + ': &nbsp; </label>';
 
-       // html += '<input onchange="app.navigator.currentScreen.mathcore.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
+        html += '<input onchange="app.navigator.currentScreen.mathcore.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
 
         html += "</div>";
 
@@ -377,6 +374,7 @@
 
         html += '<div id="' + id + '" class="input-group color-pickers" style="margin-left:4px;' + style + '" >';
         html += ' <input ';
+        //    html += ' id="' + id + '" ';
         html += ' class="form-control" ';
         html += ' type="text" ';
         html += ' value="' + value + '" ';
@@ -434,33 +432,26 @@
 
     HtmlElements.activateColorPicker = function (picker) {
 
+
         var colorPicker = $('#' + picker.id).colorpicker(HtmlElements.colorPickerOptions);
 
-        colorPicker.on('colorpickerUpdate', function (e) {
-      
-          e.colorpicker.setValue(e.color.original.color);
-          e.colorpicker.trigger('change', e.color, e.color.original.color)
-            
-        });        
-
         colorPicker.on('change', function (e) {
+            'use strict';
 
-            if (e && e.color && e.color.original) {
-
-                'use strict';
-                var value = 'transparent';
-
-                if (e.color.original.color !== "transparent") {
-                    value = e.color.toHexString();
-                }
-
-                eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,' + HtmlElements.TYPE_COLORPICKER + ',null);');
-
+            var value = 'transparent';
+            if (e.color.original.color !== "transparent") {
+                value = e.color.toHexString();
             }
+
+            eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,' + HtmlElements.TYPE_COLORPICKER + ',null);');
+
 
         });
 
+
     };
+
+
 
     window.HtmlElements = HtmlElements;
 

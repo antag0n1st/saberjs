@@ -20,7 +20,7 @@
 
         var object = objects[0];
 
-        var html = '<div id="contextMenu" class="contextMenu" >';
+        var html = '<div id="contextMenu" >';
         html += '<nav class="navbar navbar-expand-md navbar-light bg-light" style="padding:0px;">';
         html += '<div class="collapse navbar-collapse" id="navbarNavDropdown">';
         html += '<ul class="navbar-nav">';
@@ -88,6 +88,17 @@
             contextEdit.onclick = this.onContextEditBtn.bind(this);
         }
 
+//        if (object instanceof ImageObject) {
+//
+//            var contextConvertToButton = document.getElementById('contextConvertToButton');
+//            contextConvertToButton.onclick = this.onContextConvertToBtn.bind(this);
+//
+//            var contextConvertToInput = document.getElementById('contextConvertToInput');
+//            contextConvertToInput.onclick = this.onContextConvertToInput.bind(this);
+//
+//        }
+
+        // if (object instanceof ImageObject || object instanceof ButtonObject || object instanceof InputObject) {
         if (object.hasImage) {
             var contextChangeImage = document.getElementById('contextChangeImage');
             contextChangeImage.onclick = this.onContextChangeImage.bind(this);
@@ -105,6 +116,10 @@
     };
 
     HtmlContextMenu.prototype.open = function (point) {
+
+//        if (this.editor.selectedObjects.length !== 1) {
+//            return;
+//        }
 
         this.build(this.editor.selectedObjects);
 
@@ -154,7 +169,7 @@
 
         // only if the object is a label
         if (this.editor.selectedObjects[0] && this.editor.selectedObjects[0].label) {
-            this.htmlInterface.textEditor.showTextEdit(this.editor.selectedObjects[0]);
+            this.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
         }
 
     };
@@ -240,9 +255,239 @@
     };
 
     HtmlContextMenu.prototype.onContextSaveAsPrefab = function () {
-        this.editor.htmlInterface.prefabExplorer.show();
+        this.showSavePrefabDialog();
         this.close();
     };
+
+    HtmlContextMenu.prototype.showSavePrefabDialog = function () {
+
+        var id = 'prefabSaveDialog';
+        var modal = document.getElementById(id);
+        var isLocalDisplay = 'display:none';
+
+        if (userInfo && userInfo.permissions && userInfo.permissions.indexOf("1") !== -1) {
+            isLocalDisplay = 'display:block;';
+        }
+
+        if (!modal) {
+
+            var modal = document.createElement("div");
+            modal.id = id;
+            modal.className = 'modal';
+            modal.setAttribute('tabindex', '-1');
+            modal.setAttribute('role', 'dialog');
+
+            var method = 'app.navigator.currentScreen.htmlInterface.contextMenu.onSavePrefab(this);';
+
+            var content = `
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Save Prefab</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            
+            <div class="form-group">
+                <input  id="prefab-name" type="text" class="form-control" placeholder="Name"  />
+            </div>
+            
+            <div class="form-group">
+              <textarea  style="margin-top:15px;" id="prefab-desc" class="form-control" placeholder="description" ></textarea>
+            
+            </div>
+            
+            <div class="form-group" style="${isLocalDisplay}">
+                <label for="prefab-local" class="col-form-label">Local Save:</label>
+                <input checked style="display: inline-block; width:20px;height:20px;margin-left:20px;cursor:pointer;" id="prefab-local" type="checkbox" class="form-control" />
+            </div>
+   
+</div>
+      <div class="modal-footer">
+        <button type="button" onclick="${method}" class="btn btn-success" >Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>`;
+
+            modal.innerHTML = content;
+
+            document.body.appendChild(modal);
+        }
+
+        var name = document.getElementById('prefab-name');
+        var desc = document.getElementById('prefab-desc');
+
+        name.value = '';
+        desc.value = '';
+
+
+        $('#' + id).modal('show');
+
+        name.focus();
+
+    };
+
+    HtmlContextMenu.prototype.onSavePrefab = function (event) {
+        var prefab = this.createPrefab(this.editor.selectedObjects);
+        this.savePrefab(prefab);
+    };
+
+    HtmlContextMenu.prototype.createPrefab = function (objects) {
+
+        var centerPoint = new V();
+
+        var container = new Entity();
+
+        var left = objects[0].x;
+        var right = objects[0].x;
+        var top = objects[0].y;
+        var bottom = objects[0].y;
+
+        var parent = objects[0].parent;
+
+        for (var i = 0; i < objects.length; i++) {
+
+            var sampleObject = objects[i];
+
+            if (!sampleObject.canPrefab) {
+                toastr.warning("You can't save " + sampleObject.type + ' as Prefab');
+                return;
+            }
+
+            if (sampleObject.x > right) {
+                right = sampleObject.x;
+            }
+
+            if (sampleObject.x < left) {
+                left = sampleObject.x;
+            }
+
+            if (sampleObject.y > bottom) {
+                bottom = sampleObject.y;
+            }
+
+            if (sampleObject.y < top) {
+                top = sampleObject.y;
+            }
+
+        }
+
+        centerPoint.x = left + (right - left) / 2;
+        centerPoint.y = top + (bottom - top) / 2;
+
+        for (var i = 0; i < objects.length; i++) {
+            var sampleObject = objects[i];
+            sampleObject.x -= centerPoint.x;
+            sampleObject.y -= centerPoint.y;
+            container.addChild(sampleObject);
+        }
+
+        var sx = container.scale.x;
+        var sy = container.scale.y;
+
+        container.fitTo(90, 90);
+
+        var bounds = container.getBounds();
+
+        var renderTexture = PIXI.RenderTexture.create(bounds.width, bounds.height);
+
+        var localP = new V().copy(container.position);
+        var p = new V().copy(container.getGlobalPosition());
+
+        var dx = -bounds.left + p.x;
+        var dy = -bounds.top + p.y;
+
+        container.position.set(dx, dy);
+        app.pixi.renderer.render(container, renderTexture);
+        container.position.set(localP.x, localP.y);
+
+        var url = app.pixi.renderer.plugins.extract.base64(renderTexture);
+
+        container.scale.x = sx;
+        container.scale.y = sy;
+
+        renderTexture.destroy(true);
+
+        /////////////////////////////////////////////////////////
+
+        var object = container.basicExport();
+
+        object.prefabPreviewImageURL = url;
+
+
+        for (var i = 0; i < objects.length; i++) {
+            var sampleObject = objects[i];
+            sampleObject.x += centerPoint.x;
+            sampleObject.y += centerPoint.y;
+            parent.addChild(sampleObject);
+        }
+
+
+        return object;
+
+    };
+
+    HtmlContextMenu.prototype.savePrefab = function (prefab) {
+
+        var nameElement = document.getElementById('prefab-name');
+        var descElement = document.getElementById('prefab-desc');
+
+        var isLocal = document.getElementById('prefab-local').checked;
+
+        nameElement.classList.remove('is-invalid');
+        descElement.classList.remove('is-invalid');
+
+        if (!nameElement.value) {
+            nameElement.classList.add('is-invalid');
+            return;
+        }
+
+        if (!descElement.value) {
+            descElement.classList.add('is-invalid');
+            return;
+        }
+
+        if (isLocal) {
+
+            var prefabs = store.get('prefabs-' + ContentManager.baseURL);
+
+            if (prefabs) {
+                prefabs = JSON.parse(prefabs);
+            } else {
+                prefabs = [];
+            }
+
+            prefabs.push({
+                name: nameElement.value,
+                description: descElement.value,
+                data: JSON.stringify(prefab),
+                canDelete: true
+            });
+            var json = JSON.stringify(prefabs);
+
+            store.set('prefabs-' + ContentManager.baseURL, json);
+            toastr.success("Object was saved as Prefab.");
+
+            this.editor.htmlInterface.onPrefabs();
+
+            $('#prefabSaveDialog').modal('hide');
+
+
+        } else {
+
+            if (this.editor._onPrefabRemoteSave) {
+                this.editor._onPrefabRemoteSave(nameElement.value, descElement.value, prefab);
+            }
+
+        }
+
+
+    };
+
+
 
     HtmlContextMenu.prototype.onContextChangeImage = function () {
 
@@ -272,18 +517,18 @@
     };
 
     HtmlContextMenu.prototype.onLibraryItemClicked = function (event, library) {
-        
-        var id = event.target.dataset.id;
-        
-        var data = library.getItemByID(id);      
+
+        var id = event.target.id.replace(library.id + '_i_m_a_g_e_', '');
 
         event.preventDefault();
 
         this.closeImageBrowser();
 
+        /// change the new image
+
         var object = this.editor.selectedObjects[0];
 
-        object._setImage(data.name);
+        object._setImage(id);
 
     };
 

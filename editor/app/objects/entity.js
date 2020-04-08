@@ -709,7 +709,7 @@
         }
 
         if (!data.id.startsWith('_change_it_before_use-') && data.id) {
-            this.id = data.id.trim().toLowerCase();
+            this.id = data.id.trim().toUpperCase();
         }
 
         this._data = data;

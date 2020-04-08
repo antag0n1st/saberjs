@@ -6,20 +6,12 @@ module.exports = function (grunt) {
 
         uglify: {
 			options: {
+				sourceMap :false
 				//beautify: true,
 				//mangle: false
 			},
             js: {
                 files: {
-
-                    'pixi.min.js': [
-                        "lib/external/pixi.js"
-                    ],
-                    
-                    'spine.min.js': [
-                        "lib/external/pixi-spine.js",
-                        "lib/display/spine_animation.js"
-                    ],
 
                     'lib.min.js': [
 
@@ -83,7 +75,7 @@ module.exports = function (grunt) {
     });
 
     // Load the plugin that provides the "uglify" task.
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-uglify-es');
 
     // Default task(s).
     grunt.registerTask('default', ['uglify']);

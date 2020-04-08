@@ -105,14 +105,7 @@
         this.addTouchable(this); // let the screen be a touchable
 
         // IMPORTING STUFF
-
-        // add ids
-
-        this.addIdsToData(app.libraryImages);
-
-        this.htmlInterface.imagesLibrary.sort(app.libraryImages);
         this.htmlInterface.imagesLibrary.addFiles(app.libraryImages);
-
         this.htmlInterface.activateTab('imageLibrary');
         this.importSavedData();
         this.setDefaultLayer();
@@ -147,27 +140,24 @@
     };
 
     MainScreen.prototype.onGalleryObjectDropped = function (id) {
-        
-        var data = this.htmlInterface.objectsGalery.getItemByID(id);
-        var name = data.name;
 
-        if (name === "GenericObject") {
+        if (id === "GenericObject") {
             var object = new GenericObject();
             object.build();
-        } else if (name === "LabelObject") {
+        } else if (id === "LabelObject") {
             var object = new LabelObject('Text');
             object.build();
-        } else if (name === "ContainerObject") {
+        } else if (id === "ContainerObject") {
             var object = new ContainerObject();
             object.build();
-        } else if (name === "ButtonObject") {
+        } else if (id === "ButtonObject") {
             var object = new ButtonObject('_default_button');
             object.build();
-        } else if (name === "InputObject") {
+        } else if (id === "InputObject") {
             var object = new InputObject('_default_input');
             object.build();
         } else if (this._onGalleryObjectDropped) {
-            var object = this._onGalleryObjectDropped(name, data);
+            var object = this._onGalleryObjectDropped(id);
         }
 
         if (object) {
@@ -178,54 +168,28 @@
 
     };
 
-    MainScreen.prototype.onPrefabDropped = function (id) {
+    MainScreen.prototype.onPrefabDropped = function (data) {
+
+        var index = data.getData('index');
+        var isRemote = (data.getData('remote') === "true");
+
+        var prefabs = [];
+
+        if (isRemote) {
+            prefabs = this.remotePrefabs;
+        } else {
+            prefabs = store.get('prefabs-' + ContentManager.baseURL);
+            prefabs = JSON.parse(prefabs);
+        }
+
+        //TODO check if it is local or remote
+
+        var prefab = prefabs[index];
+        var prefabData = JSON.parse(prefab.data);
 
         var cp = new V().copy(this.activeLayer.getGlobalPosition());
         var p = V.substruction(app.input.point, cp);
         p.scale(1 / this.activeLayer.scale.x);
-
-
-        var prefabData = this.htmlInterface.prefabs.getItemByID(id);
-
-        var prefabID = prefabData.id;
-
-        // check if it is private prefab
-
-        if (prefabData.prefabData) {
-            // its a local prefab
-            this.addPrefabToStage(JSON.parse(prefabData.prefabData), p);
-
-        } else {
-
-//            var url = '../api/editor/get-prefabs-data';
-//
-//            var cache = this.mathcore.remotePrefabsData;
-//
-//            var _this = this;
-//
-//            if (cache[prefabID]) {
-//                this.addPrefabToStage(JSON.parse(cache[prefabID]), p);
-//            } else {
-//
-//                var loader = new DataLoader();
-//                loader.position.set(p.x, p.y);
-//                this.activeLayer.addChild(loader);
-//
-//                ajaxPost(url, {ids: [prefabID]}, function (response) {
-//                    var prefabData = JSON.parse(response[0].data);
-//                    cache[prefabID] = JSON.stringify(prefabData);
-//                    _this.addPrefabToStage(prefabData, p);
-//                    loader.removeFromParent();
-//                });
-//
-//            }
-
-        }
-
-
-    };
-
-    MainScreen.prototype.addPrefabToStage = function (prefabData, p) {
 
         var objectsToImport = [];
 
@@ -242,15 +206,12 @@
         for (var i = 0; i < io.length; i++) {
             this.addObjectToSelection(io[i]);
         }
+
     };
 
     MainScreen.prototype.onLibraryImageDropped = function (id) {
 
-        // find the object to get more data
-
-        var data = this.htmlInterface.imagesLibrary.getItemByID(id);
-
-        var object = new ImageObject(data.name);
+        var object = new ImageObject(id);
         object.graphics = this.graphics;
         object.build();
         this.placeObjectOnScreen(object);
@@ -280,10 +241,6 @@
     };
 
     MainScreen.prototype.onFilesReaded = function (files, reader) {
-
-        //TODO this is not used anymore
-
-        return;
 
         this.htmlInterface.imagesLibrary.addFiles(files);
 
@@ -514,41 +471,24 @@
 
     };
 
-    MainScreen.prototype.updateModifiers = function (event) {
-
-        if (event.originalEvent) {
-
-            if (event.originalEvent.getModifierState) {
-
-                this.shortcuts.isCtrlPressed = event.originalEvent.getModifierState("Control");
-                this.shortcuts.isShiftPressed = event.originalEvent.getModifierState("Shift");
-                this.shortcuts.isAltPressed = event.originalEvent.getModifierState("Alt");
-
-            } else {
-
-                if (event.originalEvent.ctrlKey !== undefined) {
-                    this.shortcuts.isCtrlPressed = event.originalEvent.ctrlKey;
-                }
-
-                if (event.originalEvent.altKey !== undefined) {
-                    this.shortcuts.isAltPressed = event.originalEvent.altKey;
-                }
-
-                if (event.originalEvent.shiftKey !== undefined) {
-                    this.shortcuts.isShiftPressed = event.originalEvent.shiftKey;
-                }
-
-            }
-
-        }
-
-    };
-
     MainScreen.prototype.onMouseDown = function (event, sender) {
 
         // this should solve the non-fireing of the key up event
 
-        this.updateModifiers(event);
+        if (event.originalEvent) {
+
+            if (event.originalEvent.ctrlKey !== undefined) {
+                this.shortcuts.isCtrlPressed = event.originalEvent.ctrlKey;
+            }
+
+            if (event.originalEvent.altKey !== undefined) {
+                this.shortcuts.isAltPressed = event.originalEvent.altKey;
+            }
+
+            if (event.originalEvent.shiftKey !== undefined) {
+                this.shortcuts.isShiftPressed = event.originalEvent.shiftKey;
+            }
+        }
 
         if (editorConfig.features.animator && this.animator) {
             var s = this.animator.getSensor();
@@ -583,8 +523,6 @@
 
     MainScreen.prototype.onMouseMove = function (event, sender) {
 
-        this.updateModifiers(event);
-
         if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
             this.animator.onMouseMove(event, sender);
             event.stopPropagation();
@@ -612,8 +550,6 @@
     };
 
     MainScreen.prototype.onMouseUp = function (event, sender) {
-
-        this.updateModifiers(event);
 
         if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
             this.isPointInAnimator = false;
@@ -1360,16 +1296,6 @@
 
     MainScreen.prototype.blank = function () {
         // used to call it , and do nothing
-    };
-
-    MainScreen.prototype.addIdsToData = function (items) {
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            item.id = PIXI.utils.uid()
-            if (item.children) {
-                this.addIdsToData(item.children);
-            }
-        }
     };
 
     window.MainScreen = MainScreen; // make it available in the main scope

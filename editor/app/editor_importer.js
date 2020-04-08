@@ -172,19 +172,19 @@
     };
 
     EditorImporter.prototype.hasMissingImage = function (objects) {
-        
         for (var i = 0; i < objects.length; i++) {
             var object = objects[i];
             if (object.imageName === "_missing_image") {
                 return true;
             }
-            
             if (object.children) {
                 var has = this.hasMissingImage(object.children);
                 if (has) {
                     return true;
                 }
             }
+
+
         }
 
         return false;

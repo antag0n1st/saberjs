@@ -15,8 +15,123 @@
 
     HtmlTopTools.prototype.bindHTML = function () {
 
+        // WORKING WITH LABEL
 
+        var that = this;
+
+
+        this.textUpdatePanel = document.getElementById('textUpdatePanel');
+        this.textUpdateArea = document.getElementById('textUpdateArea');
+        this.textUpdateArea.onkeyup = this.onTextareaKey.bind(this);
+        this.textUpdateArea.oninput = this.onTextareaKey.bind(this);
         
+        var closeTextPanel = document.getElementById('closeTextPanel');
+        closeTextPanel.onclick = function(){
+            that.hideTextEdit();
+        };
+        
+
+        var size = app.device.windowSize();
+
+        var b = this.textUpdatePanel.getBoundingClientRect();
+        var width = 524;
+        var height = 359;
+
+        var x = (size.width) - width - 400;
+        var y = size.height - height - 10;
+        this.textUpdatePanel.style.left = x + 'px';
+        this.textUpdatePanel.style.top = y + 'px';
+
+        this.textFontSize = document.getElementById('textFontSize');
+        this.textFontFamily = document.getElementById('textFontFamily');
+        this.textAlign = document.getElementById('textAlign');
+
+        this.textFontSize.onkeyup = this.onFontSizeKey.bind(this);
+        this.textFontSize.onwheel = this.onFontSizeWheel.bind(this);
+        this.textAlign.onchange = this.onTextAlignChange.bind(this);
+
+        this.textFontFamily.onchange = this.onFontFamily.bind(this);
+
+        var pickerOptions = HtmlElements.getPickerOptions();
+
+        delete pickerOptions.extensions[0].options.colors.transparent;
+
+        this.textColorPicker = $('#colorPicker').colorpicker(pickerOptions);
+        this.textColorPicker.on('change', function (e) {
+            that.onTextColorChange(e.color.toHexString());
+        });
+
+        /////////////////////
+
+        this.textStrokeThickness = document.getElementById('textStrokeThickness');
+        this.textStrokeThickness.onwheel = this.onStrokeThicknessWheel.bind(this);
+        this.textStrokeThickness.onkeyup = this.onStrokeThickness.bind(this);
+
+        this.textStrokeColorPicker = $('#strokeColorPicker').colorpicker(pickerOptions);
+        this.textStrokeColorPicker.on('change', function (e) {
+            that.onStrokeColorChange(e.color.toHexString());
+        });
+
+        ///////////////////////////////////////////////////////
+        // drop shadow
+
+
+        this.shadowDistance = document.getElementById('shadowDistance');
+        this.shadowDistance.onwheel = this.onShadowDistanceWheel.bind(this);
+        this.shadowDistance.onkeyup = this.onShadowDistance.bind(this);
+
+        this.shadowAngle = document.getElementById('shadowAngle');
+        this.shadowAngle.onkeyup = this.onShadowAngle.bind(this);
+
+        this.shadowColorPicker = $('#shadowColorPicker').colorpicker(pickerOptions);
+        this.shadowColorPicker.on('change', function (e) {
+            that.onShadowColorChange(e.color.toHexString());
+        });
+
+        this.letterSpacing = document.getElementById('letterSpacing');
+        this.letterSpacing.onkeyup = this.onLetterSpacing.bind(this);
+
+        this.lineHeight = document.getElementById('lineHeight');
+        this.lineHeight.onkeyup = this.onLineHeight.bind(this);
+
+        this.texturePadding = document.getElementById('texturePadding');
+        this.texturePadding.onkeyup = this.onTexturePadding.bind(this);
+
+        ////////////////////
+
+        var fonts = '';
+
+        font += '<option value="\'Times New Roman\', Times, serif">Times New Roman, Times, serif</option>';
+        fonts += '<option value="\'Arial Black\', Gadget, sans-serif">Arial Black, Gadget, sans-serif</option>';
+        fonts += '<option value="Impact, Charcoal, sans-serif">Impact, Charcoal, sans-serif</option>';
+        fonts += '<option value="\'Comic Sans MS\', cursive, sans-serif">Comic Sans MS, cursive, sans-serif</option>';
+        fonts += '<option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva, sans-serif</option>';
+
+        this.textFontFamily.innerHTML = '';
+
+
+         for (var i = 0; i < Fonts.fonts.length; i++) {
+            var font = Fonts.fonts[i];
+            
+             var opt = document.createElement('option');
+                opt.value = font.family;
+                opt.innerHTML = font.family;
+                this.textFontFamily.appendChild(opt);
+        }
+
+//        for (var property in Fonts) {
+//            if (Fonts.hasOwnProperty(property)) {
+//                var font = Fonts[property];
+//
+//                var opt = document.createElement('option');
+//                opt.value = font.fontFamily;
+//                opt.innerHTML = font.fontFamily;
+//                this.textFontFamily.appendChild(opt);
+//
+//            }
+//        }
+
+        this.textFontFamily.innerHTML += fonts;
 
         this.saveButton = document.getElementById('saveButton');
         this.saveButton.onclick = this.onSaveBtn.bind(this);
@@ -61,7 +176,338 @@
 
     };
 
-    
+    ///////////////////////// LABEL EDIT PANEL /////////////////////////////////
+
+    HtmlTopTools.prototype.onTextColorChange = function (colorHex) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            if (clickedObject.isStyled) {
+                clickedObject.label.label.textStyles.default.fill = colorHex;
+                clickedObject.label.label.dirty = true;
+            } else {
+                clickedObject.label.style.fill = colorHex;
+            }
+        }
+    };
+
+    HtmlTopTools.prototype.onStrokeColorChange = function (colorHex) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            if (clickedObject.isStyled) {
+                clickedObject.label.label.textStyles.default.stroke = colorHex;
+                clickedObject.label.label.dirty = true;
+            } else {
+                clickedObject.label.style.stroke = colorHex;
+            }
+
+        }
+    };
+
+    HtmlTopTools.prototype.onShadowColorChange = function (colorHex) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            if (clickedObject.isStyled) {
+                clickedObject.label.label.textStyles.default.dropShadowColor = colorHex;
+                clickedObject.label.label.dirty = true;
+            } else {
+                clickedObject.label.style.dropShadowColor = colorHex;
+            }
+        }
+    };
+
+    HtmlTopTools.prototype.onStrokeThickness = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            if (clickedObject.isStyled) {
+                clickedObject.label.label.textStyles.default.strokeThickness = Math.round(this.textStrokeThickness.value);
+                clickedObject.label.label.dirty = true;
+            } else {
+                clickedObject.label.style.strokeThickness = Math.round(this.textStrokeThickness.value);
+            }
+        }
+    };
+
+    HtmlTopTools.prototype.onShadowDistance = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            var value = Math.round(this.shadowDistance.value);
+
+            if (clickedObject.isStyled) {
+
+                clickedObject.label.label.textStyles.default.dropShadowDistance = value;
+                if (value) {
+                    clickedObject.label.label.textStyles.default.dropShadow = true;
+                } else {
+                    clickedObject.label.label.textStyles.default.dropShadow = false;
+                }
+
+                clickedObject.label.label.dirty = true;
+            } else {
+
+                clickedObject.label.style.dropShadowDistance = value;
+                if (value) {
+                    clickedObject.label.style.dropShadow = true;
+                } else {
+                    clickedObject.label.style.dropShadow = false;
+                }
+            }
+        }
+    };
+
+    HtmlTopTools.prototype.onShadowAngle = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+        if (clickedObject) {
+            var angle = Math.round(this.shadowAngle.value);
+            angle = Math.degreesToRadians(angle);
+
+            if (clickedObject.isStyled) {
+                clickedObject.label.label.textStyles.default.dropShadowAngle = angle;
+                clickedObject.label.label.dirty = true;
+            } else {
+                clickedObject.label.style.dropShadowAngle = angle;
+            }
+        }
+    };
+
+    HtmlTopTools.prototype.onTextAlignChange = function (e) {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.align = this.textAlign.value;
+            clickedObject.label.label.style.align = this.textAlign.value;
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.align = this.textAlign.value;
+        }
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onFontSizeWheel = function (e) {
+        var fontSize = (this.textFontSize.value + '').replace('px', '');
+        fontSize = Math.round(fontSize);
+        if (e.wheelDelta > 0) {
+            fontSize += 1;
+        } else {
+            fontSize -= 1;
+        }
+
+        var clickedObject = this.editor.selectedObjects[0];
+
+        fontSize = (fontSize < 10) ? 10 : fontSize;
+        fontSize = (fontSize > 600) ? 600 : fontSize;
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.fontSize = fontSize + 'px';
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.fontSize = fontSize + 'px';
+        }
+
+
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+
+        this.textFontSize.value = fontSize;
+    };
+
+    HtmlTopTools.prototype.onStrokeThicknessWheel = function (e) {
+
+        var value = Math.round(this.textStrokeThickness.value);
+        if (e.wheelDelta > 0) {
+            value += 1;
+        } else {
+            value -= 1;
+        }
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.strokeThickness = value;
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.strokeThickness = value;
+        }
+        this.textStrokeThickness.value = value;
+
+    }; // onStrokeThicknessWheel
+
+    HtmlTopTools.prototype.onShadowDistanceWheel = function (e) {
+
+        var value = Math.round(this.shadowDistance.value);
+        if (e.wheelDelta > 0) {
+            value += 1;
+        } else {
+            value -= 1;
+        }
+
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+
+            clickedObject.label.label.textStyles.default.dropShadowDistance = value;
+            if (value) {
+                clickedObject.label.label.textStyles.default.dropShadow = true;
+            } else {
+                clickedObject.label.label.textStyles.default.dropShadow = false;
+            }
+
+            clickedObject.label.label.dirty = true;
+        } else {
+
+            clickedObject.label.style.dropShadowDistance = value;
+            if (value) {
+                clickedObject.label.style.dropShadow = true;
+            } else {
+                clickedObject.label.style.dropShadow = false;
+            }
+        }
+
+        this.shadowDistance.value = value;
+    };
+    //onShadowDistanceWheel
+
+
+    HtmlTopTools.prototype.onFontSizeKey = function (e) {
+
+        var fontSize = (this.textFontSize.value + '').replace('px', '');
+        fontSize = Math.round(fontSize);
+        fontSize = (fontSize < 10) ? 10 : fontSize;
+        fontSize = (fontSize > 600) ? 600 : fontSize;
+
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.fontSize = fontSize + 'px';
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.fontSize = fontSize + 'px';
+        }
+
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onFontFamily = function (e) {
+
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.fontFamily = this.textFontFamily.value;
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.fontFamily = this.textFontFamily.value;
+            clickedObject.label.updateText();
+        }
+
+
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+
+    HtmlTopTools.prototype.onLetterSpacing = function () {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        var value = Math.round(this.letterSpacing.value);
+        value = Math.clamp(value, -100, 100) || 0;
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.letterSpacing = value;
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.letterSpacing = value;
+            clickedObject.label.updateText();
+        }
+
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onLineHeight = function () {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.lineHeight = Math.round(this.lineHeight.value);
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.lineHeight = Math.round(this.lineHeight.value);
+            clickedObject.label.updateText();
+        }
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+    HtmlTopTools.prototype.onTexturePadding = function () {
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.isStyled) {
+            clickedObject.label.label.textStyles.default.padding = Math.round(this.texturePadding.value);
+            clickedObject.label.label.dirty = true;
+        } else {
+            clickedObject.label.style.padding = Math.round(this.texturePadding.value);
+            clickedObject.label.updateText();
+        }
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+    };
+
+
+
+
+    HtmlTopTools.prototype.onTextareaKey = function (e) {
+
+        var clickedObject = this.editor.selectedObjects[0];
+
+        if (clickedObject.text !== undefined) {
+            clickedObject.text = this.textUpdateArea.value;
+        } else {
+            clickedObject.label.txt = this.textUpdateArea.value;
+        }
+
+        clickedObject.updateSize();
+        clickedObject.updateFrame();
+
+    };
+    ///////////////////////////
+
+    HtmlTopTools.prototype.showTextEdit = function (object) {
+
+        this.textUpdatePanel.style.display = 'block';
+
+        var style = null;
+        if (object.isStyled) {
+            style = object.label.label.textStyles.default;
+        } else {
+            style = object.label.style;
+        }
+
+        this.textUpdateArea.value = object.text || object.label.txt;
+        this.textFontSize.value = (style.fontSize + '').replace('px', '');
+        this.textAlign.value = style.align;
+        this.textColorPicker.colorpicker('setValue', style.fill);
+        this.textFontFamily.value = style.fontFamily;
+
+        this.textStrokeThickness.value = style.strokeThickness;
+        this.textStrokeColorPicker.colorpicker('setValue', style.stroke);
+
+        this.shadowAngle.value = Math.round(Math.radiansToDegrees(style.dropShadowAngle));
+        this.shadowDistance.value = style.dropShadowDistance;
+        this.shadowColorPicker.colorpicker('setValue', style.dropShadowColor);
+
+        this.lineHeight.value = style.lineHeight;
+        this.letterSpacing.value = style.letterSpacing;
+        this.texturePadding.value = style.padding;
+
+        this.textUpdateArea.focus();
+    };
+
+
+
+    HtmlTopTools.prototype.hideTextEdit = function () {
+        this.textUpdatePanel.style.display = 'none';
+    };
+
+    /////////////////////////////////////////////////////////////////////////////
 
     HtmlTopTools.prototype.onSaveBtn = function () {
         if (this.editor._customSave) {
@@ -233,7 +679,9 @@
 
 
         var html = '';
-        
+//        html += HtmlElements.createButton({name:'copy' , displayName: ' ' , icon: 'fa fa-copy' , class: 'btn-sm btn-info',style: 'margin-bottom: 2px; font-size:15px;'} ).html;
+//        html += '<div style="width:100%;border-bottom:1px solid #555555; border-top:1px solid white; margin: 5px 0px 10px 0px; padding:0;" ></div>';
+//        
         html += HtmlElements.createImageButton('_icon_select', 'htmlInterface.htmlTopTools.onModeChange', "0", 'image-button ' + a1, 'Select Mode').html;
 
         if (editorConfig.features.shapeModes) {

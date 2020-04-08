@@ -23,11 +23,11 @@
             // clear the panel... for now
             this.editor.htmlInterface.commonPropertiesContent.innerHTML = '';
             // multi object binding , should only be alowed for single type objects
-
-            if (this.editor._multiObjectsBind) {
+            
+            if(this.editor._multiObjectsBind){
                 this.editor._multiObjectsBind(this.editor.selectedObjects);
             }
-
+            
         }
 
     };
@@ -121,54 +121,7 @@
 
     };
 
-    PropertiesBinder.prototype.onPropertyInputWheel = function (event, property, value, element, inputType, feedbackID, range) {
-
-        var delta = 0;
-        
-        if (!event) {
-            event = window.event;
-        }
-
-        if(event.deltaY){
-            delta = -event.deltaY;
-        } else if (event.wheelDelta) { 
-            delta = event.wheelDelta / 120;
-        } else if (event.detail) { 
-            delta = -event.detail / 3;
-        } 
-
-        var dir = (delta < 0) ? -1 : 1;
-
-        if (inputType === HtmlElements.TYPE_INPUT_INTEGER || inputType === HtmlElements.TYPE_INPUT_NUMBER) {
-
-            var v = 1;
-
-            value = this.editor.cleanUpValuesByType(inputType, value, element, range, feedbackID);
-
-            if (inputType === HtmlElements.TYPE_INPUT_NUMBER) {
-
-                if (value <= 1 && value >= -0.9 && dir < 0) {
-                    v = 0.1;
-                } else if (value <= 0.9 && value >= -1 && dir > 0) {
-                    v = 0.1;
-                }
-
-                value += dir * v;
-                value = Math.roundDecimal(value, 2);
-
-            } else {
-                value += dir * v;
-            }
-
-            this.editor.onSelectedObjectPropertyChange(property, value.toString(), element, inputType, feedbackID, range);
-
-            element.value = value;
-
-        }
-
-    };
-
-    PropertiesBinder.prototype.onPropertyChange = function (property, value, element, inputType, feedbackID) {
+    PropertiesBinder.prototype.onPropertyChange = function (property, value, element, inputType, feedbackID ) {
 
 
         if (this.editor.selectedObjects.length === 1) {
@@ -182,9 +135,9 @@
     PropertiesBinder.prototype.bindObjectWithProperty = function (object, property, value, element, inputType, feedbackID) {
         //TODO do it with commands
         if (property === 'id') {
-            value = value.trim().toLowerCase();
+            value = value.trim().toUpperCase();
             object.id = value;
-
+            
             var isValid = this.editor.isIdUnique(value);
             if (object.id === '') {
                 isValid = false;
@@ -251,8 +204,8 @@
             object.updateSize();
         }
         object.updateFrame();
-
-        if (object._basePropertyChange) {
+        
+        if(object._basePropertyChange){            
             object._basePropertyChange(property, value, element, inputType, feedbackID);
         }
 

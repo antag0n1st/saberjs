@@ -50,8 +50,6 @@ $_javascripts = [
     'app/commands/command_move.js',
     'app/commands/command_property.js',
     'app/commands/command_scale.js',
-    'app/components/text_editor.js',
     'app/shortcuts.js',
-    'app/prefab_explorer.js',
     'play_button.js'
 ];
