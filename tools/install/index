@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>SaberCore</title>
+        <title>{name}</title>
         <meta charset="UTF-8">
         <link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
         <link href="assets/css/fonts.css" rel="stylesheet" type="text/css"/>
@@ -13,7 +13,7 @@
         <meta name="HandheldFriendly" content="true" />
 
         <link rel="shortcut icon" sizes="256x256" href="assets/images/favicon.png" />
-		<style> body{ background: #555555; }</style>  
+		<style> body{ background: {background_color_css}; }</style>  
 
 		<!--//SCRIPTS-BEGIN-->
 
@@ -31,7 +31,7 @@
 
         <script src="assets/assets.js" type="text/javascript"></script>
 
-        <script src="app/screens/main_screen.js" type="text/javascript"></script>
+        <script src="app/screens/{start_screen_file_name}.js" type="text/javascript"></script>
 
 		<!--//SCRIPTS-END-->
 

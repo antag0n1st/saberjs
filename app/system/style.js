@@ -53,13 +53,17 @@
         dropShadow: true,
         dropShadowColor: '#000000',
         dropShadowDistance: 1,
+        
     };
 
     Style.DEFAULT_LABEL = {
-        fill: "#999999",
+        fill: "#ffffff",
         fontFamily: "Arial Black",
-        fontSize: 30,
-        dropShadowDistance: 0
+        fontSize: 50,
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowDistance: 5,
+        dropShadowBlur : 10
     };
 
     Style.DEFAULT_BUTTON = {

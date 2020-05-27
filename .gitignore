@@ -4,3 +4,5 @@
 /package-lock.json
 /config.js
 /release
+/tools/credentials.php
+/tools/install/credentials.php

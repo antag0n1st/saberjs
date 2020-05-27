@@ -1,0 +1,22 @@
+@echo off
+
+echo open sftp://{user}:{pass}@{server} -hostkey="{rsa}" > %systemdrive%\Windows\Temp\script.tmp
+echo cd {publish_dir} >> %systemdrive%\Windows\Temp\script.tmp  
+echo option batch continue >> %systemdrive%\Windows\Temp\script.tmp
+echo mkdir {dir_name} >> %systemdrive%\Windows\Temp\script.tmp
+echo option batch abort >> %systemdrive%\Windows\Temp\script.tmp
+echo lcd release >> %systemdrive%\Windows\Temp\script.tmp
+echo put -neweronly * {dir_name}/ >> %systemdrive%\Windows\Temp\script.tmp
+
+echo exit >> %systemdrive%\Windows\Temp\script.tmp
+ 
+echo about to execute
+rem Execute script
+call "C:\Program Files (x86)\WinSCP\WinSCP.com" /ini=nul /script=%systemdrive%\Windows\Temp\script.tmp
+ 
+start "" {publish_url}{dir_name}/index.html
+
+echo deleting...
+ 
+rem Delete temporary script
+del %systemdrive%\Windows\Temp\script.tmp

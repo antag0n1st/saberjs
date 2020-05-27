@@ -16,48 +16,13 @@
 
         ////////////////////
 
-        var guiBtn = new Button('GUI', Style.DEFAULT_BUTTON);
-        guiBtn.onMouseUp = function () {
-            var screen = new GuiScreen();
-            app.navigator.add(screen, 200);
-            Sounds.click.play();
-        };
-        guiBtn.position.set(app.width / 2, 300);
-        this.addChild(guiBtn);
-        this.addTouchable(guiBtn);
+        var label = new Label(Style.DEFAULT_LABEL);
+        label.txt = "Happy Coding !";
+        label.centered();
+        label.x = app.width/2;
+        label.y = app.height/2;
+        this.addChild(label);
 
-
-        ////////////////
-
-        var tweenBtn = new Button('Tweens', Style.DEFAULT_BUTTON);
-        tweenBtn.onMouseUp = function () {
-            var screen = new TweenScreen();
-            app.navigator.add(screen, 200);
-            Sounds.click.play();
-        };
-        tweenBtn.position.set(app.width / 2, 400);
-        this.addChild(tweenBtn);
-        this.addTouchable(tweenBtn);
-        
-        var gooeyBtn = new Button('Gooey', Style.DEFAULT_BUTTON);
-        gooeyBtn.onMouseUp = function () {
-            var screen = new GooeyScreen();
-            app.navigator.add(screen, 300 , HNavigator.ANIMATION_TYPE_ALPHA );
-            Sounds.click.play();
-        };
-        gooeyBtn.position.set(app.width / 2, 500);
-        this.addChild(gooeyBtn);
-        this.addTouchable(gooeyBtn);
-        
-        var importedScreen = new Button('Imported', Style.DEFAULT_BUTTON);
-        importedScreen.onMouseUp = function () {
-            var screen = new ImportedScreen();
-            app.navigator.add(screen, 300 , HNavigator.ANIMATION_TYPE_ALPHA );
-            Sounds.click.play();
-        };
-        importedScreen.position.set(app.width / 2, 600);
-        this.addChild(importedScreen);
-        this.addTouchable(importedScreen);
 
 
     };

@@ -30,7 +30,7 @@ for filename in os.listdir(folder):
 with open('index.html', 'r') as myfile:
     data = myfile.read();
 
-with open('scripts.html', 'r') as myfile:
+with open('tools/scripts.html', 'r') as myfile:
     javascripts = myfile.read();
 
 start_string = '<!--//SCRIPTS-BEGIN-->';

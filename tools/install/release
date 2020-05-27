@@ -1,0 +1,20 @@
+call grunt
+call py tools/release/release.py
+
+start "" http://localhost/{dir_name}/release/index.html
+
+@echo off
+echo.
+echo.
+echo Would you like to publish this ? y/n default(n)
+set /p publish_me=
+
+
+
+if "%publish_me%" == "y" (
+call publish.bat
+) else (
+timeout 5
+)
+
+
