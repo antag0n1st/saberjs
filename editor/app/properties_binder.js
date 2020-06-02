@@ -54,6 +54,9 @@
 
         var opt11 = {name: 'constraintX', value: object.constraintX ? object.constraintX.value : '', class: 'big', displayName: 'X', feedback: true};
         var opt12 = {name: 'constraintY', value: object.constraintY ? object.constraintY.value : '', class: 'big', displayName: 'Y', feedback: true};
+        
+        var opt15 = {name: 'constraintWidth', value: object.constraintWidth ? object.constraintWidth.value : '', class: 'big', displayName: 'W', feedback: true};
+        var opt16 = {name: 'constraintHeight', value: object.constraintHeight ? object.constraintHeight.value : '', class: 'big', displayName: 'H', feedback: true};
 
         var opt13 = {name: 'className', value: object.className, class: 'big', displayName: 'Class'};
 
@@ -91,9 +94,14 @@
 
             var cx = HtmlElements.createInput(opt11);
             var cy = HtmlElements.createInput(opt12);
+            
+            var cw = HtmlElements.createInput(opt15);
+            var ch = HtmlElements.createInput(opt16);
 
             html += cx.html;
             html += cy.html;
+            html += cw.html;
+            html += ch.html;
         }
 
         this.editor.htmlInterface.commonPropertiesContent.innerHTML = html;
@@ -106,6 +114,14 @@
 
             if (object.constraintY) {
                 HtmlElements.setFeedback(cy.feedbackID, object.constraintY.isValid);
+            }
+            
+            if (object.constraintWidth) {
+                HtmlElements.setFeedback(cw.feedbackID, object.constraintWidth.isValid);
+            }
+            
+            if (object.constraintHeight) {
+                HtmlElements.setFeedback(ch.feedbackID, object.constraintHeight.isValid);
             }
         }
 
@@ -181,6 +197,18 @@
             HtmlElements.setFeedback(feedbackID, constraint.isValid);
             object.constraintY = constraint;
 
+        }else if (property === 'constraintWidth') {
+
+            var constraint = new Constraint(object, 'width', value);
+            HtmlElements.setFeedback(feedbackID, constraint.isValid);
+            object.constraintWidth = constraint;
+
+        }else if (property === 'constraintHeight') {
+
+            var constraint = new Constraint(object, 'height', value);
+            HtmlElements.setFeedback(feedbackID, constraint.isValid);
+            object.constraintHeight = constraint;
+
         } else if (property === 'className') {
             object.className = value.trim() || '';
         } else if (property === 'tint') {
@@ -188,7 +216,7 @@
         }
 
 
-        if (property === 'constraintY' || property === 'constraintX') {
+        if (property === 'constraintY' || property === 'constraintX'|| property === 'constraintWidth'|| property === 'constraintHeight') {
 
             this.editor.constraints.remove(constraint);
 
@@ -197,7 +225,9 @@
             }
 
             this.editor.constraints.rebuildDependencyTree();
-            this.editor.constraints.applyValues();
+            
+            //TODO resolve a single constraint
+            this.editor.constraints._applyValues([constraint]);
         }
 
         if (object.updateSize) {

@@ -6,9 +6,9 @@ echo Where to install ?
 set /p dir_name=
 echo What is the title of the application ?
 set /p name=
-echo What is the WIDTH of the canvas ? default(1920)
+echo What is the WIDTH of the canvas ? default(1920) other 1280 x 720
 set /p width=
-echo What is the HEIGHT of the canvas ? default(1080)
+echo What is the HEIGHT of the canvas ? default(1080) other 1280 x 720
 set /p height=
 echo What is the name of the starting screen ? default(home)
 set /p start_screen=

@@ -11,6 +11,10 @@
     Entity.HANDLE_RIGHT = 1;
     Entity.HANDLE_BOTTOM = 2;
     Entity.HANDLE_LEFT = 3;
+    Entity.HANDLE_BOTTOM_RIGHT = 4;
+
+    Entity.prototype._propBindCalls = []; // shared object
+
 
     Entity.prototype.initialize = function (name) {
 
@@ -26,6 +30,8 @@
 
         this.rotationHandle = null;
         this.rotationHandleDistance = 40;
+
+        this._oldAlpha = 1;
 
         this._snapAngles = [
             0,
@@ -73,10 +79,13 @@
         this.canPrefab = true; /// if the object can be saved as a Prefab
         this.canDrop = true; // if it can be moved inside an other object
 
+        this.canAcceptDropIn = false; // if it can accept someone to drop in an object inside
+
         this._drawStretchRight = true;
         this._drawStretchTop = true;
         this._drawStretchLeft = false;
         this._drawStretchBottom = false;
+        this._drawStretchBottomRight = false;
 
         this.hasImage = false; // if the object has an image        
         this.canTransform = false; //TODO remove this from here this is for mymathcore
@@ -85,19 +94,27 @@
         this.isFlipped = false;
         this.isXOut = false;
         this._xOutElement = null;
+        this.isGlowing = false;
+        this.isOutlined = false;
 
         this.type = 'Entity';
+
+        this.videoHelpURL = '';
 
         this.handleTypeTouched = '';
         this._handleID = 0;
 
         this.constraintX = null;
         this.constraintY = null;
+        this.constraintWidth = null;
+        this.constraintHeight = null;
 
         this.className = '';
 
         this.properties = {};
         this._data = null;
+        this._buildCalls = []; //  shared object
+
 
     };
 
@@ -149,6 +166,11 @@
         hand4.type = Entity.HANDLE_LEFT;
         this.frameStretchSensors.push(hand4);
 
+        var hand5 = new SAT.Box(new V(), shSize, shSize).toPolygon();
+        hand5.translate(3, 2);
+        hand5.type = Entity.HANDLE_BOTTOM_RIGHT;
+        this.frameStretchSensors.push(hand5);
+
         this.rotationHandle = new SAT.Circle(new V(), handleSize);
 
     };
@@ -165,12 +187,13 @@
             var angle = this.sumAllAngles();
             p.rotate(-angle + this.rotation);
             this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
+            this._onDragged();
         }
     };
 
-
     Entity.prototype.select = function () {
         this.isSelected = true;
+
         this.updateFrame();
 
         this._onSelect();
@@ -183,6 +206,41 @@
     };
 
     Entity.prototype._onSelect = function () {
+
+    };
+
+    Entity.prototype._onDragged = function () {
+
+    };
+
+    Entity.prototype._onHovering = function (target) {
+        this._oldAlpha = this.alpha;
+        this.alpha = 0.4;
+    };
+
+    Entity.prototype._onHoveringOut = function (target) {
+        this.alpha = this._oldAlpha;
+    };
+
+    Entity.prototype._onDroppedIn = function (target) {
+
+    };
+
+    Entity.prototype._onObjectHoverIn = function (objects) {
+        app.input.setCursor('cell');
+    };
+
+    Entity.prototype._onObjectHoverOut = function (objects) {
+        app.input.restoreCursor();
+    };
+    
+    // if there are multiple object, is will drop them in , one by one
+    Entity.prototype._onItemDropped = function (object) {
+        return true;
+    };
+    
+    // if there are multiple object, is will remove them in , one by one
+    Entity.prototype._onItemDroppedOut = function (object) {
 
     };
 
@@ -255,6 +313,7 @@
                         || (r.type === Entity.HANDLE_RIGHT && this._drawStretchRight)
                         || (r.type === Entity.HANDLE_BOTTOM && this._drawStretchBottom)
                         || (r.type === Entity.HANDLE_LEFT && this._drawStretchLeft)
+                        || (r.type === Entity.HANDLE_BOTTOM_RIGHT && this._drawStretchBottomRight)
                         ) {
 
                     this.drawStretchHandle(p, r, graphics);
@@ -322,9 +381,10 @@
 
         }
 
-        for (var i = 0; i < this.frameStretchSensors.length; i++) {
+        for (var i = 0; i < this.frameSensors.length; i++) {
+
             var stretchFrame = this.frameStretchSensors[i];
-            stretchFrame.pos.set(cp.x + pp.x, cp.y + pp.y);
+            //stretchFrame.pos.set(cp.x + pp.x, cp.y + pp.y);
 
             var s1 = this.frameSensors[i];
             var s2 = this.frameSensors[i + 1] || this.frameSensors[0];
@@ -347,6 +407,9 @@
             stretchFrame.rotate(angle - stretchFrame._angle || 0);
             stretchFrame._angle = angle;
         }
+
+        var _br = this.frameSensors[2].pos;
+        this.frameStretchSensors[4].pos.set(_br.x, _br.y);
 
         ///////////
 
@@ -391,6 +454,7 @@
                         || (handle.type === Entity.HANDLE_RIGHT && this._drawStretchRight)
                         || (handle.type === Entity.HANDLE_BOTTOM && this._drawStretchBottom)
                         || (handle.type === Entity.HANDLE_LEFT && this._drawStretchLeft)
+                        || (handle.type === Entity.HANDLE_BOTTOM_RIGHT && this._drawStretchBottomRight)
                         ) {
 
                     if (SAT.pointInPolygon(p, handle)) {
@@ -421,9 +485,11 @@
         } else if (this.handleTypeTouched === "stretch") {
 
             if (this._handleID === Entity.HANDLE_RIGHT || this._handleID === Entity.HANDLE_LEFT) {
-                this._initialStretch = event.point.x;
+                this._initialStretch = {x: event.point.x, y: 0};
+            } else if (this._handleID === Entity.HANDLE_BOTTOM || this._handleID === Entity.HANDLE_TOP) {
+                this._initialStretch = {x: 0, y: event.point.y};
             } else {
-                this._initialStretch = event.point.y;
+                this._initialStretch = {x: event.point.x, y: event.point.y};
             }
 
             if (this._onStretchStarted) {
@@ -449,23 +515,29 @@
 
             if (this._handleID === Entity.HANDLE_TOP) {
                 if (this._onStretch) {
-                    var amount = this._initialStretch - event.point.y;
+                    var amount = this._initialStretch.y - event.point.y;
                     this._onStretch(amount, this._handleID, editor);
                 }
             } else if (this._handleID === Entity.HANDLE_RIGHT) {
                 if (this._onStretch) {
-                    var amount = event.point.x - this._initialStretch;
+                    var amount = event.point.x - this._initialStretch.x;
                     this._onStretch(amount, this._handleID, editor);
                 }
             } else if (this._handleID === Entity.HANDLE_LEFT) {
                 if (this._onStretch) {
-                    var amount = this._initialStretch - event.point.x;
+                    var amount = this._initialStretch.x - event.point.x;
                     this._onStretch(amount, this._handleID, editor);
                 }
             } else if (this._handleID === Entity.HANDLE_BOTTOM) {
                 if (this._onStretch) {
-                    var amount = event.point.y - this._initialStretch;
+                    var amount = event.point.y - this._initialStretch.y;
                     this._onStretch(amount, this._handleID, editor);
+                }
+            } else if (this._handleID === Entity.HANDLE_BOTTOM_RIGHT) {
+                if (this._onStretch) {
+                    var amountX = event.point.x - this._initialStretch.x;
+                    var amountY = event.point.y - this._initialStretch.y;
+                    this._onStretch({x: amountX, y: amountY}, this._handleID, editor);
                 }
             }
         }
@@ -541,8 +613,8 @@
         var angle = value;
 
         angle = value % 6.283185307179586;
-        
-        if(angle < 0 ){
+
+        if (angle < 0) {
             angle += 6.283185307179586;
         }
 
@@ -605,11 +677,23 @@
             o.constraintY = this.constraintY.value;
         }
 
+         if (this.constraintWidth) {
+            o.constraintWidth = this.constraintWidth.value;
+        }
+        
+         if (this.constraintHeight) {
+            o.constraintHeight = this.constraintHeight.value;
+        }
+
         for (var i = 0; i < this.children.length; i++) {
             var c = this.children[i];
             if (c.export && c.canExport) {
                 o.children.push(c.export());
             }
+        }
+
+        if (this.dynamicData) {
+            o.dynamicData = this.dynamicData;
         }
 
         return o;
@@ -708,9 +792,19 @@
             this.constraintY = new Constraint(this, 'y', data.constraintY);
         }
 
-        if (!data.id.startsWith('_change_it_before_use-') && data.id) {
-            this.id = data.id.trim().toUpperCase();
+        if (data.constraintWidth) {
+            this.constraintWidth = new Constraint(this, 'width', data.constraintWidth);
         }
+        
+        if (data.constraintHeight) {
+            this.constraintHeight = new Constraint(this, 'height', data.constraintHeight);
+        }
+
+        if (!data.id.startsWith('_change_it_before_use-') && data.id) {
+            this.id = data.id.trim().toLowerCase();
+        }
+
+        this.dynamicData = data.dynamicData || [];
 
         this._data = data;
 
@@ -745,10 +839,10 @@
     };
 
     Entity.prototype.onUpdate = function (dt) {
-        this._resolvePropBind(dt);
+        // Beware this method might be overwritten in the entity_extended.js
+        this._resolvePropBind();
+        this._resolveBuild();
     };
-
-    Entity.prototype._propBindCalls = []; // shared object
 
     Entity.prototype._resolvePropBind = function () {
         if (this._propBindCalls.length > 0 && this.isSelected) {
@@ -759,13 +853,25 @@
         }
     };
 
-    Entity.prototype.bindCommonProperties = function (editor) {
+    Entity.prototype._resolveBuild = function () {
 
+        if (this._buildCalls.length > 0) {
+            this._buildCalls.pop();
+            if (this._buildCalls.length === 0) {
+                this.build();
+            }
+        }
     };
 
     Entity.prototype._delayedPropertiesBind = function (editor) {
-
         this._propBindCalls.push(editor);
+    };
+
+    Entity.prototype._delayedBuild = function () {
+        this._buildCalls.push(1);
+    };
+
+    Entity.prototype.bindCommonProperties = function (editor) {
 
     };
 
@@ -845,9 +951,9 @@
             this.onPropertyChange(editor, property, value, element, inputType, feedbackID);
         }
 
-        if (this.constraintX || this.constraintY) {
-            editor.constraints.applyValues();
-        }
+//        if (this.constraintX || this.constraintY || this.constraintWidth || this.constraintHeight) {
+//            editor.constraints.applyValues(true);
+//        }
 
     };
 
@@ -859,47 +965,13 @@
         throw "This object needs to write a build method";
     };
 
-    Entity.prototype.setOutline = function (hasOutline, thickness, color) {
-
-        if (hasOutline) {
-            var filter = new PIXI.filters.OutlineFilter(thickness || 8, color || 0xFF0000, 0.5);
-            this.filters = [filter];
-            filter.padding = 20;
-            this.cacheAsBitmap = true;
-        } else {
-            this.filters = [];
-            this.cacheAsBitmap = false;
-        }
-
-    };
-
-    Entity.prototype.setGlow = function (should_glow) {
-
-        if (should_glow) {
-
-            var glow = new PIXI.filters.GlowFilter(15, 5, 2, 0x19a852, 0.2);
-            glow.padding = 20;
-            var filters = [glow];
-            this.filters = filters;
-
-            // this.cacheAsBitmap = true;
-
-        } else {
-            // this.cacheAsBitmap = false;
-            this.filters = [];
-        }
-
-    };
-
     Entity.prototype.onImportFinished = function () {
 
-        if (this.isXOut) {
-            var x = new XOut(this);
-            this.addChild(x);
-            this._xOutElement = x;
-        }
 
-
+    };
+    // override this one if it is interactive control that needs validation
+    Entity.prototype.expectsInput = function () {
+        return false;
     };
 
     Entity.prototype._updateAnchor = function () {
@@ -908,6 +980,25 @@
 
     Entity.prototype._setImage = function (name) {
         console.warn('Implement _setImage for this object to set - ' + name);
+    };
+
+    Entity.prototype._getLabelObject = function () {
+        return this;
+    };
+
+    Entity.prototype.updateSize = function () {
+        // this is only for label objects
+        if (this.label) {
+            this.label.dirty = true;
+            this.label.updateSize();
+
+            this.rebuild();
+        }
+    };
+
+
+    Entity.prototype.applyDynamicVariables = function (variables) {
+        // each object will overwrite this method and implement its own uniqe usage of the variables  
     };
 
     window.Entity = Entity;

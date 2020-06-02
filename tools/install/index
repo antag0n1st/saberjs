@@ -3,8 +3,8 @@
     <head>
         <title>{name}</title>
         <meta charset="UTF-8">
-        <link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
-        <link href="assets/css/fonts.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/css/style.css?v=1" rel="stylesheet" type="text/css"/>
+        <link href="assets/css/fonts.css?v=1" rel="stylesheet" type="text/css"/>
 
         <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -14,7 +14,7 @@
 
         <link rel="shortcut icon" sizes="256x256" href="assets/images/favicon.png" />
 		<style> body{ background: {background_color_css}; }</style>  
-
+                <script>var _VERSION = 1;</script>
 		<!--//SCRIPTS-BEGIN-->
 
         <script src="config.js" type="application/javascript" ></script>

@@ -236,7 +236,7 @@
             //   if (object.properties) {
             //      this.editor.htmlInterface.activateTab('properties');
             //  } else {
-            this.editor.htmlInterface.activateTab('properties');
+            this.editor.htmlInterface.activateTab('commonProperties');
             //  }
 
         } else {

@@ -4,10 +4,10 @@ import os,sys,json ,shutil , re
 from path import Path
 from functions import *
 
-
 #### do your thing here
 
 release_dir = 'release';
+version_number = sys.argv[1];
 
 if not os.path.exists(release_dir+'/'):
     os.makedirs(release_dir+'/')
@@ -36,10 +36,14 @@ with open('tools/scripts.html', 'r') as myfile:
 start_string = '<!--//SCRIPTS-BEGIN-->';
 end_string = '<!--//SCRIPTS-END-->';
 
+data = data.replace("v=1","v="+version_number);
+
+data = data.replace("var _VERSION = 1;","var _VERSION = "+version_number+";");
+javascripts = javascripts.replace("v=1","v="+version_number);
 
 data = re.sub(''+start_string+'.*?'+end_string,javascripts,data, flags=re.DOTALL)
 
-#data = data.replace("{name}","aha");
+
 
 filename = release_dir+"/index.html";
 myfile = open(filename, 'w+')

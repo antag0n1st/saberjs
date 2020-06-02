@@ -12,6 +12,7 @@
         this.background = new Sprite('white');
         this.background.stretch(app.width,app.height);
         this.background.visible = true;
+        this.background.tint = 0x40cde3;
         this.addChild(this.background);
 
         this.logo = new Sprite(null);//Put logo image here
@@ -24,17 +25,17 @@
         this.loadingBar = new LoadingBar({
             background: 'white',
             backgroundIsSliced: true,
-            backgroundWidth: 800,
+            backgroundWidth: 400,
             backgroundHeight: 40,
             backgroundPadding: '1 1 1 1',
-            backgroundTint: 0x555555,
+            backgroundTint: 0x0b6775,
 
             foreground: 'white',
             foregroundIsSliced: true,
-            foregroundWidth: 800,
+            foregroundWidth: 400,
             foregroundHeight: 40,
             foregroundPadding: '1 1 1 1',
-            foregroundTint: 0xc5c8f3,
+            foregroundTint: 0xbaf6ff,
 
             offsetX: 0,
             offsetY: 0,

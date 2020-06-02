@@ -19,6 +19,8 @@
 
           // Happy Coding !
 
+        // don't forget to implement this: https://github.com/Mwni/PIXI.TextInput
+
         var label = new Label(Style.DEFAULT_LABEL);
         label.txt = "Happy Coding !";
         label.centered();

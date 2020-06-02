@@ -299,6 +299,11 @@
     };
 
     App.prototype.checkRotation = function () {
+        
+        if(Config.window_mode === Config.MODE_CENTERED){
+            return false;
+        }
+        
         if (Config.rotation_mode === Config.ROTATION_MODE_HORIZONTAL) {
 
             if (app.windowWidth < app.windowHeight) {
@@ -316,6 +321,7 @@
             }
 
         }
+        
     };
 
     App.prototype.showRotateDevice = function () {

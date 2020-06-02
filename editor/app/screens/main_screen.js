@@ -17,6 +17,7 @@
     MainScreen.prototype.initialize = function () {
 
         this.screen_initialize();
+        this.constraints.ignore = true;
 
         this.mouseDownPosition = new V();
         this.screenMouseOffset = new V();
@@ -136,6 +137,8 @@
         if (this._onEditorReady) {
             this._onEditorReady(this);
         }
+        
+     
 
     };
 
