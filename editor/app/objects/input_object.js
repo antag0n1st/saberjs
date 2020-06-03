@@ -45,7 +45,8 @@
             hasPlaceholder: false,
             hasNext: false,
             placeholderColor: '#555555' , 
-            input_type : InputField.TYPE_ALL
+            input_type : InputField.TYPE_ALL , 
+            doneText : ''
         };
 
     };
@@ -183,6 +184,9 @@
         html += HtmlElements.createInput(opt5).html;
         html += HtmlElements.createInput(opt6).html;
         
+        
+        html += HtmlElements.createSection('Settings').html;
+        
          var it = [
             {name: "All", value: InputField.TYPE_ALL},
             {name: "Alphabetic", value: InputField.TYPE_ALPHABETIC},
@@ -194,6 +198,9 @@
         ];
         var opt10 = {tooltip: "Input Field Type", name: 'input_type', value: this.properties.input_type, method: method, items: it};
         html += HtmlElements.createDropdown(opt10).html;
+        
+        var opt11 = {displayName: 'Done Text' , name: 'doneText', value:this.properties.doneText, class: 'big', method: method, type: HtmlElements.TYPE_INPUT_STRING };
+        html += HtmlElements.createInput(opt11).html;
 
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;

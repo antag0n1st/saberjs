@@ -27,7 +27,7 @@
         tooltip: '',
         method: '',
         feedback: false,
-        type: HtmlElements.INPUT_TYPE_ALL,
+        type: HtmlElements.TYPE_INPUT_STRING,
         buttonClass: '',
         buttonAction: '',
         style: '',

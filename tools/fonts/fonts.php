@@ -41,12 +41,10 @@ function getStringsBetween($string, $start, $end) {
     return $matches[1];
 }
 
-
-
-function listFolderFiles($dir , $callback) {
+function listFolderFiles($dir, $callback) {
 
     $ffs = scandir($dir);
- 
+
     foreach ($ffs as $ff) {
 
         if ($ff != '.' && $ff != '..') {
@@ -64,6 +62,24 @@ function delete_file($file) {
         echo "Already deleted " . $file;
         echo "\n";
     }
+}
+
+function saveFont($font_name) {
+    global $charset;
+
+    $parts = explode('.', $font_name);
+    $extension = array_pop($parts);
+    $name = implode("-", $parts);
+    $name = str_replace(" ", "-", $name);
+    $name = strtolower($name);
+
+    echo "Converted " . $font_name;
+    echo "\n";
+    echo "To: " . $name . ".ttf\n";
+    echo "\n";
+
+    $command = 'call pyftsubset package/' . $font_name . ' --text-file="charsets/' . $charset . '"  --layout-features=""  --output-file="../../assets/fonts/' . $name . '.ttf"';
+    exec($command);
 }
 
 
@@ -86,36 +102,17 @@ echo "=====================================\n";
 
 echo $charset;
 
-if($font_name === "all"){
-   
-   
-    
-    listFolderFiles('./package/',function($font_name){
-        
-         global $charset;
-        
-        $parts = explode('.', $font_name);
-        $extension = array_pop($parts);
-        $name = implode("-", $parts);
-        $name = str_replace(" ", "-", $name);
-        $name = strtolower($name);
-        
-        echo "Converted ".$font_name;
-        echo "\n";
-        echo "To: ".$name.".ttf\n";
-        echo "\n";
-        
-        $command = 'call pyftsubset package/'.$font_name.' --text-file="charsets/'.$charset.'"  --layout-features=""  --output-file="../../assets/fonts/'.$name.'.ttf"';
-        exec($command);
-        
-    });
-    
+if ($font_name === "all") {
+
+
+
+    listFolderFiles('./package/', saveFont);
+
     echo "=====================================\n";
     echo "=====================================\n";
     echo "DONE !!!";
-    
 } else {
-    $command = 'call pyftsubset package/'.$font_name.' --text-file="charsets/'.$charset.'"  --layout-features=""  --output-file="../../assets/fonts/'.$font_name.'"';
-    exec($command);
-    
+
+    saveFont($font_name);
 }
+
