@@ -44,7 +44,7 @@
 
         this.stage = this.pixi.stage;
         this.screen = this.pixi.screen; // width and height
-        this.loader = this.pixi.loader;
+        this.loader = PIXI.Loader.shared;
 
         this.input = new Input(this, this.pixi.renderer.view);
 

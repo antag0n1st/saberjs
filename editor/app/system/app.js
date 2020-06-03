@@ -136,9 +136,6 @@
 
         ContentManager.addImage('_loading_bar_bg', 'initial/_loading_bar_bg.png');
         ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
-        ContentManager.addImage('white', 'initial/white.png');
-        ContentManager.addImage('favicon', 'favicon.png');
-        ContentManager.addImage('black', 'initial/black.png');
 
         ContentManager.downloadResources(function () {
 

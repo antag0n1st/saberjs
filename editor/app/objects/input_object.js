@@ -3,6 +3,7 @@
     function InputObject(imageName) {
         this.initialize(imageName);
     }
+    
 
     InputObject.prototype = new Entity();
     InputObject.prototype.entityInitialize = InputObject.prototype.initialize;
@@ -43,7 +44,8 @@
             sensorHeight: 0,
             hasPlaceholder: false,
             hasNext: false,
-            placeholderColor: '#555555'
+            placeholderColor: '#555555' , 
+            input_type : InputField.TYPE_ALL
         };
 
     };
@@ -180,6 +182,19 @@
         html += HtmlElements.createSection('Sensor').html;
         html += HtmlElements.createInput(opt5).html;
         html += HtmlElements.createInput(opt6).html;
+        
+         var it = [
+            {name: "All", value: InputField.TYPE_ALL},
+            {name: "Alphabetic", value: InputField.TYPE_ALPHABETIC},
+            {name: "Alpha Numberic", value: InputField.TYPE_ALPHA_NUMERIC},
+            {name: "Decimal", value: InputField.TYPE_DECIMAL},
+            {name: "Numeric", value: InputField.TYPE_NUMERIC},
+            {name: "Numeric Symbols", value: InputField.TYPE_NUMERIC_SYMBOLS},
+            {name: "Email" , value: InputField.TYPE_EMAIL}
+        ];
+        var opt10 = {tooltip: "Input Field Type", name: 'input_type', value: this.properties.input_type, method: method, items: it};
+        html += HtmlElements.createDropdown(opt10).html;
+
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 

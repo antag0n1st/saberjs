@@ -37,7 +37,7 @@
         ];
 
         var texture = PIXI.Sprite.prototype.findTexture('repeatable_chess_pattern');
-        this.repatable = new PIXI.extras.TilingSprite(texture, app.width, app.height);
+        this.repatable = new PIXI.TilingSprite(texture, app.width, app.height);
         this.repatable.zIndex = -1;
         this.addChild(this.repatable);
 

@@ -7,6 +7,7 @@ ContentManager.addFile('example','assets/data/example.json');
 
 
 ContentManager.addImage('_default_button','_default_button.png');
+ContentManager.addImage('_default_input','_default_input.png');
 
 ContentManager.addImage('favicon','favicon.png');
 

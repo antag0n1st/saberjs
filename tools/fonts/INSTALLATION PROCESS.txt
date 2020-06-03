@@ -1,0 +1,11 @@
+More info at : 
+https://github.com/fonttools/fonttools
+
+pip install fonttools[ufo,lxml,woff,unicode]
+
+running commands example:
+
+pyftsubset SF-Pro-Text-Regular.otf –-text-file="charset.txt"  --layout-features=""  --output-file="SF-Pro-Text-Regular.ttf"
+
+char sets created with copy-paste from :
+https://www.fontsquirrel.com/tools/webfont-generator

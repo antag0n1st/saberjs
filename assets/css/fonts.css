@@ -1,0 +1,40 @@
+@font-face { 
+	font-family: 'sf-pro-display-black'; 
+	src:  url('../fonts/sf-pro-display-black.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-display-blackitalic'; 
+	src:  url('../fonts/sf-pro-display-blackitalic.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-display-regular'; 
+	src:  url('../fonts/sf-pro-display-regular.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-text-bold'; 
+	src:  url('../fonts/sf-pro-text-bold.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-text-regular'; 
+	src:  url('../fonts/sf-pro-text-regular.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-text-regularitalic'; 
+	src:  url('../fonts/sf-pro-text-regularitalic.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-text-thin'; 
+	src:  url('../fonts/sf-pro-text-thin.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'sf-pro-text-ultralight'; 
+	src:  url('../fonts/sf-pro-text-ultralight.ttf') format('truetype'); 
+}
+

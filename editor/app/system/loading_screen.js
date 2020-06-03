@@ -14,7 +14,7 @@
         this.background.stretch(app.width, app.height);
         this.addChild(this.background);
 
-        this.logo = new Sprite('favicon');//Put logo image here
+        this.logo = new Sprite('');//Put logo image here
         this.logo.centered();
         this.addChild(this.logo);
 

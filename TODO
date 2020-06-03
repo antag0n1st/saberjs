@@ -1,14 +1,19 @@
 # CLIENT
-- make the special buttons react on mouse down in the keyboard
-- add vibrations to keys
-- add apple font that is even lighter then the one suggested
-- Import a few apple fonts by default
 - integrate pixijs 5
 
 # EDITOR
 - add Nine slice object 
 - add checkbox
 - make values for input fields change on scroll
+
+
+# DONE
+
+- Fonts build Tool , it will convert the fonts to ttf and strip unnecessary characters
+- Import a few apple fonts by default
+- add apple font that is even lighter then the one suggested
+- make the special buttons react on mouse down in the keyboard
+- add vibrations to keys
 
 
 

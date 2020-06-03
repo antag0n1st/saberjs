@@ -14,7 +14,7 @@
         this.type = 'ButtonObject';
         this.hasLabel = true;
         this.hasImage = true;
-
+        
         this.background = new NineSlice(imageName, '15');
         this.addChild(this.background);
 
