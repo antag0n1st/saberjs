@@ -42,10 +42,7 @@
             }
         }
 
-//        this.content = new Layer();
-//        this.addChild(this.content);        
-//        this.importer = new Importer(this);
-//        this.importer.importObjects(ContentManager.jsons.main_screen.objects, this.content);
+
 
     };
 

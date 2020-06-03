@@ -16,12 +16,10 @@
 
         ////////////////////
 
-        var label = new Label(Style.DEFAULT_LABEL);
-        label.txt = "Happy Coding !";
-        label.centered();
-        label.x = app.width/2;
-        label.y = app.height/2;
-        this.addChild(label);
+        this.content = new Layer();
+        this.addChild(this.content);        
+        this.importer = new Importer(this);
+        this.importer.importObjects(ContentManager.jsons.example.objects, this.content);
 
 
 

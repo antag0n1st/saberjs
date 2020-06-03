@@ -6,9 +6,8 @@ ContentManager.addFile('example','assets/data/example.json');
 
 
 
+ContentManager.addImage('_default_button','_default_button.png');
 
-ContentManager.addImage('button','button.png');
-ContentManager.addImage('button_disabled','button_disabled.png');
 ContentManager.addImage('favicon','favicon.png');
 
 
