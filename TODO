@@ -1,5 +1,5 @@
 # CLIENT
-- integrate pixijs 5
+
 
 # EDITOR
 - add Nine slice object 
@@ -14,6 +14,7 @@
 - add apple font that is even lighter then the one suggested
 - make the special buttons react on mouse down in the keyboard
 - add vibrations to keys
+- integrate pixijs 5
 
 
 

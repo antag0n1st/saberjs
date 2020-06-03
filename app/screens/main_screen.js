@@ -24,7 +24,33 @@
 
 
     };
-
+    
+    // Keyboard delegates
+    
+    MainScreen.prototype.onKeyboardStream = function (stream , prevStream , inputField) {      
+        
+    };
+    
+    MainScreen.prototype.onKeyboardDone = function () {
+        
+    };
+    
+    MainScreen.prototype.onKeyboardActivated = function () {
+        
+    };
+    
+    MainScreen.prototype.onKeyboardDismissed = function () {
+       
+    };
+    
+    MainScreen.prototype.onKeyboardInputFocus = function (inputField) {
+        
+    };
+    
+    MainScreen.prototype.onKeyboardInputBlur = function (inputField) {
+       
+    };
+    
     /**
      * The desc
      * @param Number someData 

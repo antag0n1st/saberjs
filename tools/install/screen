@@ -82,6 +82,32 @@
 
     };
 
+     // Keyboard delegates
+    
+    {start_screen_class_name}.prototype.onKeyboardStream = function (stream , prevStream , inputField) {      
+        
+    };
+    
+    {start_screen_class_name}.prototype.onKeyboardDone = function () {
+        
+    };
+    
+    {start_screen_class_name}.prototype.onKeyboardActivated = function () {
+        
+    };
+    
+    {start_screen_class_name}.prototype.onKeyboardDismissed = function () {
+       
+    };
+    
+    {start_screen_class_name}.prototype.onKeyboardInputFocus = function (inputField) {
+        
+    };
+    
+    {start_screen_class_name}.prototype.onKeyboardInputBlur = function (inputField) {
+       
+    };
+
     window.{start_screen_class_name} = {start_screen_class_name}; // make it available in the main scope
 
 }(window));
