@@ -6,7 +6,7 @@ module.exports = function (grunt) {
 
         uglify: {
 			options: {
-				sourceMap :false
+				sourceMap :true
 				//beautify: true,
 				//mangle: false
 			},
