@@ -1,10 +1,18 @@
-
 var Config = {};
+////////////////////////////////////////////////////////////////////////////////
+// TYPE variables that will be available everywhere and 
+// they will be the same for all servers
 
-/////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//-- START RELEASE DEPPENDENT VARIABLES ----------------------------------------
 
 Config.game_uuid = '';
 Config.API_URL = '';
+
+//-- END RELEASE DEPPENDENT VARIABLES ------------------------------------------
+
+///////////////////////////////////////////////////////////////////////////////////////
 
 Config.game_width = {width}; // set the size of the canvas here 
 Config.game_height = {height};
@@ -46,18 +54,33 @@ Config.rotation_mode = Config.ROTATION_MODE_ALLOW;
 
 //////////////// KEYBOARD
 
-Config.keyboardFont = 'sf-pro-text-ultralight';
+Config.keyboardFont = 'sf-pro-text-regular';
 
 //Config.keyboardFontWeight = null; // no need
 //Config.keyboardFontSize = 30;
 //Config.keyboardPreviewScale = 5; // font scale
 //Config.keyboardVibrate = true;
 //Config.keyboardCellHeight = 80;
-//Config.keyboardSpacingX = 2;
-//Config.keyboardSpacingX = 4;
+//Config.keyboardSpacingX = 8;
+//Config.keyboardSpacingY = 16;
 //Config.keyboardPreviewBubbleScale = 0.5; // preview bubble scale
 //Config.keyboardDoneText = 'Done';
 //Config.keyboardNextText = 'Next';
+//Config.hasRaisedBed = false;
+
+//////////////////////// TOAST 
+
+//Config.TOAST_TEXTURE = 'rounded-15';
+//Config.TOAST_FONT_NAME = 'sf-pro-display-bold';
+//Config.TOAST_FONT_SIZE = 26;
+//Config.TOAST_PADDING = 25;
+//Config.TOAST_ALPHA = 0.95;
+//Config.TOAST_SUCCESS_BACK_COLOR = 0x16b86c;
+//Config.TOAST_SUCCESS_TEXT_COLOR = 0xffffff;
+//Config.TOAST_WARRNING_BACK_COLOR = 0xf7a736;
+//Config.TOAST_WARRNING_TEXT_COLOR = 0xffffff;
+//Config.TOAST_ERROR_BACK_COLOR = 0xcf1d1d;
+//Config.TOAST_ERROR_TEXT_COLOR = 0xffffff;
 
 Config.initialScreen = '{start_screen_class_name}'; // name of the screen
 Config.initialScreenArgs = []; // list of arguments to pass to the screen

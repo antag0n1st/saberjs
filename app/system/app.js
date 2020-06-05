@@ -37,7 +37,7 @@
         };
 
         this.pixi = new PIXI.Application(settings);
-
+        
         this.layoutCanvas();
 
         this.pixi.ticker.add(this.tick, this);
@@ -90,8 +90,7 @@
     App.prototype.initialLoad = function (callback) {
 
         //ContentManager.addImage('logo', 'logo.png');
-		
-        ContentManager.addImage('white', 'initial/white.png');
+
         ContentManager.addImage('rotate_device_to_landscape', 'initial/rotate_device_to_landscape.png');
         ContentManager.addImage('rotate_device_to_portrait', 'initial/rotate_device_to_portrait.png');
 

@@ -56,7 +56,7 @@
      * @param Number someData 
      */
     MainScreen.prototype.onShow = function (someData) {
-       
+       // Toast.error("Hi there This is my message to you");
     };
 
     MainScreen.prototype.onHide = function () {

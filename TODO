@@ -1,7 +1,23 @@
 # CLIENT
 
+- add PWA manifest and service worker
+- on release create a service working that caches all assets
+- add option to ignore PWA creation ( no manifest , no service worker ) , this is for the release script
+- add icons for instalation , set default favicon , set icons in the index.html
+- add meta tags for social in the index.html
+- when installing , ask for release url default to local , then use the url when creating the release , usefull to generate PWA
+- on install ask for the PWA parameters , like short name of the app. the PWA config is better to be a file that can be reused with the release script ( release.config )
+- ignore icons , don't load them as assets
+- keyboard , raise the lower part adding extra space when in portrait mode
+- test the keyboard in iPhone
+- use a command line tool https://imagemagick.org/index.php , to process resizing of icons
+- add scroll to option for input fields , so that they can scroll to a certain point when the keyboard is active ( absolute position on Y axis )
+
 
 # EDITOR
+- redo the button to use tint for different states ,normal, down , hover , and default it to the white texture
+- add drop shadow for button
+- add events for buttons , type in the event names , or bind to a default functions in the screen
 - add Nine slice object 
 - add checkbox
 - make values for input fields change on scroll
@@ -15,6 +31,8 @@
 - make the special buttons react on mouse down in the keyboard
 - add vibrations to keys
 - integrate pixijs 5
+- Toast message to be in the middle of the screen. Configuration for msg width and position. Make msg clickable to dissmiss. And pause it on mouse down or hover.
+
 
 
 

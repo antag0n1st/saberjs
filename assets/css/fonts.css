@@ -14,6 +14,11 @@
 }
 
 @font-face { 
+	font-family: 'sf-pro-display-thin'; 
+	src:  url('../fonts/sf-pro-display-thin.ttf') format('truetype'); 
+}
+
+@font-face { 
 	font-family: 'sf-pro-text-bold'; 
 	src:  url('../fonts/sf-pro-text-bold.ttf') format('truetype'); 
 }

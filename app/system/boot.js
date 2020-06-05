@@ -8,8 +8,6 @@ window.addEventListener("load", function () {
 
     app = new App();
     
-    //GlobalData.read();
-    
     for (var i = 1; i < 15; i++) {
         timeout(function () {
             if(!app.device.isKeyboardUp){
