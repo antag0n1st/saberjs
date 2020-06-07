@@ -46,7 +46,8 @@
             hasNext: false,
             placeholderColor: '#555555' , 
             input_type : InputField.TYPE_ALL , 
-            doneText : ''
+            doneText : '',
+            scrollTo : ''
         };
 
     };
@@ -201,6 +202,9 @@
         
         var opt11 = {displayName: 'Done Text' , name: 'doneText', value:this.properties.doneText, class: 'big', method: method, type: HtmlElements.TYPE_INPUT_STRING };
         html += HtmlElements.createInput(opt11).html;
+        
+        var opt12 = {displayName: 'Scroll To' , name: 'scrollTo', value:this.properties.scrollTo, class: 'big', method: method, type: HtmlElements.TYPE_INPUT_INTEGER , tooltip: "Absoulte position to scroll to when focused.\n0 or negative values will not scroll" };
+        html += HtmlElements.createInput(opt12).html;
 
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;

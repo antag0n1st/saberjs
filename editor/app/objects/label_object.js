@@ -26,6 +26,7 @@
         this.properties = {
             width: 0
         };
+        
 
 
 

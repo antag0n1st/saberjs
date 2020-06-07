@@ -11,31 +11,22 @@
     GooeyScreen.prototype.initialize = function () {
         this.screenInitialize();
 
-
-        var backBtn = new Button('back', Style.DEFAULT_BUTTON);
-        backBtn.setSensorSize(220, 100);
-        backBtn.onMouseDown = function () {
-            Sounds.click.play();
-            app.navigator.goBack(300, HNavigator.ANIMATION_TYPE_ALPHA);
-        };
-        backBtn.position.set(100 + (backBtn.background.width / 2), 50);
-        backBtn.zIndex = 10;
-        this.addChild(backBtn);
-        this.addTouchable(backBtn);
-
+        this.sample = new Sprite('sample');
+        this.addChild(this.sample);
 
         var stage = new PIXI.Container();
+        this.addChild(stage);
 
 
 
-        var particleCon = new PIXI.particles.ParticleContainer(500, {
-            scale: true,
-            position: true,
-            rotation: false,
-            uvs: false,
-            alpha: false
-        });
-        stage.addChild(particleCon);
+//        var particleCon = new PIXI.ParticleContainer(500, {
+//            scale: true,
+//            position: true,
+//            rotation: false,
+//            uvs: false,
+//            alpha: false
+//        });
+//        stage.addChild(particleCon);
 
 
         for (var i = 0; i < 50; i++) {
@@ -44,21 +35,69 @@
             goo.velocity.setAngle(Math.degreesToRadians(Math.randomInt(0, 360)));
             goo.anchor.set(0.5);
             goo.position.set(Math.randomInt(0, app.width), Math.randomInt(0, app.height))
-            particleCon.addChild(goo);
+            stage.addChild(goo);
         }
 
-        // (strength, quality, resolution, kernelSize)
-        var blurFilter = new PIXI.filters.BlurFilter(20, 4, 0.25);
-        blurFilter.autoFit = true;
-
-        var thresholdFilter = new ThresholdFilter("#b9c530");
-        thresholdFilter.threshold = 0.5;
-
-
-        stage.filters = [blurFilter, thresholdFilter];
+        var thresholdFilter = new ThresholdFilter("#ffffff");
+        thresholdFilter.threshold = 0.3;
+        stage.filters = [thresholdFilter]; //blurFilter
         stage.filterArea = new PIXI.Rectangle(0, 0, app.width, app.height);
 
-        this.addChild(stage);
+
+
+
+        var guide = new Sprite('blur-guide');
+        guide.x = app.width;
+        stage.addChild(guide);
+
+        var wall = new Sprite('white');
+        wall.stretch(app.width, app.height);
+        wall.x = guide.x + guide.width;
+
+        stage.addChild(wall);
+
+        this.addTouchable(this);
+
+        this.guide = guide;
+        this.wall = wall;
+
+
+//       
+
+
+//        stage.mask = this.sample;
+
+        this.stage = stage;
+
+    };
+
+    GooeyScreen.prototype.postUpdate = function (event, sender) {
+        //this.stage.cacheAsBitmap = true;
+    };
+
+    GooeyScreen.prototype.onUpdate = function (event, sender) {
+        //this.stage.cacheAsBitmap = false;
+    };
+
+    GooeyScreen.prototype.onMouseDown = function (event, sender) {
+        
+        this.stage.mask = this.sample;
+        
+//        this.stage.cacheAsBitmap = true;
+//         this.sample.mask = this.stage;
+    };
+
+    GooeyScreen.prototype.onMouseMove = function (event, sender) {
+
+
+        var guide = this.guide;
+
+
+        var wall = this.wall;
+
+        guide.x = event.point.x - 50;
+
+        wall.x = guide.x + guide.width;
 
     };
 

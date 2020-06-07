@@ -52,11 +52,13 @@
         var inputType = (options.type === undefined) ? HtmlElements.TYPE_INPUT_NUMBER : options.type;
         var name = options.name || '';
         var style = options.style || '';
-        var displayName = options.displayName || name;
+        var displayName = (options.displayName === null) ? null : (options.displayName || name);
+        var placeholder = options.placeholder || '';
+        var required = (options.required) ? true : false;
         var range = options.range || [Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
         range[0] = (range[0] === undefined) ? Number.MIN_SAFE_INTEGER : range[0];
         range[1] = (range[1] === undefined) ? Number.MAX_SAFE_INTEGER : range[1];
-        
+
         if (displayName === name) {
             displayName = displayName.replace('_', ' ').capitalize();
         }
@@ -66,20 +68,26 @@
         var feedbackID = id; // "feedbackElementId-" + PIXI.utils.uid();
 
         var html = '<div class="' + className + ' ' + (options.buttonAction ? 'input-group m-bot15' : '') + '">';
-        //  html += options.feedback ? '<i id="' + feedbackID + '" style="color:orange;" class="fa fa-warning form-control-feedback"></i>' : '';
-        html += '<label ';
-        html += tooltip ? 'title="' + tooltip + '"' : '';
-        html += '>';
 
+        if (displayName !== null) {
+            html += '<label ';
+            html += tooltip ? 'title="' + tooltip + '"' : '';
+            html += '>';
+            html += displayName + ': </label>';
+        }
 
-        html += displayName + ': </label>';
         html += ' <input ' + (options.isDisabled ? "disabled" : "");
         html += ' class="form-control" ';
+        html += placeholder ? ' placeholder="' + placeholder + '"' : '';
+        html += required ? ' required' : '';
         html += ' style="' + style + '" ';
         html += ' id="' + id + '" ';
         html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' type="text" value="' + value + '" ' + event_string;
-        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , ['+range[0]+','+range[1]+'] );" ';
+        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
+        html += ' onwheel="app.navigator.currentScreen.propertiesBinder.onPropertyInputWheel(event,\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
+        //"propertiesBinder.onPropertyChange";
+        // onPropertyInputWheel
         html += ' />';
 
         html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\'' + id + '\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
@@ -260,7 +268,7 @@
         html += '>';
         html += displayName + ': &nbsp; </label>';
 
-        html += '<input onchange="app.navigator.currentScreen.mathcore.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
+        html += '<input onchange="app.navigator.currentScreen.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
 
         html += "</div>";
 
@@ -353,6 +361,8 @@
         var className = options.class || 'big';
         options.method = options.method || "propertiesBinder.onPropertyChange";
 
+        var hideInput = options.hideInput || false;
+
         var name = options.name || '';
         var displayName = options.displayName || name;
         if (displayName === name) {
@@ -368,17 +378,27 @@
 
 
         var html = '<div class="' + className + '">';
-        html += '<label ';
-        html += '>';
-        html += displayName + ': </label>';
 
-        html += '<div id="' + id + '" class="input-group color-pickers" style="margin-left:4px;' + style + '" >';
+        if (className !== "small-picker") {
+            html += '<label>' + displayName + ': </label>';
+        }
+
+        html += '<div id="' + id + '" class="input-group color-pickers" style="margin-left:4px;' + style + '" data-color="' + value + '" >';
+
+        if (className === "small-picker") {
+            html += '<label>' + displayName + ': </label>';
+        }
+
+
+
         html += ' <input ';
-        //    html += ' id="' + id + '" ';
         html += ' class="form-control" ';
         html += ' type="text" ';
         html += ' value="' + value + '" ';
         html += ' />';
+
+
+
         html += '<span class="input-group-text colorpicker-input-addon"><i></i></span>';
         html += '</div>';
 
@@ -392,7 +412,7 @@
     HtmlElements.getPickerOptions = function () {
         return JSON.parse(JSON.stringify(HtmlElements.colorPickerOptions));
     };
-    
+
 
     HtmlElements.colorPickerOptions = {
         useAlpha: true,
@@ -404,7 +424,7 @@
                     colors: Config.colors || {
                         'transparent': 'transparent',
                         'black': '#000000',
-                        'white': '#ffffff'                        
+                        'white': '#ffffff'
                     }
                 }
             }
@@ -423,10 +443,10 @@
         }
     };
 
-    HtmlElements.activateColorPicker = function (picker) {
+    HtmlElements.activateColorPicker = function (picker, options) {
 
 
-        var colorPicker = $('#' + picker.id).colorpicker(HtmlElements.colorPickerOptions);
+        var colorPicker = $('#' + picker.id).colorpicker(options || HtmlElements.colorPickerOptions);
 
         colorPicker.on('change', function (e) {
             'use strict';

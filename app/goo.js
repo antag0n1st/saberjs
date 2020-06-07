@@ -8,8 +8,8 @@
     Goo.prototype.spriteInitialize = Goo.prototype.initialize;
     Goo.prototype.initialize = function () {
 
-        this.spriteInitialize('circle');
-
+        this.spriteInitialize('circle-blur');
+        
         this.velocity = new V();
 
     };

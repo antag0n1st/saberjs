@@ -283,12 +283,27 @@ div.inline-small label{
     height: 32px;
 }
 
-
-
 .content div.small input[type=checkbox]{
     font-size: inherit;
     width: 50px;
 }
+
+/**********************************/
+
+.content div.small-picker{
+    font-size: inherit;
+    width: 160px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+
+div.small-picker label{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 4px;
+}
+
 
 .image-button{
     cursor: pointer;

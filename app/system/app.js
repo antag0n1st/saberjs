@@ -21,19 +21,15 @@
             Config.window_mode = Config.window_mode_mobile;
             this.device.calculateSizes();
         }
-
-        var useCanvas = false;
-
-        if (this.device.isIE) {
-            useCanvas = true;
+        
+        if(this.device.isIOS){
+            PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
         }
 
         var settings = {
             resolution: 1,
             width: this.width,
-            height: this.height,
-            transparent: true,
-            forceCanvas: useCanvas
+            height: this.height
         };
 
         this.pixi = new PIXI.Application(settings);

@@ -24,18 +24,19 @@
 
         this.imagesLibrary = new HtmlLibrary(this.imageLibraryContent, this.editor, 'dropImage');
         this.imagesLibrary.heightOffset = -55;
-        
+
         this.imagesSearchInput = document.getElementById('images-search-input');
         this.imagesSearchInput.onkeyup = this.onImagesSearch.bind(this);
 
         this.objectsGalery = new HtmlLibrary(this.objectsGaleryContent, this.editor, 'dropObject');
         this.objectsGalery.addFiles([
             {name: "LabelObject", url: 'assets/images/_text_icon.png'},
-            {name: "ContainerObject", url: 'assets/images/_container.png'},
-            {name: "GenericObject", url: 'assets/images/_cube.png'},
             {name: "ButtonObject", url: 'assets/images/_button.png'},
-            {name: "InputObject", url: 'assets/images/_input_field_icon.png'}
-
+            {name: "InputObject", url: 'assets/images/_input_field_icon.png'},
+            {name: "ContainerObject", url: 'assets/images/_container.png'},
+            {name: "ViewComponentObject", url: 'assets/images/_view_icon.png'},
+            {name: "NineSliceObject", url: 'assets/images/_nine_slice_icon.png'},
+            {name: "GenericObject", url: 'assets/images/_cube.png'},
         ]);
 
         this.prefabs = new HtmlLibrary(this.prefabsContent, this.editor, 'dropPrefab');
@@ -47,6 +48,8 @@
         this.prefabSearchInput.onkeyup = this.onPrefabsSearch.bind(this);
 
         this.tree = new LayersTree(this.editor, this);
+
+        this.activeTabName = '';
 
     };
 
@@ -159,6 +162,9 @@
         this[name + 'Tab'].className += ' active';
         this[name + 'Panel'].style.display = 'block';
         this['on' + name.capitalize()](callback);
+
+        this.activeTabName = name;
+
     };
 
     HtmlInterface.prototype.onImageLibrary = function () {
@@ -666,11 +672,11 @@
 
 
     };
-    
+
     HtmlInterface.prototype.onImagesSearch = function (event) {
         this.imagesLibrary.filter(this.imagesSearchInput.value);
-    };   
-    
+    };
+
 
     HtmlInterface.prototype.onPrefabsSearch = function (event) {
         this.prefabs.filter(this.prefabSearchInput.value);

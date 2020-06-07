@@ -17,6 +17,7 @@ ContentManager.addImage('_default_button','_default_button.png');
 ContentManager.addImage('_input_field_icon','_input_field_icon.png');
 ContentManager.addImage('_default_input','_default_input.png');
 ContentManager.addImage('_check','_check.png');
+ContentManager.addImage('_document_icon','_document_icon.png');
 
 ContentManager.addImage('folder_icon','folder_icon.png');
 ContentManager.addImage('folder_up','folder_up.png');

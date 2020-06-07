@@ -68,7 +68,7 @@
                         // error occurred
                         console.log(error);
                     });
-                    
+
                 }
 
                 ajaxGet('app/php/library.php', function (resources) {
@@ -88,17 +88,29 @@
                         // ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
                     }
 
-                    ContentManager.downloadResources(function () {
 
-                        app.navigator.currentScreen.loadingBar.setPercent(1, false);
+                    ajaxGet(ContentManager.baseURL + 'app/php/json-files.php', function (response) {
 
-                        var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
+                        for (var i = 0; i < response.length; i++) {
+                            var r = response[i];
+                            ContentManager.jsons[r.name] = r.content;
+                        }
 
-                        timeout(function () {
-                            app.navigator.add(screen);
-                        }, 200);
+                        ContentManager.downloadResources(function () {
 
-                    }, this);
+                            app.navigator.currentScreen.loadingBar.setPercent(1, false);
+
+                            var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
+
+                            timeout(function () {
+                                app.navigator.add(screen);
+                            }, 200);
+
+                        }, this);
+                    });
+
+
+
 
                 });
             });

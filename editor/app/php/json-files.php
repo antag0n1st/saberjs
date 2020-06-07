@@ -64,8 +64,9 @@ function listFolderFiles($dir, $folder_name) {
                     $url = create_url($dir);
                     //   $url = str_replace('', '', $url);
                     $url = ltrim($url, '/');
-
-                    $node = ['url' => $url . $ff, 'name' => $basic];
+//                    print_r($main_dir);
+//                    print_r($ff);
+                    $node = ['url' => $url . $ff, 'name' => $basic , 'content' => json_decode(file_get_contents($main_dir.'/'.$ff))];
 
                     $folder['children'][] = $node;
                 }

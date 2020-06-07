@@ -70,7 +70,7 @@
 
         var importedObjects = [];
 
-
+        // this will import the layers
 
         for (var i = 0; i < objects.length; i++) {
             var o = objects[i];
@@ -105,7 +105,7 @@
             if (c.onImport) {
                 c.onImport();
             }
-            
+
             if (c.onImportFinished) {
                 c.onImportFinished();
             }
@@ -144,8 +144,30 @@
 
                 unwrappedObjects.push(object);
             } else {
-                console.warn("There is a missing object type: "+o.type + ' name: '+o.name);
+                console.warn("There is a missing object type: " + o.type + ' name: ' + o.name);
             }
+
+
+            if (o.type === "ViewComponentObject") {
+
+                //TODO import the menu content
+
+                if (o.properties.view_name) {
+                    if (ContentManager.jsons[o.properties.view_name]) {
+                        var toImport = ContentManager.jsons[o.properties.view_name];
+                        this.importChildren(object, toImport.objects, batch);
+                    } else {
+                        console.warn("I can't find a view by the name: "+o.properties.view_name);
+                    }
+                } else {
+                    console.warn("You need to define a view name for the ViewComponent");
+                }
+
+
+
+
+            }
+
 
         }
         return unwrappedObjects;

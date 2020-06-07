@@ -143,9 +143,15 @@
     };
 
     MainScreen.prototype.onGalleryObjectDropped = function (id) {
-
+        
         if (id === "GenericObject") {
             var object = new GenericObject();
+            object.build();
+        } else if (id === "ViewComponentObject") {
+            var object = new ViewComponentObject();
+            object.build();
+        }else if (id === "NineSliceObject") {
+            var object = new NineSliceObject();
             object.build();
         } else if (id === "LabelObject") {
             var object = new LabelObject('Text');
@@ -154,7 +160,7 @@
             var object = new ContainerObject();
             object.build();
         } else if (id === "ButtonObject") {
-            var object = new ButtonObject('_default_button');
+            var object = new ButtonObject('white');
             object.build();
         } else if (id === "InputObject") {
             var object = new InputObject('_default_input');
@@ -1099,13 +1105,14 @@
     };
 
     MainScreen.prototype.onSelectedObjectPropertyChange = function (property, value, element, inputType, feedbackID, range) {
-
+        
         //TODO Filter the values here
 
         value = this.cleanUpValuesByType(inputType, value, element, range, feedbackID);
 
         for (var i = 0; i < this.selectedObjects.length; i++) {
             var object = this.selectedObjects[i];
+                        
             object._onPropertyChange(this, property, value, element, inputType, feedbackID);
         }
 

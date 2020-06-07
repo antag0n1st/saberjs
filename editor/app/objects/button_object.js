@@ -10,18 +10,19 @@
 
         this.entityInitialize(null);
 
+        imageName = imageName || 'white';
+
         this._padding = 20;
         this.type = 'ButtonObject';
         this.hasLabel = true;
         this.hasImage = true;
-        
-        this.background = new NineSlice(imageName, '15');
+
+        this.background = new NineSlice(imageName, '1');
+        this.background.imageName = imageName;
         this.addChild(this.background);
 
-        this.backgroundName = imageName;
-
         this.label = new Label(Style.DEFAULT_INPUT);
-        this.label.txt = '';
+        this.label.txt = 'Click';
         this.label.anchor.set(0.5, 0.5);
 
         this.addChild(this.label);
@@ -34,17 +35,35 @@
         // this needs to be exposed
 
         this.properties = {
+            
             width: 200,
             height: 80,
-            padding: '20',
+            padding: '1',
             offsetX: 0,
             offsetY: 0,
             sensorWidth: 0,
             sensorHeight: 0,
             labelRotation: 0,
-            isNineSlice: 1
+            isNineSlice: 1,
+            
+            backgroundName: 'white',
+
+            backgroundColorNormal: '#4654d4',
+            backgroundColorDown: '#2e399e',
+            backgroundColorHover: '#5d6cf0',
+            backgroundColorDisabled: "#d6d6d6",
+            textColorNormal: '#ffffff',
+            textColorDown: '#ffffff',
+            textColorHover: '#ffffff',
+            textColorDisabled: '#cccccc',
+
+            onMouseDown: '',
+            onMouseMove: '',
+            onMouseUp: '',
+            onMouseCancel: '',
+
         };
-        
+
     };
 
     ButtonObject.prototype.updateSize = function () {
@@ -98,7 +117,6 @@
         var o = this.basicExport();
 
         o.txt = this.label.txt;
-        o.backgroundName = this.backgroundName;
 
         o.style = this._exportStyle();
 
@@ -112,22 +130,28 @@
             this.setBasicData(data);
             this.label.txt = data.txt;
 
-            this.backgroundName = data.backgroundName;
-
-            this.background.imageName = data.backgroundName;
+            this.background.imageName = data.properties.backgroundName;
 
             for (var property in data.style) {
                 if (data.style.hasOwnProperty(property)) {
                     this.label.style[property] = data.style[property];
                     // do stuff
                 }
-            }            
+            }
         }
 
         this.background.padding = this.properties.padding;
         this.background.setSize(this.properties.width, this.properties.height);
         this.label.position.set(this.properties.offsetX, this.properties.offsetY);
         this.label.rotation = this.properties.labelRotation;
+
+        if (this.properties.isNineSlice) {
+            this.background.tint = convertColor(this.properties.backgroundColorNormal);
+        } else {
+             this.background.tint = 0xffffff;
+        }
+        this.label.style.fill = this.properties.textColorNormal;
+
 
         this.enableSensor();
 
@@ -141,8 +165,8 @@
     };
 
     ButtonObject.prototype.bindProperties = function (editor) {
-        
-        var eHTML = Entity.prototype.bindProperties.call(this,editor);
+
+        var eHTML = Entity.prototype.bindProperties.call(this, editor);
 
         var html = '';
 
@@ -150,7 +174,7 @@
 
         var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
         var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
-        var opt2 = {name: 'padding', value: this.properties.padding, class: 'big', method: method, feedback: true , type: HtmlElements.TYPE_INPUT_STRING};
+        var opt2 = {name: 'padding', value: this.properties.padding, class: 'big', method: method, feedback: true, type: HtmlElements.TYPE_INPUT_STRING};
         var opt3 = {name: 'offsetX', value: Math.round(this.properties.offsetX), class: 'small', displayName: 'Offset X', method: method};
         var opt4 = {name: 'offsetY', value: Math.round(this.properties.offsetY), class: 'small', displayName: 'Offset Y', method: method};
         var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'width', method: method};
@@ -183,6 +207,58 @@
         html += HtmlElements.createInput(opt6).html;
 
 
+        // create color pickers;
+
+        var pickers = [];
+
+        if (this.properties.isNineSlice) {
+            html += HtmlElements.createSection('Background Colors').html;
+
+            var bc = ['backgroundColorNormal', 'backgroundColorHover', 'backgroundColorDown', 'backgroundColorDisabled'];
+
+            for (var i = 0; i < bc.length; i++) {
+                var c = bc[i];
+                var optc1 = {name: c, method: method, displayName: c.replace('backgroundColor', ''), value: this.properties[c], class: "small-picker"};
+                var picker = HtmlElements.createColorPicker(optc1);
+                html += picker.html;
+
+                pickers.push(picker);
+            }
+
+
+            html += HtmlElements.createSection('Text Colors').html;
+
+            var bc = ['textColorNormal', 'textColorHover', 'textColorDown', 'textColorDisabled'];
+
+            for (var i = 0; i < bc.length; i++) {
+                var c = bc[i];
+                var optc1 = {name: c, method: method, displayName: c.replace('textColor', ''), value: this.properties[c], class: "small-picker"};
+                var picker = HtmlElements.createColorPicker(optc1);
+                html += picker.html;
+
+                pickers.push(picker);
+            }
+
+        }
+
+
+
+        ////////// events 
+
+        html += HtmlElements.createSection('Events').html;
+
+
+        var opt20 = {name: 'onMouseDown', displayName: 'Down', value: this.properties.onMouseDown, method: method, type: HtmlElements.TYPE_INPUT_STRING};
+        html += HtmlElements.createInput(opt20).html;
+
+        var opt21 = {name: 'onMouseUp', displayName: 'Up', value: this.properties.onMouseUp, method: method, type: HtmlElements.TYPE_INPUT_STRING};
+        html += HtmlElements.createInput(opt21).html;
+
+        var opt22 = {name: 'onMouseMove', displayName: 'Move', value: this.properties.onMouseMove, method: method, type: HtmlElements.TYPE_INPUT_STRING};
+        html += HtmlElements.createInput(opt22).html;
+
+        var opt23 = {name: 'onMouseCancel', displayName: 'Cancel', value: this.properties.onMouseCancel, method: method, type: HtmlElements.TYPE_INPUT_STRING};
+        html += HtmlElements.createInput(opt23).html;
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
@@ -191,12 +267,19 @@
             HtmlElements.setFeedback(padding.feedbackID, this.isPaddingValid());
         }
 
+        for (var i = 0; i < pickers.length; i++) {
+            var picker = pickers[i];
+            HtmlElements.activateColorPicker(picker);
+        }
+
+        //  
+
 
     };
 
     ButtonObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
-        
-      
+
+
 
         if (property === 'padding') {
             HtmlElements.setFeedback(feedbackID, this.isPaddingValid());
@@ -210,16 +293,20 @@
         }
 
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
-            
+
             if (this.properties.isNineSlice) {
+                
                 this.background.padding = this.properties.padding;
                 this.background.setSize(this.properties.width, this.properties.height);
                 this.canResize = true;
-            } else {
-                log(this.background.imageName)
-                this.properties.width = PIXI.utils.TextureCache[this.background.imageName].width;
-                this.properties.height = PIXI.utils.TextureCache[this.background.imageName].height;
                 
+            } else {
+                
+                var t = PIXI.utils.TextureCache[this.background.imageName];
+              
+                this.properties.width = t ? t.width : this.properties.width;
+                this.properties.height = t ? t.height : this.properties.height;
+
                 this.background.padding = '2';
                 this.canResize = false;
                 this.background.setSize(this.properties.width, this.properties.height);
@@ -231,6 +318,14 @@
             this.updateSize();
             this.updateFrame();
 
+            if (this.properties.isNineSlice) {
+                this.background.tint = convertColor(this.properties.backgroundColorNormal);
+            } else {
+                this.background.tint = 0xffffff;
+            }
+            this.label.style.fill = this.properties.textColorNormal;
+
+
         }, this);
 
         editor.commands.add(command);
@@ -238,16 +333,15 @@
         if (property === 'isNineSlice') {
             // update the properties
             this.bindProperties(editor);
-        }
-
+        } 
     };
 
     ButtonObject.prototype.isPaddingValid = function () {
         return true;
     };
-    
+
     ButtonObject.prototype._setImage = function (name) {
-        this.backgroundName = name;
+        this.properties.backgroundName = name;
         this.background.imageName = name;
         this.background.buildBackground();
     };

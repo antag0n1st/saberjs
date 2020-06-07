@@ -22,7 +22,7 @@ function ThresholdFilter(hexStringColor) {
                 '}'
             ].join('\n'),
             {
-                threshold: {type: '1f', value: 0.5}
+                threshold: 0.5
             }
     );
 }
@@ -31,10 +31,10 @@ ThresholdFilter.prototype.constructor = ThresholdFilter;
 Object.defineProperties(ThresholdFilter.prototype, {
     threshold: {
         get: function () {
-            return this.uniforms.threshold.value;
+            return this.uniforms.threshold;
         },
         set: function (value) {
-            this.uniforms.threshold.value = value;
+            this.uniforms.threshold = value;
         }
     }
 });

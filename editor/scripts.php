@@ -38,6 +38,8 @@ $_javascripts = [
     'app/objects/generic_point.js',
     'app/objects/path_object.js',
     'app/objects/line_object.js',
+    'app/objects/view_component_object.js',
+    'app/objects/nine_slice_object.js',
     'app/modes/mode_polygon.js',
     'app/modes/mode_select.js',
     'app/modes/mode_points.js',

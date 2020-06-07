@@ -5,7 +5,7 @@ window.addEventListener("load", function () {
     Config.lang = 'en';
 
     PIXI.utils.skipHello();
-
+    
     app = new App();
     
     for (var i = 1; i < 15; i++) {
@@ -18,7 +18,7 @@ window.addEventListener("load", function () {
 
 }, false);
 
-// why was this ?
+// why this ?
 //document.addEventListener('focusout', function() {
 //  window.scrollTo(0, 0);
 //});

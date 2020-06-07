@@ -78,6 +78,7 @@
         this.hasRotationHandle = true; // if the rotation handle is drawn
         this.canPrefab = true; /// if the object can be saved as a Prefab
         this.canDrop = true; // if it can be moved inside an other object
+        this.canExportChildren = true; //
 
         this.canAcceptDropIn = false; // if it can accept someone to drop in an object inside
 
@@ -87,19 +88,9 @@
         this._drawStretchBottom = false;
         this._drawStretchBottomRight = false;
 
-        this.hasImage = false; // if the object has an image        
-        this.canTransform = false; //TODO remove this from here this is for mymathcore
-
-        //TODO remove this from here this is for mymathcore 
-        this.isFlipped = false;
-        this.isXOut = false;
-        this._xOutElement = null;
-        this.isGlowing = false;
-        this.isOutlined = false;
+        this.hasImage = false; // if the object has an image  
 
         this.type = 'Entity';
-
-        this.videoHelpURL = '';
 
         this.handleTypeTouched = '';
         this._handleID = 0;
@@ -233,12 +224,12 @@
     Entity.prototype._onObjectHoverOut = function (objects) {
         app.input.restoreCursor();
     };
-    
+
     // if there are multiple object, is will drop them in , one by one
     Entity.prototype._onItemDropped = function (object) {
         return true;
     };
-    
+
     // if there are multiple object, is will remove them in , one by one
     Entity.prototype._onItemDroppedOut = function (object) {
 
@@ -677,18 +668,20 @@
             o.constraintY = this.constraintY.value;
         }
 
-         if (this.constraintWidth) {
+        if (this.constraintWidth) {
             o.constraintWidth = this.constraintWidth.value;
         }
-        
-         if (this.constraintHeight) {
+
+        if (this.constraintHeight) {
             o.constraintHeight = this.constraintHeight.value;
         }
 
-        for (var i = 0; i < this.children.length; i++) {
-            var c = this.children[i];
-            if (c.export && c.canExport) {
-                o.children.push(c.export());
+        if (this.canExportChildren) {
+            for (var i = 0; i < this.children.length; i++) {
+                var c = this.children[i];
+                if (c.export && c.canExport) {
+                    o.children.push(c.export());
+                }
             }
         }
 
@@ -795,7 +788,7 @@
         if (data.constraintWidth) {
             this.constraintWidth = new Constraint(this, 'width', data.constraintWidth);
         }
-        
+
         if (data.constraintHeight) {
             this.constraintHeight = new Constraint(this, 'height', data.constraintHeight);
         }
@@ -891,25 +884,33 @@
                 this.properties._custom = [];
             }
 
-            html += HtmlElements.createSection('Properties').html;
 
-            for (var i = 0; i < this.properties._custom.length; i++) {
-                var prop = this.properties._custom[i];
-                var opt0 = {displayName: prop.key + ' ', name: prop.key, value: prop.value, method: method, class: 'big', buttonClass: 'btn-danger fa fa-trash', buttonAction: 'onCustomPropertyDelete'};
-                html += HtmlElements.createInput(opt0).html;
+
+            if (!(this instanceof ButtonObject)) {
+
+                html += HtmlElements.createSection('Properties').html;
+
+                for (var i = 0; i < this.properties._custom.length; i++) {
+                    var prop = this.properties._custom[i];
+                    var opt0 = {displayName: prop.key + ' ', name: prop.key, value: prop.value, method: method, class: 'big', buttonClass: 'btn-danger fa fa-trash', buttonAction: 'onCustomPropertyDelete'};
+                    html += HtmlElements.createInput(opt0).html;
+                }
+
+                var buttonOpt = {
+                    name: 'add-property',
+                    displayName: 'Add Property',
+                    class: 'btn-info big',
+                    icon: '',
+                    tooltip: '',
+                    method: 'addCustomProperty',
+                    style: ''
+                };
+
+                html += HtmlElements.createButton(buttonOpt).html;
+
             }
 
-            var buttonOpt = {
-                name: 'add-property',
-                displayName: 'Add Property',
-                class: 'btn-info big',
-                icon: '',
-                tooltip: '',
-                method: 'addCustomProperty',
-                style: ''
-            };
 
-            html += HtmlElements.createButton(buttonOpt).html;
 
             editor.htmlInterface.propertiesContent.innerHTML = html;
         }
@@ -947,6 +948,7 @@
 
     Entity.prototype._onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
         // it will be overwritten
+
         if (this.onPropertyChange) {
             this.onPropertyChange(editor, property, value, element, inputType, feedbackID);
         }

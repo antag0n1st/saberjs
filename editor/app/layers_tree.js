@@ -57,6 +57,12 @@
             GenericObject: {
                 icon: 'fa fa-cube'
             },
+            ViewComponentObject: {
+                icon: 'fa fa-puzzle-piece'
+            },
+            NineSliceObject: {
+                icon: 'fa fa-columns'
+            },
             PolygonObject: {
                 icon: 'fa fa-object-ungroup'
             },

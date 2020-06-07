@@ -207,13 +207,11 @@
                         if (this.editor.targetDropObject._onItemDropped) {
                             this.editor.targetDropObject._onItemDropped(object);
                         }
-                        
-                        toastr.success("You placed "+object.type +' into '+this.editor.targetDropObject.type);
+
+                        toastr.success("You placed " + object.type + ' into ' + this.editor.targetDropObject.type);
                     }
 
                 }
-
-               // this.editor.deselectAllObjects();
 
             }
 
@@ -229,15 +227,22 @@
         var dt = app.pixi.ticker.lastTime - this.editor.lastCickTime;
 
         if (dt < 300 && this.editor.isClickedInsideObject && this.editor.selectedObjects.length === 1) { // 
-
+            
             // double click
 
             var object = this.editor.selectedObjects[0];
-            //   if (object.properties) {
-            //      this.editor.htmlInterface.activateTab('properties');
-            //  } else {
-            this.editor.htmlInterface.activateTab('commonProperties');
-            //  }
+
+            if (object instanceof LabelObject) {
+                this.editor.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
+            } else {
+                
+                if(this.editor.htmlInterface.activeTabName !== 'commonProperties'){
+                    this.editor.htmlInterface.activateTab('commonProperties');
+                } else {
+                    this.editor.htmlInterface.activateTab('properties');
+                }
+                
+            }
 
         } else {
             this.editor.htmlInterface.htmlTopTools.hideTextEdit();
