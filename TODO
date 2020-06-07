@@ -1,6 +1,7 @@
 - add some inbetweeen values for the threshold filter , to allow antialiasing
 - 
-
+- Spinner add custom animation
+- make input field scroll to specified position
 
 # CLIENT
 
@@ -17,6 +18,9 @@
 
 
 # EDITOR
+
+- prevent ViewComponent from having input fields  , and input content layers.
+- make it faster to switch between layers !
 
 - add drop shadow for button
 - add border for button
