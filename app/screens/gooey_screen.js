@@ -11,8 +11,8 @@
     GooeyScreen.prototype.initialize = function () {
         this.screenInitialize();
 
-        this.sample = new Sprite('sample');
-        this.addChild(this.sample);
+//        this.sample = new Sprite('sample');
+//        this.addChild(this.sample);
 
         var stage = new PIXI.Container();
         this.addChild(stage);
@@ -38,7 +38,7 @@
             stage.addChild(goo);
         }
 
-        var thresholdFilter = new ThresholdFilter("#ffffff");
+        var thresholdFilter = new ThresholdFilter("#ff0000");
         thresholdFilter.threshold = 0.3;
         stage.filters = [thresholdFilter]; //blurFilter
         stage.filterArea = new PIXI.Rectangle(0, 0, app.width, app.height);
@@ -81,7 +81,7 @@
 
     GooeyScreen.prototype.onMouseDown = function (event, sender) {
         
-        this.stage.mask = this.sample;
+//        this.stage.mask = this.sample;
         
 //        this.stage.cacheAsBitmap = true;
 //         this.sample.mask = this.stage;

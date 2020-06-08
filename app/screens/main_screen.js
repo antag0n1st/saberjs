@@ -20,6 +20,12 @@
         this.addChild(this.content);
         this.importer = new Importer(this);
         this.importer.importObjects(ContentManager.jsons.example.objects, this.content);
+        
+//        var sprite = new Sprite('sample');
+//        sprite.position.set(100,100);
+//        this.addChild(sprite);
+//        var cm = new ConstraintMethod(sprite,'fitTo','200, 200');        
+//        this.constraints.add(cm);
 
 //        const beatifulRect = new PIXI.Graphics();
 //
@@ -44,7 +50,20 @@
 //        }, 2000).run();
 
     };
-    
+
+    MainScreen.prototype.onSpin = function (event, sender) {
+
+        var animation = function (tag) {
+            var b = this.createSquare();
+            var t = new TweenFloat(b, 100, null, 1000);
+            t.timePassed = 500;
+            t.run(tag);
+        };
+
+        Spinner.replace(sender, null, animation);
+    };
+
+
     // Keyboard delegates
 
     MainScreen.prototype.onKeyboardStream = function (stream, prevStream, inputField) {

@@ -63,6 +63,9 @@
             NineSliceObject: {
                 icon: 'fa fa-columns'
             },
+            TilingSpriteObject: {
+                icon: 'fa fa-th-list'
+            },
             PolygonObject: {
                 icon: 'fa fa-object-ungroup'
             },

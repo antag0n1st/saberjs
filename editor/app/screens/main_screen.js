@@ -153,6 +153,9 @@
         }else if (id === "NineSliceObject") {
             var object = new NineSliceObject();
             object.build();
+        }else if (id === "TilingSpriteObject") {
+            var object = new TilingSpriteObject();
+            object.build();
         } else if (id === "LabelObject") {
             var object = new LabelObject('Text');
             object.build();

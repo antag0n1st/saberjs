@@ -24,8 +24,8 @@
         this.badge.scale.set(0.5);
         this.badge.alpha = 0.5;
         this.badge.zIndex = 100;
-        this.badge.anchor.set(0.5, 0.5);
-        this.badge.position.set(-10, -10);
+//        this.badge.anchor.set(0.5, 0.5);
+//        this.badge.position.set(20, 20);
         this.addChild(this.badge);
 
         this.anchor.set(0, 0);

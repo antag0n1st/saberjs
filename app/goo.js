@@ -11,7 +11,9 @@
         this.spriteInitialize('circle-blur');
         
         this.velocity = new V();
-
+        
+        var color = 0xff0000;
+        var c = "#0000ff";
     };
 
     Goo.prototype.onUpdate = function (dt) {
@@ -19,7 +21,7 @@
 
         this.position.x += this.velocity.x * dt;
         this.position.y += this.velocity.y * dt;
-
+        
     };
 
     Goo.prototype.setData = function (data, extract, importer) {

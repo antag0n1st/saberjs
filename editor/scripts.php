@@ -40,6 +40,7 @@ $_javascripts = [
     'app/objects/line_object.js',
     'app/objects/view_component_object.js',
     'app/objects/nine_slice_object.js',
+    'app/objects/tiling_sprite_object.js',
     'app/modes/mode_polygon.js',
     'app/modes/mode_select.js',
     'app/modes/mode_points.js',

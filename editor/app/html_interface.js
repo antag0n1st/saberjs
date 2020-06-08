@@ -36,6 +36,7 @@
             {name: "ContainerObject", url: 'assets/images/_container.png'},
             {name: "ViewComponentObject", url: 'assets/images/_view_icon.png'},
             {name: "NineSliceObject", url: 'assets/images/_nine_slice_icon.png'},
+            {name: "TilingSpriteObject", url: 'assets/images/_nine_slice_icon.png'},            
             {name: "GenericObject", url: 'assets/images/_cube.png'},
         ]);
 

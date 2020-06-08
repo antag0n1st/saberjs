@@ -99,6 +99,8 @@
         this.constraintY = null;
         this.constraintWidth = null;
         this.constraintHeight = null;
+        this.constraintFit = null;
+        this.constraintFill = null;
 
         this.className = '';
 
@@ -675,6 +677,14 @@
         if (this.constraintHeight) {
             o.constraintHeight = this.constraintHeight.value;
         }
+        
+        if (this.constraintFit) {
+            o.constraintFit = this.constraintFit.value;
+        }
+        
+        if (this.constraintFill) {
+            o.constraintFill = this.constraintFill.value;
+        }
 
         if (this.canExportChildren) {
             for (var i = 0; i < this.children.length; i++) {
@@ -776,7 +786,7 @@
             }
 
         }
-
+        
         if (data.constraintX) {
             this.constraintX = new Constraint(this, 'x', data.constraintX);
         }
@@ -791,6 +801,14 @@
 
         if (data.constraintHeight) {
             this.constraintHeight = new Constraint(this, 'height', data.constraintHeight);
+        }
+        
+        if (data.constraintFill) {
+            this.constraintFill = new ConstraintMethod(this, 'fillOut', data.constraintFill);
+        }
+        
+        if (data.constraintFit) {
+            this.constraintFit = new ConstraintMethod(this, 'fitTo', data.constraintFit);
         }
 
         if (!data.id.startsWith('_change_it_before_use-') && data.id) {
@@ -952,10 +970,6 @@
         if (this.onPropertyChange) {
             this.onPropertyChange(editor, property, value, element, inputType, feedbackID);
         }
-
-//        if (this.constraintX || this.constraintY || this.constraintWidth || this.constraintHeight) {
-//            editor.constraints.applyValues(true);
-//        }
 
     };
 

@@ -1,7 +1,13 @@
-- add some inbetweeen values for the threshold filter , to allow antialiasing
-- 
-- Spinner add custom animation
-- make input field scroll to specified position
+
+
+
+
+
+- fix visibilty issue on iphone , https://www.w3.org/TR/page-visibility-2/
+
+- manage history state in order to make the back button work for android.
+- auto import view component when a valid name is typed. , maybe it can be solved by reimporting the entire work file. ( a refresh function )
+
 
 # CLIENT
 
@@ -14,7 +20,7 @@
 - on install ask for the PWA parameters , like short name of the app. the PWA config is better to be a file that can be reused with the release script ( release.config )
 - ignore icons , don't load them as assets
 - use a command line tool https://imagemagick.org/index.php , to process resizing of icons
-- add scroll to option for input fields , so that they can scroll to a certain point when the keyboard is active ( absolute position on Y axis )
+
 
 
 # EDITOR
@@ -47,7 +53,10 @@
 - redo the button to use tint for different states ,normal, down , hover , and default it to the white texture
 - add events for buttons , type in the event names , it can execute custom code as well.
 - disabled state for button
-
-
-
-
+- add scroll to option for input fields , so that they can scroll to a certain point when the keyboard is active ( absolute position on Y axis )
+- add some inbetweeen values for the threshold filter , to allow antialiasing
+- Spinner add custom animation
+- make input field scroll to specified position
+- add fit an fill as constraints
+- inspect why some constraints are ticked and some are not !
+- add tiling sprite
