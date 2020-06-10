@@ -236,10 +236,10 @@
                 this.editor.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
             } else {
                 
-                if(this.editor.htmlInterface.activeTabName !== 'commonProperties'){
-                    this.editor.htmlInterface.activateTab('commonProperties');
-                } else {
+                if(this.editor.htmlInterface.activeTabName !== 'properties'){
                     this.editor.htmlInterface.activateTab('properties');
+                } else {
+                    this.editor.htmlInterface.activateTab('commonProperties');
                 }
                 
             }

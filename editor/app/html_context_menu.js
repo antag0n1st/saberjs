@@ -51,10 +51,30 @@
             html += '</li>';
         }
 
+
+
         html += '<li id="contextSaveAsPrefab" class="dropdown-item"  >';
         html += '<i class="fa fa-fw fa-lg fa-cube"></i> ';
         html += '<span class="actionName">Save as Prefab</span>';
         html += '</li>';
+
+
+        html += '<li class="dropdown-divider" ></li>';
+
+        if (object.hasLabel) {
+
+            html += '<li id="contextSaveStyle" class="dropdown-item" onclick="app.navigator.currentScreen.htmlInterface.contextMenu.onContextSaveStyle();"  >';
+            html += '<i class="fa fa-fw fa-lg fa-floppy-o"></i> ';
+            html += '<span class="actionName">Save Style</span>';
+            html += '</li>';
+
+            html += '<li id="contextChooseStyle" class="dropdown-item" onclick="app.navigator.currentScreen.htmlInterface.contextMenu.onContextStyleSelect();"  >';
+            html += '<i class="fa fa-fw fa-lg fa-paint-brush"></i> ';
+            html += '<span class="actionName">Style Select</span>';
+            html += '</li>';
+
+        }
+
 
         if (this._onContextMenuBuild) {
             html = this._onContextMenuBuild(objects, html);
@@ -513,6 +533,42 @@
         closeBtn.onclick = function () {
             that.imageBrowser.style.display = 'none';
         };
+
+    };
+
+    HtmlContextMenu.prototype.onContextSaveStyle = function () {
+
+        this.close();
+        // lets add some options
+
+        $("#saveStyleModal").modal("show");
+
+    };
+
+    HtmlContextMenu.prototype.onContextStyleSelect = function () {
+        this.close();
+
+        var listObject = null;
+
+        var selectedObject = this.editor.selectedObjects[0];
+
+        if (selectedObject.type === "ButtonObject") {
+            listObject = Styles.buttonStyles;
+        } else {
+            listObject = Styles.labelStyles;
+        }
+
+        var options = '<option value="0">Remove Style</option>';
+
+        for (var prop in listObject) {
+            if (Object.prototype.hasOwnProperty.call(listObject, prop)) {
+                options += '<option value="' + prop + '">' + prop + '</option>';
+            }
+        }
+
+        document.getElementById('styleOptions').innerHTML = options;
+
+        $("#selectStyleModal").modal("show");
 
     };
 

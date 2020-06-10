@@ -1242,7 +1242,7 @@
     };
 
     MainScreen.prototype.addGuideLine = function () {
-      
+
         $("#addGuidesModal").modal("show");
     };
 
@@ -1310,6 +1310,70 @@
 
     MainScreen.prototype.changePreviewScreen = function (name, value) {
         this.previewScreenName = value;
+    };
+    
+
+    MainScreen.prototype.onStyleFormSave = function (formElement) {
+      
+        var form = new FormData(formElement);
+        var name = form.get("name");
+
+        if (!name) {
+            toastr.error("Name can't be empty");
+        } else {
+            $("#saveStyleModal").modal("hide");
+        }
+
+        var object = this.selectedObjects[0];
+        var textStyle = object._exportStyle();
+        
+        if(object.type === "ButtonObject"){
+            Styles.addButton(name , textStyle , object.properties );
+        } else {
+            Styles.addLabel(name , textStyle);
+        }
+        
+        //TODO send an AJAX REQUEST TO PERMA SAVE THE STYLE
+        ajaxPost('app/php/styles.php',{styles:Styles},function (response) {
+            console.log(response);
+        });
+
+        return false;
+
+    };
+    
+    
+    MainScreen.prototype.onSelectStyleForm = function (formElement) {
+        
+        var form = new FormData(formElement);
+        var styleName = form.get("style");
+        
+        $("#selectStyleModal").modal("hide");
+        
+        var object = this.selectedObjects[0];
+        
+        if(styleName === "0"){
+            
+            object.properties.styleName = '';
+            return false;
+        }
+        
+        if(object.type === "ButtonObject"){
+            if(Styles.buttonStyles[styleName]){
+                var style = Styles.buttonStyles[styleName];
+                object.applyStyle(style);
+            }
+        } else {
+            if(Styles.labelStyles[styleName]){
+                var style = Styles.labelStyles[styleName];
+                object.applyStyle(style);
+            }
+        }
+        
+        object.properties.styleName = styleName;
+        
+        
+        return false;
     };
 
     MainScreen.prototype.blank = function () {

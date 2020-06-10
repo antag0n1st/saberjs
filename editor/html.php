@@ -289,6 +289,59 @@
     </div>
 </div>
 
+<div id="saveStyleModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Save Style</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>      
+            <form onsubmit="return app.navigator.currentScreen.onStyleFormSave(this);">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input id="saveStyleInput" name="name" class="form-control" Placeholder="Name" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" >Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div id="selectStyleModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Style Select</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>      
+            <form onsubmit="return app.navigator.currentScreen.onSelectStyleForm(this);">        
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select id="styleOptions" name="style" class="form-control">
+                            <option value="default" selected="selected">default</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" >Apply</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 <div class="card" id="imageBrowser" style="position: absolute; width: 470px; display: none; top:75px;left:25px;" >
 
 

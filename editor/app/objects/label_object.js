@@ -14,22 +14,28 @@
         this.type = 'LabelObject';
         this.hasLabel = true;
 
-        this.label = new Label(Style.DEFAULT_INPUT);
+        this.label = new Label();
         this.label.txt = text;
         this.label.anchor.set(0.5, 0.5);
 
         this.addChild(this.label);
 
-
         this.centered();
 
-        this.properties = {
-            width: 0
-        };
-        
+        this._defaultValues = _label_properties_defaults;
+        this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
+        this.applyStyle(_label_style_defaults);
 
+    };
 
+    LabelObject.prototype.applyStyle = function (style) {
+        for (var property in style) {
+            if (style.hasOwnProperty(property)) {
+                this.label.style[property] = style[property];
+                // do stuff
+            }
+        }
     };
 
     LabelObject.prototype.updateSize = function () {
@@ -76,12 +82,7 @@
             this.label.txt = data.txt;
 
 
-            for (var property in data.style) {
-                if (data.style.hasOwnProperty(property)) {
-                    this.label.style[property] = data.style[property];
-                    // do stuff
-                }
-            }
+            this.applyStyle(data.style)
 
             if (this._importMap) {
                 this._importMap(data);

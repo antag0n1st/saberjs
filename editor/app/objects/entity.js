@@ -841,8 +841,24 @@
         this.canSelect = (data.canSelect === undefined) ? true : data.canSelect;
 
         this.initial_point.copy(this.position);
-
+        
         if (data.properties) {
+            
+            if(data.properties.styleName){
+                if(data.type === "ButtonObject"){
+                    if(Styles.buttonStyles[data.properties.styleName]){
+                        this.applyStyle(Styles.buttonStyles[data.properties.styleName])
+                    } else {
+                        console.warn("Style '"+data.properties.styleName+"' not found");
+                    }
+                } else {
+                    if(Styles.labelStyles[data.properties.styleName]){
+                        this.applyStyle(Styles.labelStyles[data.properties.styleName])
+                    } else {
+                        console.warn("Style '"+data.properties.styleName+"' not found");
+                    }
+                }
+            }
 
             for (var key in data.properties) {
                 if (data.properties.hasOwnProperty(key)) {

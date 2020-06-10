@@ -54,5 +54,6 @@ $_javascripts = [
     'app/commands/command_property.js',
     'app/commands/command_scale.js',
     'app/shortcuts.js',
-    'play_button.js'
+    'play_button.js',
+    '../app/styles.js'
 ];

@@ -114,6 +114,10 @@
             $('#layoutNameInput').focus();
         });
 
+        $("#saveStyleModal").on('shown.bs.modal', function () {
+            $('#saveStyleInput').focus();
+        });
+
     };
 
     ////////////////////////////////// DRAG & DROP /////////////////////////////

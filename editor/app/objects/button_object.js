@@ -14,6 +14,8 @@
 
         this._padding = 20;
         this.type = 'ButtonObject';
+        
+        // because of editing purpose
         this.hasLabel = true;
         this.hasImage = true;
 
@@ -21,7 +23,7 @@
         this.background.imageName = imageName;
         this.addChild(this.background);
 
-        this.label = new Label(Style.DEFAULT_INPUT);
+        this.label = new Label();
         this.label.txt = 'Click';
         this.label.anchor.set(0.5, 0.5);
 
@@ -29,15 +31,39 @@
 
         this.centered();
 
-        this.originalBtnWidth = 200;
-        this.originalBtnHeight = 200;
-
-        // this needs to be exposed
-
         this._defaultValues = _button_properties_defaults;
-
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
+        
+        this.canResize = true;
 
+    };
+    
+    ButtonObject.prototype.applyStyle = function (options) {
+        this.applyLabelStyle(options.style);
+        this.applyProperties(options.properties);
+    };
+    
+    ButtonObject.prototype.applyLabelStyle = function (style) {
+        for (var property in style) {
+            if (style.hasOwnProperty(property)) {
+                this.label.style[property] = style[property];
+            }
+        }
+    };
+    
+    ButtonObject.prototype.applyProperties = function (properties) {
+        
+        this.background.imageName = properties.imageNormal || this.background.imageName;
+        this._setImage(this.background.imageName);
+                
+        for (var property in properties) {
+            if (properties.hasOwnProperty(property)) {
+               this.properties[property] = properties[property];
+            }
+        }
+        
+        this.build();
+        
     };
 
     ButtonObject.prototype.updateSize = function () {
@@ -45,50 +71,12 @@
         this.setSensorSize(this.properties.width, this.properties.height);
     };
 
-    ButtonObject.prototype._downResize = function (event, editor) {
-        var w = this._width / 2;
-        var h = this._height / 2;
-        this.initialSize = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
-        this.originalBtnWidth = this.properties.width;
-        this.originalBtnHeight = this.properties.height;
-
-    };
-
-    ButtonObject.prototype._moveResize = function (event, editor) {
-        var gp = this.getGlobalPosition();
-
-        // find the center
-        var o = this;
-        gp.x += -o.anchor.x * o._width * o.scale.x + o._width / 2 * o.scale.x;
-        gp.y += -o.anchor.y * o._height * o.scale.y + o._height / 2 * o.scale.y;
-
-        // 20 is the padding
-        var distance = Math.getDistance(event.point, gp);
-
-        var scale = distance / this.initialSize;
-
-        this.properties.width = this.originalBtnWidth * scale;
-        this.properties.height = this.originalBtnHeight * scale;
-
-        this.background.setSize(this.properties.width, this.properties.height);
-        // this.scale.set(scale, scale);
-
-        this.updateSize();
-        this.updateFrame();
-
-        this.bindProperties(editor);
-
-    };
-
-
     ButtonObject.prototype.onUpdate = function (dt) {
 
 
     };
 
     ButtonObject.prototype.export = function () {
-
-        
 
         var o = this.basicExport();
 
@@ -107,9 +95,9 @@
             this.label.txt = data.txt;
 
             if (data.properties) {
-                this.background.imageName = data.properties.backgroundName || this._defaultValues.backgroundName;
+                this.background.imageName = data.properties.imageNormal || this._defaultValues.imageNormal;
             } else {
-                this.background.imageName = this._defaultValues.backgroundName;
+                this.background.imageName = this._defaultValues.imageNormal;
             }
 
             if (data.style) {
@@ -133,6 +121,7 @@
         } else {
             this.background.tint = 0xffffff;
         }
+        
         this.label.style.fill = this.properties.textColorNormal;
 
 
@@ -142,7 +131,7 @@
         this.createFrame(0, 16);
         this.updateFrame();
 
-        this.canResize = true;
+        
 
         // this.deselect();
     };
@@ -160,8 +149,8 @@
         var opt2 = {name: 'padding', value: this.properties.padding, class: 'big', method: method, feedback: true, type: HtmlElements.TYPE_INPUT_STRING};
         var opt3 = {name: 'offsetX', value: Math.round(this.properties.offsetX), class: 'small', displayName: 'Offset X', method: method};
         var opt4 = {name: 'offsetY', value: Math.round(this.properties.offsetY), class: 'small', displayName: 'Offset Y', method: method};
-        var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'width', method: method, range: [1,1920]};
-        var opt6 = {name: 'sensorHeight', value: Math.round(this.properties.sensorHeight), class: 'small', displayName: 'height', method: method, range: [1,1920]};
+        var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'SW', method: method, range: [1,1920] , tooltip: "Sensor Width"};
+        var opt6 = {name: 'sensorHeight', value: Math.round(this.properties.sensorHeight), class: 'small', displayName: 'SH', method: method, range: [1,1920], tooltip: "Sensor Height"};
 
         var opt7 = {name: 'labelRotation', value: Math.roundDecimal(this.properties.labelRotation, 2), class: 'big', method: method, displayName: 'Rotation'};
 
@@ -178,16 +167,17 @@
 
             html += padding.html;
         }
-
+        
+       
+        html += HtmlElements.createInput(opt5).html;
+        html += HtmlElements.createInput(opt6).html;
 
 
         html += HtmlElements.createSection('Label').html;
         html += HtmlElements.createInput(opt3).html;
         html += HtmlElements.createInput(opt4).html;
         html += HtmlElements.createInput(opt7).html;
-        html += HtmlElements.createSection('Sensor').html;
-        html += HtmlElements.createInput(opt5).html;
-        html += HtmlElements.createInput(opt6).html;
+    
 
 
         // create color pickers;
@@ -242,6 +232,11 @@
 
         var opt23 = {name: 'onMouseCancel', displayName: 'Cancel', value: this.properties.onMouseCancel, method: method, type: HtmlElements.TYPE_INPUT_STRING};
         html += HtmlElements.createInput(opt23).html;
+        
+        
+//        var opt24 = {name:'save_style' , displayName: 'Save Style' , style : 'margin-top:5px;' , method: 'saveButtonStyle'};
+//        html += HtmlElements.createButton(opt24).html;
+        
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 
@@ -261,8 +256,6 @@
     };
 
     ButtonObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
-
-
 
         if (property === 'padding') {
             HtmlElements.setFeedback(feedbackID, this.isPaddingValid());
@@ -324,7 +317,7 @@
     };
 
     ButtonObject.prototype._setImage = function (name) {
-        this.properties.backgroundName = name;
+        this.properties.imageNormal = name;
         this.background.imageName = name;
         this.background.buildBackground();
     };
