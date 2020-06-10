@@ -625,41 +625,82 @@
 
         o = o || {};
 
-        o.position = {
-            x: Math.roundDecimal(this.position.x, 2),
-            y: Math.roundDecimal(this.position.y, 2)
-        };
+        if (this.position.x !== 0 || this.position.y !== 0) {
+            o.position = {
+                x: Math.roundDecimal(this.position.x, 2),
+                y: Math.roundDecimal(this.position.y, 2)
+            };
+        }
 
-        o.anchor = {
-            x: Math.roundDecimal(this.anchor.x, 2),
-            y: Math.roundDecimal(this.anchor.y, 2)
-        };
+        if (this.anchor.x !== 0.5 || this.anchor.y !== 0.5) {
+            o.anchor = {
+                x: Math.roundDecimal(this.anchor.x, 2),
+                y: Math.roundDecimal(this.anchor.y, 2)
+            };
+        }
 
-        o.scale = {
-            x: Math.roundDecimal(this.scale.x, 2),
-            y: Math.roundDecimal(this.scale.y, 2)
-        };
+        if (this.scale.x !== 1 || this.scale.y !== 1) {
+            o.scale = {
+                x: Math.roundDecimal(this.scale.x, 2),
+                y: Math.roundDecimal(this.scale.y, 2)
+            };
+        }
 
-        o.rotation = Math.roundDecimal(this.rotation, 2);
-        o.alpha = Math.roundDecimal(this.alpha, 2);
-        o.tag = this.tag;
-        o.zIndex = this.zIndex;
-        o.children = [];
+        if (Math.roundDecimal(this.rotation, 2) !== 0) {
+            o.rotation = Math.roundDecimal(this.rotation, 2);
+        }
+
+        if (Math.roundDecimal(this.alpha, 2) !== 1) {
+            o.alpha = Math.roundDecimal(this.alpha, 2);
+        }
+
+        if (this.tag) {
+            o.tag = this.tag;
+        }
+
+        if (this.zIndex) {
+            o.zIndex = this.zIndex;
+        }
+
+        if (this.children.length) {
+            o.children = [];
+        }
+
         o.type = this.type;
-        o.id = this.id;
-        o.className = this.className;
-        o.visible = this.visible;
-        o.tint = this.tint;
-        o.name = this.name;
-        o.isFlipped = this.isFlipped;
-        o.isXOut = this.isXOut;
+
+        if (this.id.indexOf('_change_it_before_use') === -1) {
+            o.id = this.id;
+        }
+
+        if (this.className) {
+            o.className = this.className;
+        }
+
+        if (!this.visible) {
+            o.visible = false;
+        }
+
+        if (this.tint !== null && this.tint !== 16777215) {
+            o.tint = this.tint;
+        }
+
+        if (this.name) {
+            o.name = this.name;
+        }
 
         if (!this.canSelect) {
             o.canSelect = false;
         }
 
-        if (this.properties) {
-            o.properties = this.properties;
+        if (this.properties && !isEmpty(this.properties)) {
+
+            if (this.properties._custom && this.properties._custom.length === 0) {
+                delete this.properties._custom;
+            }
+
+            if (!isEmpty(this.properties)) {
+                o.properties = this.properties;
+            }
         }
 
         if (this.constraintX) {
@@ -677,11 +718,11 @@
         if (this.constraintHeight) {
             o.constraintHeight = this.constraintHeight.value;
         }
-        
+
         if (this.constraintFit) {
             o.constraintFit = this.constraintFit.value;
         }
-        
+
         if (this.constraintFill) {
             o.constraintFill = this.constraintFill.value;
         }
@@ -693,10 +734,6 @@
                     o.children.push(c.export());
                 }
             }
-        }
-
-        if (this.dynamicData) {
-            o.dynamicData = this.dynamicData;
         }
 
         return o;
@@ -754,21 +791,47 @@
 
     Entity.prototype.setBasicData = function (data) {
 
-        this.position.set(data.position.x, data.position.y);
-        this.anchor.set(data.anchor.x, data.anchor.y);
-        this.scale.set(data.scale.x, data.scale.y);
-        this.tag = data.tag;
-        this.zIndex = data.zIndex;
-        this.rotation = data.rotation;
-        this.alpha = data.alpha;
+        if (data.position) {
+            this.position.set(data.position.x, data.position.y);
+        }
+
+        if (data.anchor) {
+            this.anchor.set(data.anchor.x, data.anchor.y);
+        } else {
+            this.anchor.set(0.5, 0.5);
+        }
+
+        if (data.scale) {
+            this.scale.set(data.scale.x, data.scale.y)
+        }
+
+        if (data.tag !== undefined) {
+            this.tag = data.tag;
+        }
+
+        if (data.zIndex !== undefined) {
+            this.zIndex = data.zIndex;
+        }
+
+        if (data.rotation !== undefined) {
+            this.rotation = data.rotation;
+        }
+
+        if (data.alpha !== undefined) {
+            this.alpha = data.alpha;
+        }
+
         this.type = data.type;
         this.className = data.className || '';
         this.tint = parseInt(data.tint) || 0xffffff;
-        this.visible = data.visible;
-        this.name = data.name;
+
+        if (data.visible !== undefined) {
+            this.visible = data.visible;
+        }
+
+        this.name = data.name || '';
+
         this.canSelect = (data.canSelect === undefined) ? true : data.canSelect;
-        this.isFlipped = (data.isFlipped === undefined) ? false : data.isFlipped;
-        this.isXOut = (data.isXOut === undefined) ? false : data.isXOut;
 
         this.initial_point.copy(this.position);
 
@@ -786,7 +849,7 @@
             }
 
         }
-        
+
         if (data.constraintX) {
             this.constraintX = new Constraint(this, 'x', data.constraintX);
         }
@@ -802,20 +865,20 @@
         if (data.constraintHeight) {
             this.constraintHeight = new Constraint(this, 'height', data.constraintHeight);
         }
-        
+
         if (data.constraintFill) {
             this.constraintFill = new ConstraintMethod(this, 'fillOut', data.constraintFill);
         }
-        
+
         if (data.constraintFit) {
             this.constraintFit = new ConstraintMethod(this, 'fitTo', data.constraintFit);
         }
 
-        if (!data.id.startsWith('_change_it_before_use-') && data.id) {
-            this.id = data.id.trim().toLowerCase();
+        if (data.id) {
+            if (!data.id.startsWith('_change_it_before_use-') && data.id) {
+                this.id = data.id.trim().toLowerCase();
+            }
         }
-
-        this.dynamicData = data.dynamicData || [];
 
         this._data = data;
 
@@ -826,23 +889,25 @@
         var style = {};
 
         if (this.label) {
-            style = {
-                fill: this.label.style.fill,
-                fontFamily: this.label.style.fontFamily,
-                fontSize: this.label.style.fontSize,
-                align: this.label.style.align,
-                stroke: this.label.style.stroke,
-                strokeThickness: this.label.style.strokeThickness,
-                dropShadow: this.label.style.dropShadow,
-                dropShadowDistance: this.label.style.dropShadowDistance,
-                dropShadowAngle: this.label.style.dropShadowAngle,
-                dropShadowColor: this.label.style.dropShadowColor,
-                wordWrap: this.label.style.wordWrap,
-                wordWrapWidth: this.label.style.wordWrapWidth,
-                letterSpacing: this.label.style.letterSpacing,
-                lineHeight: this.label.style.lineHeight,
-                padding: this.label.style.padding
+
+            var s = this.label.style;
+            
+            var _style = this.cleanUpDefaultValues(s, _label_style_defaults);
+            
+            var ignore = {
+                background: true , 
+                _fillGradientStops: true,
+                styleID: true
             };
+
+            for (var prop in _style) {
+                if (Object.prototype.hasOwnProperty.call(_style, prop)) {
+                    if(!ignore[prop]){
+                        style[prop.substr(1)] = _style[prop];
+                    }
+                }
+            }
+
         }
 
         return style;
@@ -1012,6 +1077,21 @@
         }
     };
 
+    Entity.prototype.cleanUpDefaultValues = function (values, defaultValues) {
+        var object = {};
+
+        for (var prop in values) {
+            if (Object.prototype.hasOwnProperty.call(values, prop)) {
+                var v = values[prop];
+                if (v !== defaultValues[prop]) {
+                    object[prop] = v;
+                }
+            }
+        }
+
+        return object;
+
+    };
 
     Entity.prototype.applyDynamicVariables = function (variables) {
         // each object will overwrite this method and implement its own uniqe usage of the variables  

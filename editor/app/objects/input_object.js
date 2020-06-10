@@ -35,20 +35,10 @@
         this.originalBtnHeight = 200;
 
         // this needs to be exposed
+        
+        this._defaultValues = _input_properties_defaults;
 
-        this.properties = {
-            width: 320,
-            height: 120,
-            padding: '20',
-            sensorWidth: 0,
-            sensorHeight: 0,
-            hasPlaceholder: false,
-            hasNext: false,
-            placeholderColor: '#555555' , 
-            input_type : InputField.TYPE_ALL , 
-            doneText : '',
-            scrollTo : ''
-        };
+        this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
     };
 
@@ -99,6 +89,8 @@
     };
 
     InputObject.prototype.export = function () {
+        
+        this.properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
 
         var o = this.basicExport();
 

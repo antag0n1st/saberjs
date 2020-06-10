@@ -110,8 +110,8 @@
 
 
 <div id="textUpdatePanel" class="card">
-    
-     <div id="textUpdatePanelHeader" class="card-header" style="padding: 0; overflow: hidden;cursor: move;">
+
+    <div id="textUpdatePanelHeader" class="card-header" style="padding: 0; overflow: hidden;cursor: move;">
         <div id="closeTextPanel" class="btn btn-xs" style="float: right; cursor: pointer;">
             <i class="fa fa-close"></i>
         </div>
@@ -256,6 +256,39 @@
     </div>
 </div>
 
+<div id="newLayoutModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Layout</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>      
+            <form onsubmit="return app.navigator.currentScreen.htmlInterface.onAddLayoutBtn();" id="newLayoutForm" name="newLayoutForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input id="layoutNameInput" name="name" class="form-control" Placeholder="Name" />
+                    </div>
+                    <div class="form-group">
+                        <select name="type" class="form-control">
+                            <option value="screen" selected="selected">Screen</option>
+                            <option value="viewComponent">View Component</option>
+                            <option value="generic">Generic</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="addLayoutBtn" type="button" class="btn btn-primary" >Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 <div class="card" id="imageBrowser" style="position: absolute; width: 470px; display: none; top:75px;left:25px;" >
 
 
@@ -281,3 +314,5 @@
 
     }, false);
 </script>
+
+<input type="hidden" id="layoutType" value="" />

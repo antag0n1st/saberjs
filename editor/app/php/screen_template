@@ -1,0 +1,106 @@
+(function (window, undefined) {
+
+    function {screenName}() {
+        this.initialize();
+    }
+
+    {screenName}.prototype = new HScreen();
+    {screenName}.prototype.screen_initialize = {screenName}.prototype.initialize;
+
+
+    {screenName}.prototype.initialize = function () {
+
+        this.screen_initialize();
+
+        this.setBackgroundColor('#d8a60f');
+
+        ////////////////////
+
+        this.content = new Layer();
+        this.addChild(this.content);
+        this.importer = new Importer(this);
+        this.importer.importObjects(ContentManager.jsons.{json_name}.objects, this.content);
+        
+    };
+
+    {screenName}.prototype.onUpdate = function (dt) {
+
+    };
+
+    {screenName}.prototype.onShow = function () {
+
+    };
+
+    {screenName}.prototype.onHide = function () {
+
+    };
+
+    {screenName}.prototype.onMouseDown = function (event, element) {
+
+    };
+
+    {screenName}.prototype.onMouseMove = function (event, element) {
+
+    };
+
+    {screenName}.prototype.onMouseUp = function (event, element) {
+
+    };
+
+    {screenName}.prototype.onMouseCancel = function (element) {
+
+    };
+
+    {screenName}.prototype.onRightMouseDown = function (event) {
+
+    };
+
+    {screenName}.prototype.onRightMouseMove = function (event) {
+
+    };
+
+    {screenName}.prototype.onRightMouseUp = function (event) {
+
+    };
+
+    {screenName}.prototype.onNote = function (name, data, sender) {
+
+    };
+
+    {screenName}.prototype.onResize = function () {
+
+    };
+
+    {screenName}.prototype.destroy = function () {
+
+    };
+
+    // Keyboard delegates
+
+    {screenName}.prototype.onKeyboardStream = function (stream, prevStream, inputField) {
+
+    };
+
+    {screenName}.prototype.onKeyboardDone = function () {
+
+    };
+
+    {screenName}.prototype.onKeyboardActivated = function () {
+
+    };
+
+    {screenName}.prototype.onKeyboardDismissed = function () {
+
+    };
+
+    {screenName}.prototype.onKeyboardInputFocus = function (inputField) {
+
+    };
+
+    {screenName}.prototype.onKeyboardInputBlur = function (inputField) {
+
+    };
+
+    window.{screenName} = {screenName}; 
+
+}(window));

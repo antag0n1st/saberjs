@@ -36,7 +36,7 @@
             {name: "ContainerObject", url: 'assets/images/_container.png'},
             {name: "ViewComponentObject", url: 'assets/images/_view_icon.png'},
             {name: "NineSliceObject", url: 'assets/images/_nine_slice_icon.png'},
-            {name: "TilingSpriteObject", url: 'assets/images/_nine_slice_icon.png'},            
+            {name: "TilingSpriteObject", url: 'assets/images/_tile_icon.png'},
             {name: "GenericObject", url: 'assets/images/_cube.png'},
         ]);
 
@@ -107,7 +107,12 @@
         this.addGuideLineBtn = document.getElementById('addGuideLineBtn');
         this.addGuideLineBtn.onclick = this.onAddGuideLineBtn.bind(this);
 
+        this.addLayoutBtn = document.getElementById('addLayoutBtn');
+        this.addLayoutBtn.onclick = this.onAddLayoutBtn.bind(this);
 
+        $("#newLayoutModal").on('shown.bs.modal', function () {
+            $('#layoutNameInput').focus();
+        });
 
     };
 
@@ -219,35 +224,37 @@
 
         var html = '';
 
-        html += '<div class="big  "><label>Preview: </label> <input class="form-control" style="" id="previewScreenInput" type="text" value="' + this.editor.previewScreenName + '" onkeyup="app.navigator.currentScreen.changePreviewScreen(\'preview-screen\',this.value,this,0,\'previewScreenInput\');"></div>';
+
+        html += HtmlElements.createSection("Layouts").html;
+
+        var buttonOpt = {name: 'new_layout', displayName: 'New Layout', class: 'btn-info big', method: 'newLayout', icon: 'fa fa-plus', style: 'margin-top:5px;'};
+        html += HtmlElements.createButton(buttonOpt).html;
 
         if (editorConfig.features.exportToFiles) {
 
-            html += '<div class="big">';
-            html += '<input id="exportFileName" type="text" class="form-control" />';
-            html += '<button id="exportBtn" class="btn btn-info" style="margin-left:5px;"><i class="fa fa-arrow-up"></i>Export</button>';
-            html += '</div>';
-
-            html += ' <div class="big" style="display: block;">';
-            html += '<label>Import</label>';
-            html += '<input id="importJSONBtn" type="file" class="form-control" />';
-            html += '</div>';
-
             html += '<div class="big" >';
-            html += '<label>Import:</label>';
+            html += '<label>Open:</label> ';
             html += '<select id="selectJSON" class="form-control">';
             html += '</select>';
+            html += '</div>';
+
+            html += '<div class="big">';
+            html += '<input id="exportFileName" type="text" class="form-control" />';
+            html += '<button id="exportBtn" class="btn btn-info" style="margin-left:5px;"><i class="fa fa-arrow-up"></i> Export</button>';
             html += '</div>';
 
         }
 
         html += '<div class="big">';
-        html += '<button id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i>Clear All</button>';
+        html += '<button id="clearAll" class="btn btn-danger"><i class="fa fa-trash"></i> Clear All</button>';
         html += '</div>';
 
 
 
         html += HtmlElements.createSection('Editor').html;
+
+        html += '<div class="big  "><label>Preview: </label> <input class="form-control" style="" id="previewScreenInput" type="text" value="' + this.editor.previewScreenName + '" onkeyup="app.navigator.currentScreen.changePreviewScreen(\'preview-screen\',this.value,this,0,\'previewScreenInput\');"></div>';
+
 
         var tintColor = store.get('tint-' + ContentManager.baseURL) || 0xffffff;
         var colorPickerOpt = {
@@ -469,6 +476,14 @@
             }
         }
 
+        var layoutType = '';
+
+        if (document.getElementById('layoutType') && document.getElementById('layoutType').value) {
+            layoutType = document.getElementById('layoutType').value;
+        } else {
+            layoutType = this.editor.importer.layoutType || 'screen';
+        }
+
         ////////////////////////////////////////////////////////////////////////
 
 
@@ -477,6 +492,7 @@
         this.editor.importer.fileName = fileName;
         data.fileName = fileName;
         data.previewScreenName = this.editor.previewScreenName;
+        data.layoutType = layoutType;
 
         // attach extra data here
         var sendData = {
@@ -517,37 +533,37 @@
 
     };
 
-    HtmlInterface.prototype.onImportJSONBtn = function (evt) {
-
-        var files = evt.target.files; // FileList object        
-
-        var importer = this.editor.importer;
-        importer.clearStage();
-
-        for (var i = 0, f; f = files[i]; i++) {
-
-            // Only process image files.
-            if (!f.name.endsWith('.json')) {
-                toastr.error('Please select a JSON file!');
-                break;
-            }
-
-            var reader = new FileReader();
-            document.getElementById('exportFileName').value = f.name;
-
-            // Closure to capture the file information.
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    var data = JSON.parse(e.target.result);
-                    importer.import(data);
-                    toastr.success('File Imported with success.');
-                };
-            })(f);
-
-            // Read in the image file as a data URL.
-            reader.readAsText(f);
-        }
-    };
+//    HtmlInterface.prototype.onImportJSONBtn = function (evt) {
+//
+//        var files = evt.target.files; // FileList object        
+//
+//        var importer = this.editor.importer;
+//        importer.clearStage();
+//
+//        for (var i = 0, f; f = files[i]; i++) {
+//
+//            // Only process image files.
+//            if (!f.name.endsWith('.json')) {
+//                toastr.error('Please select a JSON file!');
+//                break;
+//            }
+//
+//            var reader = new FileReader();
+//            document.getElementById('exportFileName').value = f.name;
+//
+//            // Closure to capture the file information.
+//            reader.onload = (function (theFile) {
+//                return function (e) {
+//                    var data = JSON.parse(e.target.result);
+//                    importer.import(data);
+//                    toastr.success('File Imported with success.');
+//                };
+//            })(f);
+//
+//            // Read in the image file as a data URL.
+//            reader.readAsText(f);
+//        }
+//    };
 
     HtmlInterface.prototype.onSelectJSON = function (e) {
         if (this.selectJSON.value) {
@@ -557,6 +573,7 @@
 
             document.getElementById('exportFileName').value = '';
             document.getElementById('previewScreenInput').value = '';
+            document.getElementById('layoutType').value = '';
 
             if (this.selectJSON.value != 0) {
                 var editor = this.editor;
@@ -565,6 +582,7 @@
                         importer.import(response);
                         document.getElementById('exportFileName').value = importer.data.fileName;
                         document.getElementById('previewScreenInput').value = importer.data.previewScreenName || '';
+                        document.getElementById('layoutType').value = importer.data.layoutType || '';
                     } else {
                         editor.setDefaultLayer();
                     }
@@ -631,6 +649,34 @@
         document.getElementById('customPropertyValue').value = '';
 
         $("#addCustomPropertyModal").modal('hide');
+    };
+
+    HtmlInterface.prototype.onAddLayoutBtn = function () {
+
+        var formElement = document.getElementById('newLayoutForm');
+
+        var form = new FormData(formElement);
+        var name = form.get("name");
+        var type = form.get("type");
+
+
+        this.editor.importer.clearStage();
+        this.editor.setDefaultLayer();
+
+        
+        document.getElementById('previewScreenInput').value = '';
+        this.editor.previewScreenName = '';
+        document.getElementById('exportFileName').value = name;
+        document.getElementById('layoutType').value = type;
+
+        var that = this;
+        this.saveCurrentContent(function () {
+            that.onSettings();
+        });
+
+        $("#newLayoutModal").modal('hide');
+
+        return false;
     };
 
     HtmlInterface.prototype.onAddGuideLineBtn = function () {

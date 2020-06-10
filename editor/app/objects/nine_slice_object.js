@@ -13,16 +13,12 @@
         this.centered();
 
         this.imageName = ''; // in order to prevent showing into the layer tree view
+        
+        
+        
+        this._defaultValues = _nineslice_properties_defaults;
 
-        this.properties = {
-            width: 250,
-            height: 100,
-            backgroundName: 'white',
-            tintColor: "#ffffff",
-            padding: '1',
-            sensorWidth: 0,
-            sensorHeight: 0,
-        };
+        this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
 
         this.anchor.set(0.5, 0.5);
@@ -48,7 +44,11 @@
 
         if (data) {
             this.setBasicData(data);
-            this.background.imageName = data.properties.backgroundName || 'white';
+            if (data.properties) {
+                this.background.imageName = data.properties.backgroundName || this._defaultValues.backgroundName;
+            } else {
+                this.background.imageName = this._defaultValues.backgroundName;
+            }
         }
 
         this.background.padding = this.properties.padding;
@@ -89,6 +89,8 @@
 
     NineSliceObject.prototype.export = function () {
 
+        this.properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
+
         var o = this.basicExport();
 
         return o;
@@ -104,7 +106,7 @@
         }
 
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
-
+            
             this.background.padding = this.properties.padding;
             this.background.setSize(this.properties.width, this.properties.height);
             this.background.tint = convertColor(this.properties.tintColor);

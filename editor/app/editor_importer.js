@@ -58,6 +58,7 @@
 
         this.data = data;
         this.fileName = data.fileName;
+        this.layoutType = data.layoutType;
         this.editor.previewScreenName = data.previewScreenName || '';
 
     };
@@ -76,13 +77,14 @@
             var o = objects[i];
 
             var object = new window[o.type]();
+         
             object.graphics = this.editor.graphics;
             object.build(o);
 
             var command = new CommandAdd(object, contentLayer, this.editor);
             batch.add(command);
 
-            if (o.children.length) {
+            if (o.children && o.children.length) {
                 this.importChildren(object, o.children, batch)
             }
 
@@ -132,13 +134,14 @@
 
             if (window[o.type]) {
                 var object = new window[o.type]();
+              
                 object.graphics = this.editor.graphics;
                 object.build(o);
 
                 var command = new CommandAdd(object, parent, this.editor);
                 batch.add(command);
 
-                if (o.children.length) {
+                if (o.children && o.children.length) {
                     this.importChildren(object, o.children, batch);
                 }
 
@@ -184,8 +187,8 @@
         }
 
         data.screenPosition = {
-            x: this.editor._screenPosition.x,
-            y: this.editor._screenPosition.y
+            x: Math.roundDecimal(this.editor._screenPosition.x,2),
+            y: Math.roundDecimal(this.editor._screenPosition.y,2)
         };
         data.fileName = this.fileName;
 

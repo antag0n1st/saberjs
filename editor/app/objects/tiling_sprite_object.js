@@ -14,15 +14,11 @@
 
         this.imageName = ''; // in order to prevent showing into the layer tree view
 
-        this.properties = {
-            width: 250,
-            height: 100,
-            backgroundName: 'white',
-            tilePositionX: 0,
-            tilePositionY: 0,
-            tileScaleX: 1,
-            tileScaleY: 1
-        };
+
+
+        this._defaultValues = _tilingsprite_properties_defaults;
+
+        this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
 
         this.anchor.set(0.5, 0.5);
@@ -49,7 +45,11 @@
 
         if (data) {
             this.setBasicData(data);
-            this.background.imageName = data.properties.backgroundName || 'white';
+            if (data.properties) {
+                this.background.imageName = data.properties.backgroundName || this._defaultValues.backgroundName;
+            } else {
+                this.background.imageName = this._defaultValues.backgroundName;
+            }
             this.background.texture = this.findTexture(this.background.imageName);
         }
 
@@ -71,12 +71,12 @@
     };
 
     TilingSpriteObject.prototype.rebuild = function () {
-        
+
         this.background.texture = this.findTexture(this.properties.backgroundName || 'white');
-        
+
         this.background.width = this.properties.width;
         this.background.height = this.properties.height;
-        
+
         this.background.tilePosition.set(this.properties.tilePositionX, this.properties.tilePositionY);
         this.background.tileScale.set(this.properties.tileScaleX, this.properties.tileScaleY);
 
@@ -84,12 +84,14 @@
 
 
     TilingSpriteObject.prototype.onUpdate = function (dt) {
-        
+
         this.background.anchor = this.anchor;
 
     };
 
     TilingSpriteObject.prototype.export = function () {
+
+        this.properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
 
         var o = this.basicExport();
 
@@ -98,7 +100,7 @@
     };
 
     TilingSpriteObject.prototype.onPropertyChange = function (editor, property, value, element, inputType, feedbackID) {
-        
+
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
 
             this.background.width = this.properties.width;
@@ -129,8 +131,8 @@
         var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
         var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
 
-        var opt2 = {name: 'tilePositionX', value: Math.roundDecimal(this.properties.tilePositionX, 2), class: 'small', method: method , displayName: "X Offset"};
-        var opt3 = {name: 'tilePositionY', value: Math.roundDecimal(this.properties.tilePositionY, 2), class: 'small', method: method , displayName: "Y Offset"};
+        var opt2 = {name: 'tilePositionX', value: Math.roundDecimal(this.properties.tilePositionX, 2), class: 'small', method: method, displayName: "X Offset"};
+        var opt3 = {name: 'tilePositionY', value: Math.roundDecimal(this.properties.tilePositionY, 2), class: 'small', method: method, displayName: "Y Offset"};
         var opt4 = {name: 'tileScaleX', value: Math.roundDecimal(this.properties.tileScaleX, 2), class: 'small', displayName: 'Scale X', method: method};
         var opt5 = {name: 'tileScaleY', value: Math.roundDecimal(this.properties.tileScaleY, 2), class: 'small', displayName: 'Scale Y', method: method};
 

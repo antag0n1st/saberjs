@@ -13,9 +13,10 @@
         <meta name="HandheldFriendly" content="true" />
 
         <link rel="shortcut icon" sizes="256x256" href="assets/images/favicon.png" />
-		<style> body{ background: {background_color_css}; }</style>  
-                <script>var _VERSION = 1;</script>
-		<!--//SCRIPTS-BEGIN-->
+	<style> body{ background: {background_color_css}; }</style>  
+        <script>var _VERSION = 1;</script>
+		
+        <!--//SCRIPTS-BEGIN-->
 
         <script src="config.js" type="application/javascript" ></script>
 
@@ -30,10 +31,16 @@
         <script src="app/system/boot.js" type="text/javascript"></script>
 
         <script src="assets/assets.js" type="text/javascript"></script>
+        
+        <!--//SCREENS-BEGIN-->
 
         <script src="app/screens/{start_screen_file_name}.js" type="text/javascript"></script>
+        
+        <!--//SCREENS-END-->
 
-		<!--//SCRIPTS-END-->
+        
+
+	<!--//SCRIPTS-END-->
 
     </head>
 

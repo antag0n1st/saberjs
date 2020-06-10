@@ -2,8 +2,10 @@ App.prototype.loadAssets = function () {
 
 
 
-ContentManager.addFile('example','assets/data/example.json');
+ContentManager.addFile('gen','assets/data/gen.json');
+ContentManager.addFile('main_screen','assets/data/main_screen.json');
 ContentManager.addFile('menu','assets/data/menu.json');
+ContentManager.addFile('test_screen','assets/data/test_screen.json');
 
 
 

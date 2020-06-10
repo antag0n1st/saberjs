@@ -34,35 +34,9 @@
 
         // this needs to be exposed
 
-        this.properties = {
-            
-            width: 200,
-            height: 80,
-            padding: '1',
-            offsetX: 0,
-            offsetY: 0,
-            sensorWidth: 0,
-            sensorHeight: 0,
-            labelRotation: 0,
-            isNineSlice: 1,
-            
-            backgroundName: 'white',
+        this._defaultValues = _button_properties_defaults;
 
-            backgroundColorNormal: '#4654d4',
-            backgroundColorDown: '#2e399e',
-            backgroundColorHover: '#5d6cf0',
-            backgroundColorDisabled: "#d6d6d6",
-            textColorNormal: '#ffffff',
-            textColorDown: '#ffffff',
-            textColorHover: '#ffffff',
-            textColorDisabled: '#cccccc',
-
-            onMouseDown: '',
-            onMouseMove: '',
-            onMouseUp: '',
-            onMouseCancel: '',
-
-        };
+        this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
     };
 
@@ -114,6 +88,8 @@
 
     ButtonObject.prototype.export = function () {
 
+        this.properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
+
         var o = this.basicExport();
 
         o.txt = this.label.txt;
@@ -130,14 +106,21 @@
             this.setBasicData(data);
             this.label.txt = data.txt;
 
-            this.background.imageName = data.properties.backgroundName;
+            if (data.properties) {
+                this.background.imageName = data.properties.backgroundName || this._defaultValues.backgroundName;
+            } else {
+                this.background.imageName = this._defaultValues.backgroundName;
+            }
 
-            for (var property in data.style) {
-                if (data.style.hasOwnProperty(property)) {
-                    this.label.style[property] = data.style[property];
-                    // do stuff
+            if (data.style) {
+                for (var property in data.style) {
+                    if (data.style.hasOwnProperty(property)) {
+                        this.label.style[property] = data.style[property];
+                        // do stuff
+                    }
                 }
             }
+            
         }
 
         this.background.padding = this.properties.padding;
@@ -148,7 +131,7 @@
         if (this.properties.isNineSlice) {
             this.background.tint = convertColor(this.properties.backgroundColorNormal);
         } else {
-             this.background.tint = 0xffffff;
+            this.background.tint = 0xffffff;
         }
         this.label.style.fill = this.properties.textColorNormal;
 
@@ -295,15 +278,15 @@
         var command = new CommandProperty(this, 'properties.' + property, value, function () {
 
             if (this.properties.isNineSlice) {
-                
+
                 this.background.padding = this.properties.padding;
                 this.background.setSize(this.properties.width, this.properties.height);
                 this.canResize = true;
-                
+
             } else {
-                
+
                 var t = PIXI.utils.TextureCache[this.background.imageName];
-              
+
                 this.properties.width = t ? t.width : this.properties.width;
                 this.properties.height = t ? t.height : this.properties.height;
 
@@ -333,7 +316,7 @@
         if (property === 'isNineSlice') {
             // update the properties
             this.bindProperties(editor);
-        } 
+        }
     };
 
     ButtonObject.prototype.isPaddingValid = function () {

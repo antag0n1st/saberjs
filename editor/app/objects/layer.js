@@ -52,11 +52,9 @@
         o.isActive = this.isActive;
         o.isInputContent = this.isInputContent;
         
-        o.scale.x = 1;
-        o.scale.y = 1;
-        o.position.x = 0;
-        o.position.y = 0;
-
+        delete o.scale;
+        delete o.position;
+        
         return o;
 
     };
