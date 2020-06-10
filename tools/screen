@@ -12,7 +12,7 @@
 
         this.screen_initialize();
 
-        this.setBackgroundColor('#d8a60f');
+        this.setBackgroundColor('#1B6C97');
 
         ////////////////////
 
@@ -25,20 +25,25 @@
 
             // Happy Coding !
 
-            var label = new Label(Style.DEFAULT_LABEL);
+            var label = new Label();
             label.txt = 'Open the editor and create a new layer named:\n"{start_screen_file_name}"\n\nHappy Coding !';
             label.centered();
             label.style.align = 'center';
-            label.style.fontSize = 26;
+            label.style.fill = 0xffffff;
+            label.style.fontFamily = 'ArialHebrew-Bold,Impact';
+            label.style.fontSize = 36;
             label.style.wordWrap = true;
             label.style.wordWrapWidth = Math.min(800 , app.width - 200);
             label.x = app.width/2;
             label.y = app.height/2;
             this.addChild(label);
             
-            var btn = new Button("Editor");
+            var btn = new Button("Open Editor");
+            btn.onMouseUp = function(event , sender){
+                window.open( 'editor' , '_blank');
+            };
             btn.x = app.width/2;
-            btn.y = app.height/2 + 300;
+            btn.y = app.height/2 + label.height/2 + 80;
             this.addChild(btn);
             this.addTouchable(btn);
 
