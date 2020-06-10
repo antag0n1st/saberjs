@@ -155,13 +155,13 @@
 
         var method = 'onSelectedObjectPropertyChange';
 
-        var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
-        var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
+        var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method, range: [1,1920]};
+        var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method, range: [1,1920]};
         var opt2 = {name: 'padding', value: this.properties.padding, class: 'big', method: method, feedback: true, type: HtmlElements.TYPE_INPUT_STRING};
         var opt3 = {name: 'offsetX', value: Math.round(this.properties.offsetX), class: 'small', displayName: 'Offset X', method: method};
         var opt4 = {name: 'offsetY', value: Math.round(this.properties.offsetY), class: 'small', displayName: 'Offset Y', method: method};
-        var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'width', method: method};
-        var opt6 = {name: 'sensorHeight', value: Math.round(this.properties.sensorHeight), class: 'small', displayName: 'height', method: method};
+        var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'width', method: method, range: [1,1920]};
+        var opt6 = {name: 'sensorHeight', value: Math.round(this.properties.sensorHeight), class: 'small', displayName: 'height', method: method, range: [1,1920]};
 
         var opt7 = {name: 'labelRotation', value: Math.roundDecimal(this.properties.labelRotation, 2), class: 'big', method: method, displayName: 'Rotation'};
 

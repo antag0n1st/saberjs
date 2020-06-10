@@ -128,8 +128,8 @@
 
         var method = 'onSelectedObjectPropertyChange';
 
-        var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method};
-        var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method};
+        var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method, range: [1,1920]};
+        var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method, range: [1,1920]};
 
         var opt2 = {name: 'tilePositionX', value: Math.roundDecimal(this.properties.tilePositionX, 2), class: 'small', method: method, displayName: "X Offset"};
         var opt3 = {name: 'tilePositionY', value: Math.roundDecimal(this.properties.tilePositionY, 2), class: 'small', method: method, displayName: "Y Offset"};
