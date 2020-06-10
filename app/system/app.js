@@ -21,8 +21,8 @@
             Config.window_mode = Config.window_mode_mobile;
             this.device.calculateSizes();
         }
-        
-        if(this.device.isIOS){
+
+        if (this.device.isIOS) {
             PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
         }
 
@@ -33,7 +33,7 @@
         };
 
         this.pixi = new PIXI.Application(settings);
-        
+
         this.layoutCanvas();
 
         this.pixi.ticker.add(this.tick, this);
@@ -52,11 +52,11 @@
 
             ContentManager.downloadResources(function () {
 
-                app.navigator.currentScreen.loadingBar.setPercent(1, true);
-                
+                app.navigator.currentScreen.loadingBar.setPercent(1);
+
                 if (window[Config.initialScreen]) {
                     var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
-                    app.navigator.add(screen);
+                    app.navigator.popAndGo(screen);
                 } else {
                     throw Config.initialScreen + ' - is not Defined';
                 }
@@ -92,7 +92,7 @@
 
         ContentManager.downloadResources(function () {
             var screen = new LoadingScreen();
-            app.navigator.add(screen);
+            app.navigator.add(screen, 1);
 
             if (callback) {
                 callback.call(this);
@@ -227,7 +227,7 @@
     };
 
     App.prototype.resize = function (autoLayout) {
-        
+
         var isAutoLayout = true;
 
         if (autoLayout === undefined) {
@@ -249,7 +249,7 @@
             isAutoLayout = true;
 
             if (app.device.isKeyboardUp) {
-                
+
                 window.scrollTo(0, 0);
 
                 // lets check if it is a rotation
@@ -294,11 +294,11 @@
     };
 
     App.prototype.checkRotation = function () {
-        
-        if(Config.window_mode === Config.MODE_CENTERED){
+
+        if (Config.window_mode === Config.MODE_CENTERED) {
             return false;
         }
-        
+
         if (Config.rotation_mode === Config.ROTATION_MODE_HORIZONTAL) {
 
             if (app.windowWidth < app.windowHeight) {
@@ -316,7 +316,7 @@
             }
 
         }
-        
+
     };
 
     App.prototype.showRotateDevice = function () {

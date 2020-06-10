@@ -45,7 +45,8 @@ module.exports = function (grunt) {
                         "lib/display/line_path.js",
                         "lib/display/poly_bezier.js",
                         
-
+                        
+                        "lib/ui/defaults.js",
                         "lib/ui/label.js",
                         "lib/ui/popup.js",
                         "lib/ui/scrollview_content.js",

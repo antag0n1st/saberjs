@@ -91,8 +91,6 @@
 
     TilingSpriteObject.prototype.export = function () {
 
-        this.properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
-
         var o = this.basicExport();
 
         return o;

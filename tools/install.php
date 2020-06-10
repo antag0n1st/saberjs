@@ -100,7 +100,7 @@ $data_strings = [
 
 $config_content = replaceContent(file_get_contents('tools/install/config'), $data_strings);
 $index_content = replaceContent(file_get_contents('tools/install/index'), $data_strings);
-$screen_content = replaceContent(file_get_contents('tools/install/screen'), $data_strings);
+$screen_content = replaceContent(file_get_contents('tools/screen'), $data_strings);
 $assets_content = replaceContent(file_get_contents('tools/install/assets'), $data_strings);
 $release_content = replaceContent(file_get_contents('tools/install/release'), $data_strings);
 $publish_content = replaceContent(file_get_contents('tools/install/publish'), $data_strings);
@@ -143,6 +143,15 @@ unlink($dir_name . '/app/my_line.js');
 unlink($dir_name . '/app/threshold_filter.js');
 unlink($dir_name . '/assets/assets.js');
 unlink($dir_name . '/assets/localization/en.txt');
+
+// clear images
+
+unlink($dir_name . '/assets/images/_default_button.png');
+unlink($dir_name . '/assets/images/_default_input.png');
+unlink($dir_name . '/assets/images/circle.png');
+unlink($dir_name . '/assets/images/circle-blur.png');
+unlink($dir_name . '/assets/images/dragon@2x.png');
+
 
 // create new content
 file_put_contents($dir_name . '/config.js', $config_content);

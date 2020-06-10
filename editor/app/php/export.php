@@ -92,9 +92,9 @@ if (isset($_POST) and $_POST['file_name']) {
 
             $template_dir = getcwd();
 
-            $template = file_get_contents($template_dir . '/screen_template');
-            $template = str_replace("{screenName}", $screen_name, $template);
-            $template = str_replace("{json_name}", str_replace('.json', '', $file_name), $template);
+            $template = file_get_contents($template_dir . '/../../../tools/screen');
+            $template = str_replace("{start_screen_class_name}", $screen_name, $template);
+            $template = str_replace("{start_screen_file_name}", str_replace('.json', '', $file_name), $template);
 
             // also create a screen with the given name
             $sceen_file_name = str_replace('json', 'js', $file_name);
@@ -136,7 +136,7 @@ if (isset($_POST) and $_POST['file_name']) {
     fclose($myfile);
 
     header('Content-type: application/json');
-    print_r(json_encode(["message" => "Data exported to: " . $path . $file_name]));
+    print_r(json_encode(["message" => "Data exported to: \n" . $file_name]));
 }
 
 

@@ -691,15 +691,22 @@
         if (!this.canSelect) {
             o.canSelect = false;
         }
+        
+        var properties = this.properties;
+        
+        if(this._defaultValues){
+            var properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
+        }
+        
 
-        if (this.properties && !isEmpty(this.properties)) {
+        if (properties && !isEmpty(properties)) {
 
-            if (this.properties._custom && this.properties._custom.length === 0) {
-                delete this.properties._custom;
+            if (properties._custom && properties._custom.length === 0) {
+                delete properties._custom;
             }
 
-            if (!isEmpty(this.properties)) {
-                o.properties = this.properties;
+            if (!isEmpty(properties)) {
+                o.properties = properties;
             }
         }
 

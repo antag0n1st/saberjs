@@ -21,6 +21,23 @@
         this.importer = new Importer(this);
         this.importer.importObjects(ContentManager.jsons.main_screen.objects, this.content);
         
+//            var label = new Label(Style.DEFAULT_LABEL);
+//            label.txt = 'Open the editor and create a new layer named:\n"{start_screen_file_name}"\n\nHappy Coding !';
+//            label.centered();
+//            label.style.align = 'center';
+//            label.style.fontSize = 26;
+//            label.style.wordWrap = true;
+//            label.style.wordWrapWidth = Math.min(800 , app.width - 200);
+//            label.x = app.width/2;
+//            label.y = app.height/2;
+//            this.addChild(label);
+//            
+//            var btn = new Button("Editor");
+//            btn.x = app.width/2;
+//            btn.y = app.height/2 + 300;
+//            this.addChild(btn);
+//            this.addTouchable(btn);
+        
 //        var sprite = new Sprite('sample');
 //        sprite.position.set(100,100);
 //        this.addChild(sprite);
