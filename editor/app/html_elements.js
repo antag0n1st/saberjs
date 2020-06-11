@@ -421,7 +421,7 @@
             {
                 name: 'swatches', // extension name to load
                 options: {// extension options
-                    colors: Config.colors || {
+                    colors: Styles.colors || {
                         'transparent': 'transparent',
                         'black': '#000000',
                         'white': '#ffffff'

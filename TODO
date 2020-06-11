@@ -1,21 +1,9 @@
 
-- na save , im se pravi trim na properties .... mora da se najde drug nachin , ... vo basic export najdobro .
-
-- default values when exporting and importing objects
 
 
-- styles for text and button , save style | import style.
-- styles will be saved in the json and the object will have style name property , 
-- when exporting label , if there is a style , and style values are the same as the defined ,then don't export them so that they don't overwrite the style later.
-- when importing it will first put values from style and then it will overwrite from the values
 - find a way to allow a bit more space to write code in the buttons , or maybe add that functionality to all components
-
-
-
-
-
+- for a new created project add a netbeans project files , so that it can be opened easily , and be preconfigured.
 - fix visibilty issue on iphone , https://www.w3.org/TR/page-visibility-2/
-
 - manage history state in order to make the back button work for android.
 - auto import view component when a valid name is typed. , maybe it can be solved by reimporting the entire work file. ( a refresh function )
 
@@ -73,3 +61,10 @@
 - add fit an fill as constraints
 - inspect why some constraints are ticked and some are not !
 - add tiling sprite
+
+- na save , im se pravi trim na properties .... mora da se najde drug nachin , ... vo basic export najdobro .
+- default values when exporting and importing objects
+- styles for text and button , save style | import style.
+- styles will be saved in the json and the object will have style name property , 
+- when exporting label , if there is a style , and style values are the same as the defined ,then don't export them so that they don't overwrite the style later.
+- when importing it will first put values from style and then it will overwrite from the values

@@ -1335,7 +1335,9 @@
         
         //TODO send an AJAX REQUEST TO PERMA SAVE THE STYLE
         ajaxPost('app/php/styles.php',{styles:Styles},function (response) {
-            console.log(response);
+            
+            toastr.success("Styles are updated!");
+            
         });
 
         return false;
