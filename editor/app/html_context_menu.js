@@ -540,6 +540,9 @@
 
         this.close();
         // lets add some options
+        
+        var el = document.getElementById('saveStyleInput');
+        el.value = this.editor.selectedObjects[0].properties.styleName;
 
         $("#saveStyleModal").modal("show");
 

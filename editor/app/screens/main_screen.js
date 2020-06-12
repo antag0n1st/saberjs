@@ -709,13 +709,26 @@
 
             // figure out the position
 
+            var co = clipboard[0];
+
+            if (!co.position) {
+                co.position = {x: 0, y: 0};
+            }
+            if (!co.anchor) {
+                co.anchor = {x: 0.5, y: 0.5};
+            }
+            if (!co.scale) {
+                co.scale = {x: 1, y: 1};
+            }
+
             if (this.selectedObjects.length) {
 
                 // if there is selected object , then find its position 
                 // and then paste near it
 
                 var so = this.selectedObjects[0];
-                var co = clipboard[0];
+
+
 
                 if (Math.floor(so.position.x) === Math.floor(co.position.x)
                         && Math.floor(so.position.y) === Math.floor(co.position.y)) {
@@ -742,7 +755,7 @@
 
             } else {
 
-                var co = clipboard[0];
+
 
                 var p = contentLayer.getGlobalPosition();
                 p.x = app.width / 2 - p.x;
@@ -1311,10 +1324,10 @@
     MainScreen.prototype.changePreviewScreen = function (name, value) {
         this.previewScreenName = value;
     };
-    
+
 
     MainScreen.prototype.onStyleFormSave = function (formElement) {
-      
+
         var form = new FormData(formElement);
         var name = form.get("name");
 
@@ -1326,55 +1339,53 @@
 
         var object = this.selectedObjects[0];
         var textStyle = object._exportStyle();
-        
-        if(object.type === "ButtonObject"){
-            Styles.addButton(name , textStyle , object.properties );
+
+        if (object.type === "ButtonObject") {
+            Styles.addButton(name, textStyle, object.properties);
         } else {
-            Styles.addLabel(name , textStyle);
+            Styles.addLabel(name, textStyle);
         }
-        
+
         //TODO send an AJAX REQUEST TO PERMA SAVE THE STYLE
-        ajaxPost('app/php/styles.php',{styles:Styles},function (response) {
-            
+        ajaxPost('app/php/styles.php', {styles: JSON.stringify(Styles)}, function (response) {
             toastr.success("Styles are updated!");
-            
         });
 
         return false;
 
     };
-    
-    
+
+
     MainScreen.prototype.onSelectStyleForm = function (formElement) {
-        
+
         var form = new FormData(formElement);
         var styleName = form.get("style");
-        
+
         $("#selectStyleModal").modal("hide");
-        
-        var object = this.selectedObjects[0];
-        
-        if(styleName === "0"){
-            
-            object.properties.styleName = '';
-            return false;
-        }
-        
-        if(object.type === "ButtonObject"){
-            if(Styles.buttonStyles[styleName]){
-                var style = Styles.buttonStyles[styleName];
-                object.applyStyle(style);
+
+         for (var i = 0; i < this.selectedObjects.length; i++) {
+            var object = this.selectedObjects[i];
+
+            if (styleName === "0") {
+                object.properties.styleName = '';
+                continue;
             }
-        } else {
-            if(Styles.labelStyles[styleName]){
-                var style = Styles.labelStyles[styleName];
-                object.applyStyle(style);
+
+            if (object.type === "ButtonObject") {
+                if (Styles.buttonStyles[styleName]) {
+                    var style = Styles.buttonStyles[styleName];
+                    object.applyStyle(style);
+                }
+            } else {
+                if (Styles.labelStyles[styleName]) {
+                    var style = Styles.labelStyles[styleName];
+                    object.applyStyle(style);
+                }
             }
+
+            object.properties.styleName = styleName;
         }
-        
-        object.properties.styleName = styleName;
-        
-        
+
         return false;
     };
 

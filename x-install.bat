@@ -30,6 +30,9 @@ set /p window_mode_mobile=
 echo What background color ? default(0x555555)
 set /p background_color=
 
+rem navigate to batch file directory
+cd /D "%~dp0"
+
 cd tools
 
 php ./install.php --dir="%dir_name%" --name="%name%" --width="%width%" --height="%height%" --start_screen="%start_screen%" --window_mode="%window_mode%" --window_mode_mobile="%window_mode_mobile%" --background_color="%background_color%"

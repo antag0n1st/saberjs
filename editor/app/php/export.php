@@ -72,7 +72,7 @@ if (isset($_POST) and $_POST['file_name']) {
         if(!endsWith($clean_name,'_screen')){
             $file_name = $clean_name.'_screen.json';
             $decoded->fileName = $file_name;
-            $data = json_encode($decoded);
+            $data = json_encode($decoded, JSON_NUMERIC_CHECK);
         }
     }
 

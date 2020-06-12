@@ -95,7 +95,9 @@ $data_strings = [
     'pass' => PUBLISH_PASS,
     'rsa' => PUBLISH_RSA , 
     'publish_url' => PUBLISH_URL , 
-    'publish_dir' => PUBLISH_SERVER_DIR
+    'publish_dir' => PUBLISH_SERVER_DIR,
+    'register-service-worker' => '', // file_get_contents('tools/release/pwa/worker-registration')
+    'version' => 1
 ];
 
 $config_content = replaceContent(file_get_contents('tools/install/config'), $data_strings);
@@ -104,6 +106,8 @@ $screen_content = replaceContent(file_get_contents('tools/screen'), $data_string
 $assets_content = replaceContent(file_get_contents('tools/install/assets'), $data_strings);
 $release_content = replaceContent(file_get_contents('tools/install/release'), $data_strings);
 $publish_content = replaceContent(file_get_contents('tools/install/publish'), $data_strings);
+$manifest_content = replaceContent(file_get_contents('tools/release/pwa/manifest'), $data_strings);
+$serviceworker_content = replaceContent(file_get_contents('tools/release/pwa/serviceworker'), $data_strings);
 
 chdir("..");
 
@@ -129,6 +133,8 @@ copy('saberjs/Gruntfile.js', $dir_name . '/Gruntfile.js');
 copy('saberjs/lib.min.js', $dir_name . '/lib.min.js');
 copy('saberjs/package.json', $dir_name . '/package.json');
 copy('saberjs/pixi.min.js', $dir_name . '/pixi.min.js');
+
+
 
 // remove some content here 
 
@@ -161,3 +167,11 @@ file_put_contents($dir_name . '/assets/assets.js', $assets_content);
 file_put_contents($dir_name . '/release.bat', $release_content);
 file_put_contents($dir_name . '/publish.bat', $publish_content);
 
+//PWA
+copy('saberjs/workbox-sw.js', $dir_name . '/workbox-sw.js');
+
+// create manifest 
+
+
+file_put_contents($dir_name . '/manifest.json', $manifest_content);
+file_put_contents($dir_name . '/serviceworker.js', $serviceworker_content);

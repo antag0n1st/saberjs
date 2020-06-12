@@ -71,6 +71,15 @@
 //            semicircle.arc(0, 0, 100, 0, 2 * Math.PI * percent); // cx, cy, radius, startAngle, endAngle
 //        }, 2000).run();
 
+    CallToAction.show("There is a new version.\nUpdate now!", function (event , sender) {
+                    window.location.reload();
+                } , {
+                    fontSize : 30 ,
+                    padding: 50 , 
+                    yesText : 'Update',
+                    fontFamily: 'Helvetica,San Fancisco,ArialHebrew-Bold'
+                });
+
     };
 
     MainScreen.prototype.onSpin = function (event, sender) {

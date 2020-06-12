@@ -12,5 +12,7 @@ echo %vernum% > tools/release/version
 call grunt
 call py tools/release/release.py %vernum%
 
-timeout 1
+
+timeout 5
+
 

@@ -14,7 +14,7 @@
 
         this._padding = 20;
         this.type = 'ButtonObject';
-        
+
         // because of editing purpose
         this.hasLabel = true;
         this.hasImage = true;
@@ -23,7 +23,7 @@
         this.background.imageName = imageName;
         this.addChild(this.background);
 
-        this.label = new Label();
+        this.label = new Label(_label_style_defaults);
         this.label.txt = 'Click';
         this.label.anchor.set(0.5, 0.5);
 
@@ -33,37 +33,53 @@
 
         this._defaultValues = _button_properties_defaults;
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
-        
+
         this.canResize = true;
 
     };
-    
-    ButtonObject.prototype.applyStyle = function (options) {
-        this.applyLabelStyle(options.style);
-        this.applyProperties(options.properties);
+
+    ButtonObject.prototype.applyStyle = function (options, compare) {
+        this.applyLabelStyle(options.style, (compare && compare.style) ? compare.style : null);
+        this.applyProperties(options.properties, (compare && compare.properties) ? compare.properties : null);
     };
-    
-    ButtonObject.prototype.applyLabelStyle = function (style) {
+
+    ButtonObject.prototype.applyLabelStyle = function (style, compare) {
+       
         for (var property in style) {
             if (style.hasOwnProperty(property)) {
-                this.label.style[property] = style[property];
+                if (compare) {
+                    if (compare[property] !== undefined) {
+                        this.label.style[property] = style[property];
+                    }
+                } else {
+                    this.label.style[property] = style[property];
+                }
+
             }
         }
-    };
-    
-    ButtonObject.prototype.applyProperties = function (properties) {
         
+    };
+
+    ButtonObject.prototype.applyProperties = function (properties, compare) {
+
         this.background.imageName = properties.imageNormal || this.background.imageName;
         this._setImage(this.background.imageName);
-                
+
         for (var property in properties) {
             if (properties.hasOwnProperty(property)) {
-               this.properties[property] = properties[property];
+                if (compare) {
+                    if (compare[property] !== undefined) {
+                        this.properties[property] = properties[property];
+                    }
+                } else {
+                    this.properties[property] = properties[property];
+                }
+
             }
         }
-        
+
         this.build();
-        
+
     };
 
     ButtonObject.prototype.updateSize = function () {
@@ -77,6 +93,8 @@
     };
 
     ButtonObject.prototype.export = function () {
+        
+        this.properties.isNineSlice = this.properties.isNineSlice ? true : false;
 
         var o = this.basicExport();
 
@@ -108,7 +126,7 @@
                     }
                 }
             }
-            
+
         }
 
         this.background.padding = this.properties.padding;
@@ -121,7 +139,7 @@
         } else {
             this.background.tint = 0xffffff;
         }
-        
+
         this.label.style.fill = this.properties.textColorNormal;
 
 
@@ -131,7 +149,7 @@
         this.createFrame(0, 16);
         this.updateFrame();
 
-        
+
 
         // this.deselect();
     };
@@ -144,13 +162,13 @@
 
         var method = 'onSelectedObjectPropertyChange';
 
-        var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method, range: [1,1920]};
-        var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method, range: [1,1920]};
+        var opt0 = {name: 'width', value: Math.round(this.properties.width), class: 'small', method: method, range: [1, 1920]};
+        var opt1 = {name: 'height', value: Math.round(this.properties.height), class: 'small', method: method, range: [1, 1920]};
         var opt2 = {name: 'padding', value: this.properties.padding, class: 'big', method: method, feedback: true, type: HtmlElements.TYPE_INPUT_STRING};
         var opt3 = {name: 'offsetX', value: Math.round(this.properties.offsetX), class: 'small', displayName: 'Offset X', method: method};
         var opt4 = {name: 'offsetY', value: Math.round(this.properties.offsetY), class: 'small', displayName: 'Offset Y', method: method};
-        var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'SW', method: method, range: [1,1920] , tooltip: "Sensor Width"};
-        var opt6 = {name: 'sensorHeight', value: Math.round(this.properties.sensorHeight), class: 'small', displayName: 'SH', method: method, range: [1,1920], tooltip: "Sensor Height"};
+        var opt5 = {name: 'sensorWidth', value: Math.round(this.properties.sensorWidth), class: 'small', displayName: 'SW', method: method, range: [1, 1920], tooltip: "Sensor Width"};
+        var opt6 = {name: 'sensorHeight', value: Math.round(this.properties.sensorHeight), class: 'small', displayName: 'SH', method: method, range: [1, 1920], tooltip: "Sensor Height"};
 
         var opt7 = {name: 'labelRotation', value: Math.roundDecimal(this.properties.labelRotation, 2), class: 'big', method: method, displayName: 'Rotation'};
 
@@ -167,8 +185,8 @@
 
             html += padding.html;
         }
-        
-       
+
+
         html += HtmlElements.createInput(opt5).html;
         html += HtmlElements.createInput(opt6).html;
 
@@ -177,7 +195,7 @@
         html += HtmlElements.createInput(opt3).html;
         html += HtmlElements.createInput(opt4).html;
         html += HtmlElements.createInput(opt7).html;
-    
+
 
 
         // create color pickers;
@@ -232,11 +250,11 @@
 
         var opt23 = {name: 'onMouseCancel', displayName: 'Cancel', value: this.properties.onMouseCancel, method: method, type: HtmlElements.TYPE_INPUT_STRING};
         html += HtmlElements.createInput(opt23).html;
-        
-        
+
+
 //        var opt24 = {name:'save_style' , displayName: 'Save Style' , style : 'margin-top:5px;' , method: 'saveButtonStyle'};
 //        html += HtmlElements.createButton(opt24).html;
-        
+
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
 

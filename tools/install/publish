@@ -1,5 +1,8 @@
 @echo off
 
+rem navigate to batch file directory
+cd /D "%~dp0"
+
 echo open sftp://{user}:{pass}@{server} -hostkey="{rsa}" > %systemdrive%\Windows\Temp\script.tmp
 echo cd {publish_dir} >> %systemdrive%\Windows\Temp\script.tmp  
 echo option batch continue >> %systemdrive%\Windows\Temp\script.tmp

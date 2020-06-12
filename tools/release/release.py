@@ -33,6 +33,16 @@ with open('index.html', 'r') as myfile:
 with open('tools/scripts.html', 'r') as myfile:
     javascripts = myfile.read();
 
+with open('tools/release/pwa/worker-registration', 'r') as myfile:
+    worker_registration = myfile.read();
+
+with open('tools/release/pwa/serviceworker', 'r') as myfile:
+    serviceworker = myfile.read();
+
+serviceworker = serviceworker.replace("{version}",""+version_number);
+
+data = data.replace("<!--//INCLUDE-PWA-->", worker_registration);
+
 start_string = '<!--//SCRIPTS-BEGIN-->';
 end_string = '<!--//SCRIPTS-END-->';
 
@@ -46,11 +56,20 @@ data = re.sub(''+start_string+'.*?'+end_string,javascripts,data, flags=re.DOTALL
 
 
 filename = release_dir+"/index.html";
-myfile = open(filename, 'w+')
+myfile = open(filename, 'w+');
 myfile.write(data);
-myfile.close()
+myfile.close();
 
 print("Generated: "+filename)
+
+### generate a service worker
+
+filename = release_dir+"/serviceworker.js";
+myfile = open(filename, 'w+');
+myfile.write(serviceworker);
+myfile.close();
+
+print("\nGenerated: "+filename);
 
 
 #### copy other files
@@ -59,3 +78,7 @@ copyfile('pixi.min.js', release_dir+'/pixi.min.js')
 copyfile('lib.min.js', release_dir+'/lib.min.js')
 copyfile('config.js', release_dir+'/config.js')
 copyfile('app.min.js', release_dir+'/app.min.js')
+
+copyfile('manifest.json', release_dir+'/manifest.json')
+copyfile('workbox-sw.js', release_dir+'/workbox-sw.js')
+### copyfile('serviceworker.js', release_dir+'/serviceworker.js')

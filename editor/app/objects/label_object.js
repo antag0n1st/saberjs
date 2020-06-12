@@ -29,11 +29,17 @@
 
     };
 
-    LabelObject.prototype.applyStyle = function (style) {
+    LabelObject.prototype.applyStyle = function (style , compare) {
         for (var property in style) {
             if (style.hasOwnProperty(property)) {
-                this.label.style[property] = style[property];
-                // do stuff
+                if(compare){
+                    if (compare[property] !== undefined) {
+                        this.label.style[property] = style[property];
+                    }
+                } else {
+                    this.label.style[property] = style[property];
+                }
+                
             }
         }
     };

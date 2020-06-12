@@ -691,13 +691,13 @@
         if (!this.canSelect) {
             o.canSelect = false;
         }
-        
+
         var properties = this.properties;
-        
-        if(this._defaultValues){
+
+        if (this._defaultValues) {
             var properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
         }
-        
+
 
         if (properties && !isEmpty(properties)) {
 
@@ -841,21 +841,21 @@
         this.canSelect = (data.canSelect === undefined) ? true : data.canSelect;
 
         this.initial_point.copy(this.position);
-        
+
         if (data.properties) {
-            
-            if(data.properties.styleName){
-                if(data.type === "ButtonObject"){
-                    if(Styles.buttonStyles[data.properties.styleName]){
-                        this.applyStyle(Styles.buttonStyles[data.properties.styleName])
+
+            if (data.properties.styleName) {
+                if (data.type === "ButtonObject") {
+                    if (Styles.buttonStyles[data.properties.styleName]) {
+                        this.applyStyle(Styles.buttonStyles[data.properties.styleName],data);
                     } else {
-                        console.warn("Style '"+data.properties.styleName+"' not found");
+                        console.warn("Style '" + data.properties.styleName + "' not found");
                     }
                 } else {
-                    if(Styles.labelStyles[data.properties.styleName]){
-                        this.applyStyle(Styles.labelStyles[data.properties.styleName])
+                    if (Styles.labelStyles[data.properties.styleName]) {
+                        this.applyStyle(Styles.labelStyles[data.properties.styleName] , data.style || {})
                     } else {
-                        console.warn("Style '"+data.properties.styleName+"' not found");
+                        console.warn("Style '" + data.properties.styleName + "' not found");
                     }
                 }
             }
@@ -914,18 +914,22 @@
         if (this.label) {
 
             var s = this.label.style;
-            
+
             var _style = this.cleanUpDefaultValues(s, _label_style_defaults);
-            
+
+            if (_style._fontSize) {
+                _style._fontSize = parseInt(_style._fontSize);
+            }
+
             var ignore = {
-                background: true , 
+                background: true,
                 _fillGradientStops: true,
                 styleID: true
             };
 
             for (var prop in _style) {
                 if (Object.prototype.hasOwnProperty.call(_style, prop)) {
-                    if(!ignore[prop]){
+                    if (!ignore[prop]) {
                         style[prop.substr(1)] = _style[prop];
                     }
                 }

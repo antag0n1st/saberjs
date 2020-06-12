@@ -15,7 +15,7 @@
         this.background.tint = 0x40cde3;
         this.addChild(this.background);
 
-        this.logo = new Sprite(null);//Put logo image here
+        this.logo = new Sprite('logo');//Put logo image here
         this.logo.centered();
         
         this.addChild(this.logo);

@@ -26,26 +26,24 @@ if (isset($_POST) and $_POST['styles']) {
 
     $template = file_get_contents($template_dir . '/../../../app/styles.js');
     //echo $template;
-
-    if (!isset($_POST['styles'])) {
-        exit;
-    }
-
+    
+    $styles = json_decode($_POST['styles']);
+    
     $stylesLabel = [];
 
-    if (isset($_POST['styles']['labelStyles'])) {
-        $stylesLabel = $_POST['styles']['labelStyles'];
+    if (isset($styles->labelStyles)) {
+        $stylesLabel = $styles->labelStyles;
     }
 
     $stylesButton = [];
 
-    if (isset($_POST['styles']['buttonStyles'])) {
-        $stylesButton = $_POST['styles']['buttonStyles'];
+    if (isset($styles->buttonStyles)) {
+        $stylesButton = $styles->buttonStyles;
     }
 
     $colors = [];
-    if (isset($_POST['styles']['colors'])) {
-        $colors = $_POST['styles']['colors'];
+    if (isset($styles->colors)) {
+        $colors = $styles->colors;
     }
 
     $style = "// NOTE ! Use only addColor | addButton | addLabel , the system overwrites this file ";
@@ -59,13 +57,13 @@ if (isset($_POST) and $_POST['styles']) {
 
     foreach ($stylesButton as $name => $btnStyle) {
 
-        $style .= 'Styles.addButton("' . $name . '", ' . json_encode($btnStyle['style']) . ' , ' . json_encode($btnStyle['properties']) . ' );';
+        $style .= 'Styles.addButton("' . $name . '", ' . json_encode($btnStyle->style , JSON_NUMERIC_CHECK) . ' , ' . json_encode($btnStyle->properties, JSON_NUMERIC_CHECK) . ' );';
         $style .= "\n\n";
     }
 
     foreach ($stylesLabel as $name => $labelStyle) {
 
-        $style .= 'Styles.addLabel("' . $name . '", ' . json_encode($labelStyle) . '  );';
+        $style .= 'Styles.addLabel("' . $name . '", ' . json_encode($labelStyle , JSON_NUMERIC_CHECK) . '  );';
         $style .= "\n\n";
     }
 

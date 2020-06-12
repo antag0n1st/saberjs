@@ -96,7 +96,7 @@ if ($debug) {
     header('Content-type: application/json');
 
     $structure = listFolderFiles($main_dir, 'root');
-    print_r(json_encode($structure['children']));
+    print_r(json_encode($structure['children'], JSON_NUMERIC_CHECK));
 }
 
 
