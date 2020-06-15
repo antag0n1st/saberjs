@@ -11,7 +11,7 @@ ContentManager.addFile('test_screen','assets/data/test_screen.json');
 
 
 ContentManager.addImage('_default_button','_default_button.png');
-ContentManager.addImage('_default_input','_default_input.png');
+ContentManager.addImage('_default_input','_default_input@2x.png');
 
 ContentManager.addImage('circle-blur','circle-blur.png');
 ContentManager.addImage('circle','circle.png');

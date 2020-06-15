@@ -1,4 +1,7 @@
+- there is an error when copy-paste from one screen to an other ( multiple objects selected )
+- when saving a style also apply it.
 
+When exporting , strip properties and styles defined in styles. So no need to define a value if it in style
 
 
 - find a way to allow a bit more space to write code in the buttons , or maybe add that functionality to all components

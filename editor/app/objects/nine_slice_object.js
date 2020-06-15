@@ -16,7 +16,7 @@
         
         
         
-        this._defaultValues = _nineslice_properties_defaults;
+        this._defaultValues = Default.properties.NineSlice;
 
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 

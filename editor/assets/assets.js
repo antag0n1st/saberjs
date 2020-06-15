@@ -15,7 +15,7 @@ ContentManager.addImage('_text_icon','_text_icon.png');
 ContentManager.addImage('_missing_image','_missing_image.png');
 ContentManager.addImage('_default_button','_default_button.png');
 ContentManager.addImage('_input_field_icon','_input_field_icon.png');
-ContentManager.addImage('_default_input','_default_input.png');
+ContentManager.addImage('_default_input','_default_input@2x.png');
 ContentManager.addImage('_check','_check.png');
 ContentManager.addImage('_document_icon','_document_icon.png');
 

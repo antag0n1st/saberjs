@@ -16,7 +16,7 @@
 
 
 
-        this._defaultValues = _tilingsprite_properties_defaults;
+        this._defaultValues = Default.properties.TilingSprite;
 
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 

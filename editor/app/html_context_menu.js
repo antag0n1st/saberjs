@@ -542,7 +542,7 @@
         // lets add some options
         
         var el = document.getElementById('saveStyleInput');
-        el.value = this.editor.selectedObjects[0].properties.styleName;
+        el.value = this.editor.selectedObjects[0].styleName;
 
         $("#saveStyleModal").modal("show");
 
@@ -551,15 +551,10 @@
     HtmlContextMenu.prototype.onContextStyleSelect = function () {
         this.close();
 
-        var listObject = null;
+       
 
         var selectedObject = this.editor.selectedObjects[0];
-
-        if (selectedObject.type === "ButtonObject") {
-            listObject = Styles.buttonStyles;
-        } else {
-            listObject = Styles.labelStyles;
-        }
+        var listObject = Styles.types[selectedObject.type];
 
         var options = '<option value="0">Remove Style</option>';
 

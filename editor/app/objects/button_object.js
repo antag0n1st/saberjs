@@ -23,7 +23,7 @@
         this.background.imageName = imageName;
         this.addChild(this.background);
 
-        this.label = new Label(_label_style_defaults);
+        this.label = new Label(Default.styles.Label);
         this.label.txt = 'Click';
         this.label.anchor.set(0.5, 0.5);
 
@@ -31,56 +31,35 @@
 
         this.centered();
 
-        this._defaultValues = _button_properties_defaults;
+        this._defaultValues = Default.properties.Button;
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
         this.canResize = true;
 
     };
 
-    ButtonObject.prototype.applyStyle = function (options, compare) {
-        this.applyLabelStyle(options.style, (compare && compare.style) ? compare.style : null);
-        this.applyProperties(options.properties, (compare && compare.properties) ? compare.properties : null);
-    };
-
-    ButtonObject.prototype.applyLabelStyle = function (style, compare) {
-       
-        for (var property in style) {
-            if (style.hasOwnProperty(property)) {
-                if (compare) {
-                    if (compare[property] !== undefined) {
-                        this.label.style[property] = style[property];
-                    }
-                } else {
-                    this.label.style[property] = style[property];
-                }
-
-            }
-        }
-        
-    };
-
-    ButtonObject.prototype.applyProperties = function (properties, compare) {
-
-        this.background.imageName = properties.imageNormal || this.background.imageName;
-        this._setImage(this.background.imageName);
-
-        for (var property in properties) {
-            if (properties.hasOwnProperty(property)) {
-                if (compare) {
-                    if (compare[property] !== undefined) {
-                        this.properties[property] = properties[property];
-                    }
-                } else {
-                    this.properties[property] = properties[property];
-                }
-
-            }
-        }
-
-        this.build();
-
-    };
+//    ButtonObject.prototype.applyStyle = function (options, compare) {
+//        this.applyLabelStyle(options.style, (compare && compare.style) ? compare.style : null);
+//        this.applyProperties(options.properties, (compare && compare.properties) ? compare.properties : null);
+//    };
+//
+//    ButtonObject.prototype.applyLabelStyle = function (style, compare) {
+//       
+//        for (var property in style) {
+//            if (style.hasOwnProperty(property)) {
+//                if (compare) {
+//                    if (compare[property] !== undefined) {
+//                        this.label.style[property] = style[property];
+//                    }
+//                } else {
+//                    this.label.style[property] = style[property];
+//                }
+//
+//            }
+//        }
+//        
+//    };
+//
 
     ButtonObject.prototype.updateSize = function () {
         this.sensor = null;
@@ -93,7 +72,7 @@
     };
 
     ButtonObject.prototype.export = function () {
-        
+
         this.properties.isNineSlice = this.properties.isNineSlice ? true : false;
 
         var o = this.basicExport();
@@ -101,6 +80,13 @@
         o.txt = this.label.txt;
 
         o.style = this._exportStyle();
+        
+        // clean the sytle
+        o.style = this.cleanUpStyle(o.style , this.label.style);
+        
+        if(isEmpty(o.style)){
+            delete o.style;
+        }
 
         return o;
 

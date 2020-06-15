@@ -31,14 +31,14 @@ if (isset($_POST) and $_POST['styles']) {
     
     $stylesLabel = [];
 
-    if (isset($styles->labelStyles)) {
-        $stylesLabel = $styles->labelStyles;
+    if (isset($styles->types->Label)) {
+        $stylesLabel = $styles->types->Label;
     }
 
     $stylesButton = [];
 
-    if (isset($styles->buttonStyles)) {
-        $stylesButton = $styles->buttonStyles;
+    if (isset($styles->types->Button)) {
+        $stylesButton = $styles->types->Button;
     }
 
     $colors = [];
@@ -63,7 +63,7 @@ if (isset($_POST) and $_POST['styles']) {
 
     foreach ($stylesLabel as $name => $labelStyle) {
 
-        $style .= 'Styles.addLabel("' . $name . '", ' . json_encode($labelStyle , JSON_NUMERIC_CHECK) . '  );';
+        $style .= 'Styles.addLabel("' . $name . '", ' . json_encode($labelStyle->style , JSON_NUMERIC_CHECK) . ' , ' . json_encode($labelStyle->properties, JSON_NUMERIC_CHECK) . ' );';
         $style .= "\n\n";
     }
 

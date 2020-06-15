@@ -22,24 +22,24 @@
 
         this.centered();
 
-        this._defaultValues = _label_properties_defaults;
+        this._defaultValues = Default.properties.Label;
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
-        this.applyStyle(_label_style_defaults);
+        this.applyStyle(Default.styles.Label);
 
     };
 
-    LabelObject.prototype.applyStyle = function (style , compare) {
+    LabelObject.prototype.applyStyle = function (style, compare) {
         for (var property in style) {
             if (style.hasOwnProperty(property)) {
-                if(compare){
+                if (compare) {
                     if (compare[property] !== undefined) {
                         this.label.style[property] = style[property];
                     }
                 } else {
                     this.label.style[property] = style[property];
                 }
-                
+
             }
         }
     };
@@ -72,6 +72,13 @@
 
         o.txt = this.label.txt;
         o.style = this._exportStyle();
+
+        // clean the sytle
+        o.style = this.cleanUpStyle(o.style, this.label.style);
+
+        if (isEmpty(o.style)) {
+            delete o.style;
+        }
 
         if (this._exportMap) {
             o = this._exportMap(o);

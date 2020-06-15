@@ -1331,20 +1331,30 @@
         var form = new FormData(formElement);
         var name = form.get("name");
 
+        var object = this.selectedObjects[0];
+
         if (!name) {
             toastr.error("Name can't be empty");
         } else {
             $("#saveStyleModal").modal("hide");
         }
 
-        var object = this.selectedObjects[0];
+        if (Styles.types[object.type][name]) {
+            if (!confirm("Do you want to overwrite the style ?")) {
+                return false;
+            }
+        }
+
         var textStyle = object._exportStyle();
+        var properties = object._exportProperties();
 
         if (object.type === "ButtonObject") {
-            Styles.addButton(name, textStyle, object.properties);
+            Styles.addButton(name, textStyle, properties);
         } else {
-            Styles.addLabel(name, textStyle);
+            Styles.addLabel(name, textStyle, properties);
         }
+
+        object.styleName = name;
 
         //TODO send an AJAX REQUEST TO PERMA SAVE THE STYLE
         ajaxPost('app/php/styles.php', {styles: JSON.stringify(Styles)}, function (response) {
@@ -1363,27 +1373,32 @@
 
         $("#selectStyleModal").modal("hide");
 
-         for (var i = 0; i < this.selectedObjects.length; i++) {
+        for (var i = 0; i < this.selectedObjects.length; i++) {
+
             var object = this.selectedObjects[i];
 
             if (styleName === "0") {
-                object.properties.styleName = '';
+                object.styleName = '';
+                toastr.success("Style name removed");
                 continue;
             }
 
-            if (object.type === "ButtonObject") {
-                if (Styles.buttonStyles[styleName]) {
-                    var style = Styles.buttonStyles[styleName];
-                    object.applyStyle(style);
-                }
-            } else {
-                if (Styles.labelStyles[styleName]) {
-                    var style = Styles.labelStyles[styleName];
-                    object.applyStyle(style);
-                }
+            if (Styles.types[object.type][styleName]) {
+                var style = Styles.types[object.type][styleName];
+
+                // first apply default values                
+                object.applyProperties(Default.properties[object.type]);
+                object.applyStyle(Default.styles[object.type]);
+
+                object.applyProperties(style.properties);
+                object.applyStyle(style.style);
+
+                object.styleName = styleName;
+                
+                object.build();
             }
 
-            object.properties.styleName = styleName;
+
         }
 
         return false;

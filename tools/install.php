@@ -152,11 +152,11 @@ unlink($dir_name . '/assets/localization/en.txt');
 
 // clear images
 
-unlink($dir_name . '/assets/images/_default_button.png');
 unlink($dir_name . '/assets/images/_default_input.png');
 unlink($dir_name . '/assets/images/circle.png');
 unlink($dir_name . '/assets/images/circle-blur.png');
 unlink($dir_name . '/assets/images/dragon@2x.png');
+unlink($dir_name . '/assets/images/logo-white.png');
 
 
 // create new content

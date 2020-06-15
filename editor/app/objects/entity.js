@@ -31,6 +31,8 @@
         this.rotationHandle = null;
         this.rotationHandleDistance = 40;
 
+        this.styleName = '';
+
         this._oldAlpha = 1;
 
         this._snapAngles = [
@@ -662,9 +664,6 @@
             o.zIndex = this.zIndex;
         }
 
-        if (this.children.length) {
-            o.children = [];
-        }
 
         o.type = this.type;
 
@@ -692,14 +691,29 @@
             o.canSelect = false;
         }
 
-        var properties = this.properties;
+        // properties that are cleaned up from default values
+        var properties = this._exportProperties();
 
-        if (this._defaultValues) {
-            var properties = this.cleanUpDefaultValues(this.properties, this._defaultValues);
+        // clean styled values
+        if (this.styleName) {
+            var styled = Styles.types[this.type][this.styleName];
+            properties = this.cleanUpDefaultValues(properties, styled.properties);
+            o.styleName = this.styleName;
+
+            //TODO iterate over the style properties , and if some of them are different then the data properties 
+            // then they need to be applayed it does not matter if they are default;
+
+            for (var prop in styled.properties) {
+                if (Object.prototype.hasOwnProperty.call(styled.properties, prop)) {
+                    var v = styled.properties[prop];
+                    if (v !== this.properties[prop]) {
+                        properties[prop] = this.properties[prop];
+                    }
+                }
+            }
         }
 
-
-        if (properties && !isEmpty(properties)) {
+        if (!isEmpty(properties)) {
 
             if (properties._custom && properties._custom.length === 0) {
                 delete properties._custom;
@@ -734,6 +748,8 @@
             o.constraintFill = this.constraintFill.value;
         }
 
+        o.children = [];
+
         if (this.canExportChildren) {
             for (var i = 0; i < this.children.length; i++) {
                 var c = this.children[i];
@@ -741,6 +757,10 @@
                     o.children.push(c.export());
                 }
             }
+        }
+
+        if (!o.children.length) {
+            delete o.children;
         }
 
         return o;
@@ -837,40 +857,50 @@
         }
 
         this.name = data.name || '';
-
         this.canSelect = (data.canSelect === undefined) ? true : data.canSelect;
-
         this.initial_point.copy(this.position);
 
+        // STEP 1 , set defaults
+        var defaultProperties = Default.properties[data.type];
+        if (defaultProperties) {
+            this.applyProperties(defaultProperties);
+        }
+
+        // do the same with the style
+        var defaultStyle = Default.styles[data.type];
+        if (defaultStyle) {
+            this.applyStyle(defaultStyle);
+        }
+
+        // STEP 2
+        // if there are styles , apply them
+        if (data.styleName && Styles.types[data.type]) {
+            if (Styles.types[data.type][data.styleName]) {
+
+                var styled = Styles.types[data.type][data.styleName];
+
+                if (styled.properties) {
+                    this.applyProperties(styled.properties);
+                }
+
+                if (styled.style) {
+                    this.applyStyle(styled.style);
+                }
+
+                this.styleName = data.styleName;
+            } else {
+                console.warn("missing style: " + data.styleName);
+            }
+        }
+
+        // STEP 3
+        // finaly apply custom properties different from styles and defaults
         if (data.properties) {
+            this.applyProperties(data.properties);
+        }
 
-            if (data.properties.styleName) {
-                if (data.type === "ButtonObject") {
-                    if (Styles.buttonStyles[data.properties.styleName]) {
-                        this.applyStyle(Styles.buttonStyles[data.properties.styleName],data);
-                    } else {
-                        console.warn("Style '" + data.properties.styleName + "' not found");
-                    }
-                } else {
-                    if (Styles.labelStyles[data.properties.styleName]) {
-                        this.applyStyle(Styles.labelStyles[data.properties.styleName] , data.style || {})
-                    } else {
-                        console.warn("Style '" + data.properties.styleName + "' not found");
-                    }
-                }
-            }
-
-            for (var key in data.properties) {
-                if (data.properties.hasOwnProperty(key)) {
-                    if (Number.isNaN(data.properties[key])) {
-                        this.properties[key] = 0;
-                    } else {
-                        this.properties[key] = data.properties[key];
-                    }
-
-                }
-            }
-
+        if (data.style) {
+            this.applyStyle(data.style);
         }
 
         if (data.constraintX) {
@@ -915,11 +945,7 @@
 
             var s = this.label.style;
 
-            var _style = this.cleanUpDefaultValues(s, _label_style_defaults);
-
-            if (_style._fontSize) {
-                _style._fontSize = parseInt(_style._fontSize);
-            }
+            var _style = this.cleanUpDefaultValues(s, Default.styles.Label);
 
             var ignore = {
                 background: true,
@@ -935,10 +961,24 @@
                 }
             }
 
+            if (style.fontSize) {
+                style.fontSize = parseInt(style.fontSize);
+            }
+
         }
 
         return style;
 
+    };
+
+    Entity.prototype._exportProperties = function () {
+        if (Default.properties[this.type]) {
+            return this.cleanUpDefaultValues(this.properties, Default.properties[this.type]);
+        } else if (this.properties) {
+            return JSON.parse(JSON.stringify(this.properties));
+        } else {
+            return {};
+        }
     };
 
     Entity.prototype.onUpdate = function (dt) {
@@ -1122,6 +1162,47 @@
 
     Entity.prototype.applyDynamicVariables = function (variables) {
         // each object will overwrite this method and implement its own uniqe usage of the variables  
+    };
+
+    Entity.prototype.applyProperties = function (properties) {
+
+        for (var property in properties) {
+            if (properties.hasOwnProperty(property)) {
+                this.properties[property] = properties[property];
+            }
+        }
+
+    };
+
+    Entity.prototype.applyStyle = function (style) {
+        for (var property in style) {
+            if (style.hasOwnProperty(property)) {
+                this.label.style[property] = style[property];
+            }
+        }
+    };
+
+    Entity.prototype.cleanUpStyle = function (_style, originalStyle) {
+
+        var style = {};
+
+        if (this.styleName) {
+            var styled = Styles.types[this.type][this.styleName];
+            style = this.cleanUpDefaultValues(_style, styled.style);
+
+
+            for (var prop in styled.style) {
+                if (Object.prototype.hasOwnProperty.call(styled.style, prop)) {
+                    var v = styled.style[prop];
+                    if (v !== originalStyle[prop]) {
+                        style[prop] = originalStyle[prop];
+                    }
+                }
+            }
+        }
+
+        return style;
+
     };
 
     window.Entity = Entity;

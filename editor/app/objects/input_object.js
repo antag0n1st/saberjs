@@ -36,7 +36,7 @@
 
         // this needs to be exposed
         
-        this._defaultValues = _input_properties_defaults;
+        this._defaultValues = Default.properties.InputObject;
 
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
 
@@ -96,6 +96,12 @@
         o.backgroundName = this.backgroundName;
 
         o.style = this._exportStyle();
+        
+        o.style = this.cleanUpStyle(o.style , this.label.style);
+        
+         if(isEmpty(o.style)){
+            delete o.style;
+        }
 
         return o;
 
