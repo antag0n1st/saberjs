@@ -249,7 +249,7 @@
 
         var fonts = '';
 
-        fonts += '<option value="\'Arial Black\', Impact, Charcoal">Arial Black, Impact, Charcoal</option>';
+        fonts += '<option value="ArialHebrew-Bold,Helvetica,Impact">ArialHebrew-Bold,Helvetica,Impact</option>';
 
         for (var property in Fonts) {
             if (Fonts.hasOwnProperty(property)) {

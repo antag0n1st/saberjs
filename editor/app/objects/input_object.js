@@ -21,10 +21,8 @@
 
         this.backgroundName = imageName;
 
-        this.label = new Label(Style.DEFAULT_INPUT);
+        this.label = new Label();
         this.label.txt = '';
-        this.label.style.fill = "#333333";
-        this.label.style.fontSize = 40;
         this.label.anchor.set(0.5, 0.5);
 
         this.addChild(this.label);

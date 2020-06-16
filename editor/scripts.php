@@ -12,7 +12,6 @@ $_javascripts = [
     'assets/toastr/toastr.min.js',
     'app/system/global_data.js',
     'app/system/app.js',
-    'app/system/style.js',
     'app/system/loading_screen.js',
     'app/system/boot.js',
     'assets/assets.js',

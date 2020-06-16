@@ -58,7 +58,6 @@ module.exports = function (grunt) {
                     'app.min.js': [
                         
                         "app/system/app.js",
-                        "app/system/style.js",
                         "app/system/boot.js",
                         "app/system/loading_screen.js",
                         "app/system/notes.js",

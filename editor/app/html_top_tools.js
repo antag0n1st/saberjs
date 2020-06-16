@@ -101,11 +101,10 @@
 
         var fonts = '';
 
-        font += '<option value="\'Times New Roman\', Times, serif">Times New Roman, Times, serif</option>';
-        fonts += '<option value="\'Arial Black\', Gadget, sans-serif">Arial Black, Gadget, sans-serif</option>';
-        fonts += '<option value="Impact, Charcoal, sans-serif">Impact, Charcoal, sans-serif</option>';
-        fonts += '<option value="\'Comic Sans MS\', cursive, sans-serif">Comic Sans MS, cursive, sans-serif</option>';
-        fonts += '<option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva, sans-serif</option>';
+      
+        fonts += '<option value="ArialHebrew-Bold,Helvetica,Impact">ArialHebrew-Bold,Helvetica,Impact</option>';
+//        fonts += '<option value="Impact, Charcoal, sans-serif">Impact, Charcoal, sans-serif</option>';
+//        fonts += '<option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva, sans-serif</option>';
 
         this.textFontFamily.innerHTML = '';
 
