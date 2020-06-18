@@ -1184,13 +1184,11 @@
 
     Entity.prototype.cleanUpStyle = function (_style, originalStyle) {
 
-        var style = {};
-
         if (this.styleName) {
+
+            var style = {};
             var styled = Styles.types[this.type][this.styleName];
             style = this.cleanUpDefaultValues(_style, styled.style);
-
-
             for (var prop in styled.style) {
                 if (Object.prototype.hasOwnProperty.call(styled.style, prop)) {
                     var v = styled.style[prop];
@@ -1199,9 +1197,11 @@
                     }
                 }
             }
-        }
 
-        return style;
+            return style;
+        } else {
+            return _style;
+        }
 
     };
 

@@ -166,6 +166,7 @@ body{
 }
 
 .libraryContent{
+    background-color: #f5fae4;
     overflow-y: scroll;
     padding-top: 10px;
 }

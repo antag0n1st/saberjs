@@ -38,29 +38,6 @@
 
     };
 
-//    ButtonObject.prototype.applyStyle = function (options, compare) {
-//        this.applyLabelStyle(options.style, (compare && compare.style) ? compare.style : null);
-//        this.applyProperties(options.properties, (compare && compare.properties) ? compare.properties : null);
-//    };
-//
-//    ButtonObject.prototype.applyLabelStyle = function (style, compare) {
-//       
-//        for (var property in style) {
-//            if (style.hasOwnProperty(property)) {
-//                if (compare) {
-//                    if (compare[property] !== undefined) {
-//                        this.label.style[property] = style[property];
-//                    }
-//                } else {
-//                    this.label.style[property] = style[property];
-//                }
-//
-//            }
-//        }
-//        
-//    };
-//
-
     ButtonObject.prototype.updateSize = function () {
         this.sensor = null;
         this.setSensorSize(this.properties.width, this.properties.height);
@@ -83,7 +60,7 @@
         
         // clean the sytle
         o.style = this.cleanUpStyle(o.style , this.label.style);
-        
+                
         if(isEmpty(o.style)){
             delete o.style;
         }
@@ -93,25 +70,11 @@
     };
 
     ButtonObject.prototype.build = function (data) {
-
+        
         if (data) {
             this.setBasicData(data);
-            this.label.txt = data.txt;
-
-            if (data.properties) {
-                this.background.imageName = data.properties.imageNormal || this._defaultValues.imageNormal;
-            } else {
-                this.background.imageName = this._defaultValues.imageNormal;
-            }
-
-            if (data.style) {
-                for (var property in data.style) {
-                    if (data.style.hasOwnProperty(property)) {
-                        this.label.style[property] = data.style[property];
-                        // do stuff
-                    }
-                }
-            }
+            this.label.txt = data.txt;            
+            this.background.imageName = this.properties.imageNormal;      
 
         }
 
@@ -188,7 +151,7 @@
 
         var pickers = [];
 
-        if (this.properties.isNineSlice) {
+     //   if (this.properties.isNineSlice) {
             html += HtmlElements.createSection('Background Colors').html;
 
             var bc = ['backgroundColorNormal', 'backgroundColorHover', 'backgroundColorDown', 'backgroundColorDisabled'];
@@ -216,7 +179,7 @@
                 pickers.push(picker);
             }
 
-        }
+     //   }
 
 
 
@@ -236,10 +199,6 @@
 
         var opt23 = {name: 'onMouseCancel', displayName: 'Cancel', value: this.properties.onMouseCancel, method: method, type: HtmlElements.TYPE_INPUT_STRING};
         html += HtmlElements.createInput(opt23).html;
-
-
-//        var opt24 = {name:'save_style' , displayName: 'Save Style' , style : 'margin-top:5px;' , method: 'saveButtonStyle'};
-//        html += HtmlElements.createButton(opt24).html;
 
 
         editor.htmlInterface.propertiesContent.innerHTML = html + eHTML;
@@ -322,6 +281,7 @@
 
     ButtonObject.prototype._setImage = function (name) {
         this.properties.imageNormal = name;
+        this.properties.imageSelected = name;
         this.background.imageName = name;
         this.background.buildBackground();
     };

@@ -19,9 +19,7 @@
         this.background = new NineSlice(imageName, '15');
         this.addChild(this.background);
 
-        this.backgroundName = imageName;
-
-        this.label = new Label();
+        this.label = new Label(Default.styles.Label);
         this.label.txt = '';
         this.label.anchor.set(0.5, 0.5);
 
@@ -37,6 +35,7 @@
         this._defaultValues = Default.properties.InputObject;
 
         this.properties = JSON.parse(JSON.stringify(this._defaultValues));
+        this.properties.backgroundName = imageName || this.properties.backgroundName;
 
     };
 
@@ -91,7 +90,6 @@
         var o = this.basicExport();
 
         o.txt = this.label.txt;
-        o.backgroundName = this.backgroundName;
 
         o.style = this._exportStyle();
         
@@ -111,9 +109,8 @@
             this.setBasicData(data);
             this.label.txt = data.txt;
 
-            this.backgroundName = data.backgroundName;
 
-            this.background.imageName = data.backgroundName;
+            this.background.imageName = this.properties.backgroundName;
 
             for (var property in data.style) {
                 if (data.style.hasOwnProperty(property)) {
@@ -241,7 +238,7 @@
     };
 
     InputObject.prototype._setImage = function (name) {
-        this.backgroundName = name;
+        this.properties.backgroundName = name;
         this.background.imageName = name;
         this.background.buildBackground();
     };
