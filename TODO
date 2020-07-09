@@ -1,3 +1,4 @@
+
 - there is an error when copy-paste from one screen to an other ( multiple objects selected )
 - when saving a style also apply it.
 
@@ -13,6 +14,14 @@ When exporting , strip properties and styles defined in styles. So no need to de
 
 # CLIENT
 
+- have a look at the navigator and the android back button. ( history management)
+- add history navigation in the keyboard by default , to prevent the back button on android.
+- Auto switch to small letters in keyboard. let back button to dismiss the keyboard.
+- Add online/ offline events.
+- add keyboard to stage when its needed.
+- Move entire screen when keyboard pops.
+- Break the current button object into , button and sliced button.
+
 - add PWA manifest and service worker
 - on release create a service worker that caches all assets
 - add option to ignore PWA creation ( no manifest , no service worker ) , this is for the release script
@@ -27,8 +36,8 @@ When exporting , strip properties and styles defined in styles. So no need to de
 
 # EDITOR
 
-- prevent ViewComponent from having input fields  , and input content layers.
-- make it faster to switch between layers !
+- prevent ViewComponent from having input fields  , and input content layers. // this can be solved differently
+
 
 - add drop shadow for button
 - add border for button
@@ -40,6 +49,7 @@ When exporting , strip properties and styles defined in styles. So no need to de
 
 # DONE
 
+- make it faster to switch between layers !
 - when creating new scene , choose the type and for screen auto create a class and embed it into the index.html
 - json file types - screen - viewcomponent - generic
 - Fonts build Tool , it will convert the fonts to ttf and strip unnecessary characters
