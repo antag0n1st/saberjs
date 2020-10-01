@@ -27,6 +27,10 @@
     <button id="playButton" class="btn btn-info" style="width: 100px; margin-left: 5px;"  >
         <i class="fa fa-play"></i>
     </button>
+    
+    <div style="display: inline;margin-left: 20px;">
+        <label for="snapCheckbox" style="cursor: pointer">Snap</label> <input  id="snapCheckbox"  type="checkbox" style="cursor: pointer" />
+    </div>
 
     <?php if ($editorConfig->features->zoom): ?>
         <div id="zoomControl" style="display: inline-block; margin-left: 10px; padding-top: 7px;" >

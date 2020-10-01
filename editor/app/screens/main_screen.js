@@ -60,6 +60,8 @@
         if (lines) {
             this.guideLines = JSON.parse(lines);
         }
+        
+        this.isSnaping = store.get('isSnapping-' + ContentManager.baseURL) || false;
 
         /////////
 

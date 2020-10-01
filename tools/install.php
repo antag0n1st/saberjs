@@ -133,6 +133,7 @@ copy('saberjs/Gruntfile.js', $dir_name . '/Gruntfile.js');
 copy('saberjs/lib.min.js', $dir_name . '/lib.min.js');
 copy('saberjs/package.json', $dir_name . '/package.json');
 copy('saberjs/pixi.min.js', $dir_name . '/pixi.min.js');
+copy('saberjs/.htaccess', $dir_name . '/.htaccess');
 
 
 

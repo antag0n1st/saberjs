@@ -276,6 +276,11 @@
                     var x = so.position.x;
                     var y = so.position.y;
                     so.position = so.originalPosition;
+                    
+                    if(this.editor.isSnaping){
+                        x = Math.round(x / editorConfig.snapX) * editorConfig.snapX;
+                        y = Math.round(y / editorConfig.snapY) * editorConfig.snapY;
+                    }
 
                     var mc = new CommandMove(so, x, y);
                     batch.add(mc);

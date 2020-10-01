@@ -78,6 +78,7 @@ copyfile('pixi.min.js', release_dir+'/pixi.min.js')
 copyfile('lib.min.js', release_dir+'/lib.min.js')
 copyfile('config.js', release_dir+'/config.js')
 copyfile('app.min.js', release_dir+'/app.min.js')
+copyfile('.htaccess', release_dir+'/.htaccess')
 
 copyfile('manifest.json', release_dir+'/manifest.json')
 copyfile('workbox-sw.js', release_dir+'/workbox-sw.js')

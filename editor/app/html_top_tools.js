@@ -24,12 +24,12 @@
         this.textUpdateArea = document.getElementById('textUpdateArea');
         this.textUpdateArea.onkeyup = this.onTextareaKey.bind(this);
         this.textUpdateArea.oninput = this.onTextareaKey.bind(this);
-        
+
         var closeTextPanel = document.getElementById('closeTextPanel');
-        closeTextPanel.onclick = function(){
+        closeTextPanel.onclick = function () {
             that.hideTextEdit();
         };
-        
+
 
         var size = app.device.windowSize();
 
@@ -72,6 +72,10 @@
             that.onStrokeColorChange(e.color.toHexString());
         });
 
+        this.snapCheckbox = document.getElementById('snapCheckbox');
+        this.snapCheckbox.onclick = this.onSnapModeChange.bind(this);
+        this.snapCheckbox.checked = this.editor.isSnaping;
+
         ///////////////////////////////////////////////////////
         // drop shadow
 
@@ -101,7 +105,7 @@
 
         var fonts = '';
 
-      
+
         fonts += '<option value="ArialHebrew-Bold,Helvetica,Impact">ArialHebrew-Bold,Helvetica,Impact</option>';
 //        fonts += '<option value="Impact, Charcoal, sans-serif">Impact, Charcoal, sans-serif</option>';
 //        fonts += '<option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva, sans-serif</option>';
@@ -109,13 +113,13 @@
         this.textFontFamily.innerHTML = '';
 
 
-         for (var i = 0; i < Fonts.fonts.length; i++) {
+        for (var i = 0; i < Fonts.fonts.length; i++) {
             var font = Fonts.fonts[i];
-            
-             var opt = document.createElement('option');
-                opt.value = font.family;
-                opt.innerHTML = font.family;
-                this.textFontFamily.appendChild(opt);
+
+            var opt = document.createElement('option');
+            opt.value = font.family;
+            opt.innerHTML = font.family;
+            this.textFontFamily.appendChild(opt);
         }
 
 //        for (var property in Fonts) {
@@ -518,17 +522,17 @@
     };
 
     HtmlTopTools.prototype.onDuplicateButton = function () {
-     
+
         if (this.editor.selectedObjects.length) {
-            
+
             for (var i = 0; i < this.editor.selectedObjects.length; i++) {
                 var o = this.editor.selectedObjects[i];
-                if(o.type === "MessageBoxObject"){
+                if (o.type === "MessageBoxObject") {
                     toastr.warning("Can't duplicate a Question Message Box");
                     return;
                 }
             }
-            
+
             this.editor.copySelection();
             this.editor.paste();
         }
@@ -912,6 +916,11 @@
 
     HtmlTopTools.prototype.hideZIndexButtons = function () {
         this.zIndexButtons.innerHTML = '';
+    };
+
+    HtmlTopTools.prototype.onSnapModeChange = function () {
+        this.editor.isSnaping = this.snapCheckbox.checked;
+        store.set('isSnapping-' + ContentManager.baseURL, this.editor.isSnaping);
     };
 
     window.HtmlTopTools = HtmlTopTools;
