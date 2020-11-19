@@ -52,11 +52,13 @@
 
             ContentManager.downloadResources(function () {
 
-                app.navigator.currentScreen.loadingBar.setPercent(1);
+                app.navigator.currentScreen.loadingBar.setPercent(1, false);
 
                 if (window[Config.initialScreen]) {
                     var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
-                    app.navigator.popAndGo(screen);
+                    timeout(function () {
+                        app.navigator.popAndGo(screen);
+                    } , 60);
                 } else {
                     throw Config.initialScreen + ' - is not Defined';
                 }

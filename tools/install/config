@@ -25,6 +25,7 @@ Config.MODE_STRETCH = 2; // I dont know why I would use this mode
 Config.MODE_CENTERED = 3; // it will preserve the aspect ratio an fit into the screen
 Config.MODE_NONE = 4; // do not do anything about it
 Config.MODE_PADDING = 5; // it will leave some space on the sides
+Config.MODE_FLIXIBLE = 6; // it will flex on all sides
 
 Config.window_mode = {window_mode}; // set the scaling method
 Config.window_mode_mobile = {window_mode_mobile}; // if you need special mode for mobile devices

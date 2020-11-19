@@ -41,7 +41,7 @@
             offsetY: 0,
 
             isAnimated: false,
-            animationSpeed: 0,
+            animationSpeed: 300,
             showPercent: true
         });
         this.addChild(this.loadingBar);
@@ -77,7 +77,7 @@
 
         if (loaded && this.lastLoadedCount != loaded) {          
             this.lastLoadedCount = loaded;
-            this.loadingBar.setPercent(loading);
+            this.loadingBar.setPercent(loading , true);
         }
 
     };
