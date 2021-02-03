@@ -41,6 +41,8 @@
         this.lastLoadedCount = 0;
 
         this.setPositions();
+        
+        _loadingBar = this.loadingBar;
 
     };
 

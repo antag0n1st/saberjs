@@ -581,7 +581,7 @@
 
             if (this.selectJSON.value != 0) {
                 var editor = this.editor;
-                ajaxGet(this.selectJSON.value, function (response) {
+                ajaxGet(this.selectJSON.value + '?v=' + uuid(), function (response) {
                     if (response) {
                         importer.import(response);
                         document.getElementById('exportFileName').value = importer.data.fileName;

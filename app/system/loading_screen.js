@@ -22,7 +22,7 @@
 
         this.isAnimating = true;
 
-        this.loadingBar = new LoadingBar({
+        _loadingBar = new LoadingBar({
             background: 'white',
             backgroundIsSliced: true,
             backgroundWidth: 400,
@@ -44,7 +44,7 @@
             animationSpeed: 300,
             showPercent: true
         });
-        this.addChild(this.loadingBar);
+        this.addChild(_loadingBar);
 
         this.lastLoadedCount = 0;
 
@@ -58,7 +58,7 @@
         var height = app.height;
 
         this.logo.position.set(mid_x ,  height * 0.45);
-        this.loadingBar.position.set(mid_x , height * 0.75); // 300 is half the loading bar width
+        _loadingBar.position.set(mid_x , height * 0.75); // 300 is half the loading bar width
 
         this.background.position.set(-10,-10);
         this.background.width = app.width * 1.2;
@@ -77,7 +77,7 @@
 
         if (loaded && this.lastLoadedCount != loaded) {          
             this.lastLoadedCount = loaded;
-            this.loadingBar.setPercent(loading , true);
+            _loadingBar.setPercent(loading , true);
         }
 
     };

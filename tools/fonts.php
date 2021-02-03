@@ -46,7 +46,7 @@ function listFolderFiles($dir) {
         }
     $replacement .= "\n    ";
 
-    $index = replace_between($index, '<body>', '</body>', $replacement);
+    $index = replace_between($index, '<!--FONTS-START-->', '<!--//FONTS-END-->', $replacement);
     
     file_put_contents('..' . DS . 'assets' . DS . 'css'.DS.'fonts.css', $css_content);
     file_put_contents('..' . DS . 'index.html', $index);

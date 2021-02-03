@@ -5,6 +5,7 @@ const constructedCacheName = `${cacheRuntime}-${cacheName} - ${location.origin}`
 const cacheFiles = {'script': true, 'image': true, 'font': true, 'style': true, 'document': true};
 
 importScripts('./workbox-sw.js');
+workbox.setConfig({ debug: false });
 const {strategies} = workbox;
 const {registerRoute} = workbox.routing;
 const {CacheFirst} = workbox.strategies;

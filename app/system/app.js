@@ -3,9 +3,9 @@
     function App() {
         this.initialize();
     }
-
+    
     App.prototype.initialize = function () {
-
+     
         this.width = 0; // it will have the interval width of the application screen
         this.height = 0; //it will have the interval height of the application screen
 
@@ -22,15 +22,19 @@
             this.device.calculateSizes();
         }
 
-        if (this.device.isIOS) {
-            PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
-        }
+//        if (this.device.isIOS) {
+//            PIXI.settings.SCALE_MODE = PIXI.PRECISION.HIGH;
+//        }
 
         var settings = {
             resolution: 1,
             width: this.width,
-            height: this.height
+            height: this.height,
+            transparent: true
         };
+
+        //FOR pixel art games
+//        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         this.pixi = new PIXI.Application(settings);
 
@@ -39,12 +43,14 @@
         this.pixi.ticker.add(this.tick, this);
 
         this.stage = this.pixi.stage;
-        this.screen = this.pixi.screen; // width and height
+//        this.screen = this.pixi.screen; // width and height
         this.loader = PIXI.Loader.shared;
 
         this.input = new Input(this, this.pixi.renderer.view);
 
         this.navigator = new HNavigator(this);
+
+        
 
         this.initialLoad(function () {
 
@@ -52,13 +58,13 @@
 
             ContentManager.downloadResources(function () {
 
-                app.navigator.currentScreen.loadingBar.setPercent(1, false);
+                _loadingBar.setPercent(1, false);
 
                 if (window[Config.initialScreen]) {
                     var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
                     timeout(function () {
                         app.navigator.popAndGo(screen);
-                    } , 60);
+                    }, 60);
                 } else {
                     throw Config.initialScreen + ' - is not Defined';
                 }
@@ -170,7 +176,7 @@
         }
 
     };
-
+    
     App.prototype.tick = function (deltaTime) {
 
         // elapsedMS
@@ -213,9 +219,7 @@
 
     App.prototype.handleVisibility = function (isVisible) {
 
-        if (app.navigator.currentScreen) {
-            app.navigator.currentScreen.onVisibilityChange(isVisible);
-        }
+        app.navigator.onVisibilityChange(isVisible);
 
         if (isVisible) {
             if (Config.is_sound_on) {
@@ -255,7 +259,7 @@
 
                 // lets check if it is a rotation
 
-                app.navigator.currentScreen.inputField.blur();
+                app.navigator.blurInputs();
                 app.device.isKeyboardUp = false;
                 app.device.isKeyboardTheSource = true;
 
@@ -276,11 +280,7 @@
 
         this.input.recalucateOffset();
 
-        for (var i = 0; i < this.navigator.screens.length; i++) {
-            var screen = this.navigator.screens[i];
-            // screen.set_size(this.width, this.height);
-            screen._onResize(this.width, this.height);
-        }
+        this.navigator.onResizeScreens(this.width, this.height);
 
         if (isAutoLayout) {
             //TODO implement the rotate layer
@@ -326,7 +326,7 @@
 
             this.isRotationLayerShown = true;
             this.stage.addChild(this.rotate_layer);
-            this.navigator.currentScreen.isPaused = true;
+            this.navigator.pauseScreen(true);
             this.input.isBlocked = true;
             Actions.pause();
             if (Config.is_sound_on) {
@@ -341,7 +341,7 @@
 
             this.isRotationLayerShown = false;
             this.rotate_layer.removeFromParent();
-            this.navigator.currentScreen.isPaused = false;
+            this.navigator.pauseScreen(false);
             this.input.isBlocked = false;
             Actions.resume();
             if (Config.is_sound_on) {

@@ -109,6 +109,14 @@ $publish_content = replaceContent(file_get_contents('tools/install/publish'), $d
 $manifest_content = replaceContent(file_get_contents('tools/release/pwa/manifest'), $data_strings);
 $serviceworker_content = replaceContent(file_get_contents('tools/release/pwa/serviceworker'), $data_strings);
 
+$meta_content = json_encode([
+   "Title" => $name,
+   "Description"=> $name,
+   "Preview Image"=> "./assets/cover.jpg",
+   "Url"=> "./",
+   "Color"=> $background_color
+]);
+
 chdir("..");
 
 if (!file_exists($dir_name)) {
@@ -161,6 +169,7 @@ unlink($dir_name . '/assets/images/logo-white.png');
 
 
 // create new content
+file_put_contents($dir_name . '/.meta', $meta_content);
 file_put_contents($dir_name . '/config.js', $config_content);
 file_put_contents($dir_name . '/index.html', $index_content);
 file_put_contents($dir_name . '/app/screens/'.$start_screen_file_name.'.js', $screen_content);

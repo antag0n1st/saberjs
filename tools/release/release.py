@@ -6,6 +6,14 @@ from functions import *
 
 #### do your thing here
 
+### read Meta Data first
+
+with open('.meta', 'r') as metaFile:
+    jsonMeta = metaFile.read();
+
+meta = json.loads(jsonMeta)
+
+
 release_dir = 'release';
 version_number = sys.argv[1];
 
@@ -54,6 +62,12 @@ javascripts = javascripts.replace("v=1","v="+version_number);
 data = re.sub(''+start_string+'.*?'+end_string,javascripts,data, flags=re.DOTALL)
 
 
+data = data.replace("_TITLE", meta['Title']);
+data = data.replace("_DESCRIPTION", meta['Description']);
+data = data.replace("_PREVIEW_IMAGE", meta['Preview Image']);
+data = data.replace("_URL", meta['Url']);
+data = data.replace("_COLOR", meta['Color']);
+
 
 filename = release_dir+"/index.html";
 myfile = open(filename, 'w+');
@@ -78,7 +92,6 @@ copyfile('pixi.min.js', release_dir+'/pixi.min.js')
 copyfile('lib.min.js', release_dir+'/lib.min.js')
 copyfile('config.js', release_dir+'/config.js')
 copyfile('app.min.js', release_dir+'/app.min.js')
-copyfile('.htaccess', release_dir+'/.htaccess')
 
 copyfile('manifest.json', release_dir+'/manifest.json')
 copyfile('workbox-sw.js', release_dir+'/workbox-sw.js')

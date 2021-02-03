@@ -98,7 +98,7 @@
 
                         ContentManager.downloadResources(function () {
 
-                            app.navigator.currentScreen.loadingBar.setPercent(1, false);
+                            app.screen.loadingBar.setPercent(1, false);
 
                             var screen = applyToConstructor(window[Config.initialScreen], Config.initialScreenArgs);
 
@@ -234,11 +234,7 @@
             this.adjustCanvasPositionPadding(this.pixi.view);
         }
 
-        for (var i = 0; i < this.navigator.screens.length; i++) {
-            var screen = this.navigator.screens[i];
-            // screen.set_size(this.width, this.height);
-            screen._onResize(this.width, this.height);
-        }
+        this.navigator.onResizeScreens(this.width, this.height);
 
         this.adjustToolbars();
 
