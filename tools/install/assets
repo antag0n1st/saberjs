@@ -1,4 +1,4 @@
-App.prototype.loadAssets = function () {
+app.loadAssets = function () {
 
 ContentManager.addImage('favicon','favicon.png');
 

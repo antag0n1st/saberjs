@@ -1,0 +1,5 @@
+download and install 
+https://www.imagemagick.org/script/download.php
+
+
+Add a png file in this directory 512x512 , and it will be resized and distributed throught the app when you run the script

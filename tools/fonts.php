@@ -41,7 +41,7 @@ function listFolderFiles($dir) {
         
     $replacement = "\n\n";
     foreach ($fonts as $font) {
-        $replacement .= "\t".'<p class="noselect" style="font-family: \'' . str_replace('.ttf', '', $font) . '\'; color: transparent; z-index: -100;position: absolute;"> '.str_replace('.ttf', '', $font).' </p>' . "\n";
+        $replacement .= "\t".'<p class="noselect" style="font-family: \'' . str_replace('.ttf', '', $font) . '\'; color: transparent; z-index: -100;position: absolute;"> _DESCRIPTION </p>' . "\n";
         $css_content .= "@font-face { \n\tfont-family: '". str_replace('.ttf', '', $font)."'; \n\tsrc:  url('../fonts/".$font."') format('truetype'); \n}\n\n";
         }
     $replacement .= "\n    ";

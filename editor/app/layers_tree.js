@@ -336,7 +336,7 @@
 
         var visibility = '';
         visibility += '<i class="fa ' + (object.visible ? 'fa-eye' : 'fa-low-vision') + '" ';
-        visibility += ' onclick="return app.navigator.currentScreen.htmlInterface.tree.clickOnEye(event,this)"  ';
+        visibility += ' onclick="return app.screen.htmlInterface.tree.clickOnEye(event,this)"  ';
         visibility += ' data-visible="' + object.visible + '" ';
         visibility += ' data-id="' + object.id + '" ';
         visibility += ' ></i> ';

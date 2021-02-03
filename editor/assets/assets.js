@@ -1,4 +1,4 @@
-App.prototype.loadAssets = function () {
+app.loadAssets = function () {
 
 ContentManager.addImage('keyboard_backspace','keyboard/keyboard_backspace.png');
 ContentManager.addImage('keyboard_capitalize','keyboard/keyboard_capitalize.png');

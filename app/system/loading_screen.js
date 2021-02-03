@@ -1,4 +1,4 @@
-(function (window, undefined) {
+(function (window, app , sharedObject, undefined) {
 
     function LoadingScreen() {
         this.initialize();
@@ -88,4 +88,4 @@
 
     window.LoadingScreen = LoadingScreen;
 
-}(window));
+}(window , app , sharedObject));

@@ -63,12 +63,12 @@
 
         if (object.hasLabel) {
 
-            html += '<li id="contextSaveStyle" class="dropdown-item" onclick="app.navigator.currentScreen.htmlInterface.contextMenu.onContextSaveStyle();"  >';
+            html += '<li id="contextSaveStyle" class="dropdown-item" onclick="app.screen.htmlInterface.contextMenu.onContextSaveStyle();"  >';
             html += '<i class="fa fa-fw fa-lg fa-floppy-o"></i> ';
             html += '<span class="actionName">Save Style</span>';
             html += '</li>';
 
-            html += '<li id="contextChooseStyle" class="dropdown-item" onclick="app.navigator.currentScreen.htmlInterface.contextMenu.onContextStyleSelect();"  >';
+            html += '<li id="contextChooseStyle" class="dropdown-item" onclick="app.screen.htmlInterface.contextMenu.onContextStyleSelect();"  >';
             html += '<i class="fa fa-fw fa-lg fa-paint-brush"></i> ';
             html += '<span class="actionName">Style Select</span>';
             html += '</li>';
@@ -297,7 +297,7 @@
             modal.setAttribute('tabindex', '-1');
             modal.setAttribute('role', 'dialog');
 
-            var method = 'app.navigator.currentScreen.htmlInterface.contextMenu.onSavePrefab(this);';
+            var method = 'app.screen.htmlInterface.contextMenu.onSavePrefab(this);';
 
             var content = `
   <div class="modal-dialog" role="document">

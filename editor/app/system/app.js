@@ -1,53 +1,204 @@
 (function (window) {
     //main class
     function App() {
-        this.initialize();
+        
     }
 
-    App.prototype.initialize = function () {
+    App.initialize = function () {
+        
+        
+         app.addToLoader = function (resources) {
 
-        this.width = 0; // it will have the interval width of the application screen
-        this.height = 0; //it will have the interval height of the application screen
+        for (var i = 0; i < resources.length; i++) {
+            var resource = resources[i];
 
-        this.canvasWidth = 0;
-        this.canvasHeight = 0;
+            if (resource.children) {
+                app.addToLoader(resource.children);
+            } else if (resource.url) {
+                if (!resource.frame) {
+                    ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
+                }
 
-        this.windowWidth = 0;
-        this.windowHeight = 0;
+            }
 
-        this.device = new Device(this);
+        }
+
+    };
+
+    app.initialLoad = function (callback) {
+
+        ContentManager.addImage('_loading_bar_bg', 'initial/_loading_bar_bg.png');
+        ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
+
+        ContentManager.downloadResources(function () {
+
+            // PIXI.loader.resources._editor_config.data
+
+            var screen = new LoadingScreen();
+            app.navigator.add(screen);
+
+            if (callback) {
+                callback.call(app);
+            }
+            callback = null;
+
+        }, app);
+
+    };
+
+    app.layoutCanvas = function () {
+        document.body.appendChild(app.pixi.view);
+
+        if (Config.window_mode !== Config.MODE_NONE) {
+            app.pixi.view.style.width = app.canvasWidth + "px";
+            app.pixi.view.style.height = app.canvasHeight + "px";
+        }
+
+        if (Config.window_mode === Config.MODE_CENTERED) {
+            app.adjustCanvasPositionCentered(app.pixi.view);
+        } else if (Config.window_mode === Config.MODE_PADDING) {
+            app.adjustCanvasPositionPadding(app.pixi.view);
+        }
+    };
+
+    app.tick = function (deltaTime) {
+
+        // elapsedMS
+        // deltaTime
+        // FPS
+        // lastTime
+
+        var step = app.pixi.ticker.elapsedMS;
+        step = step > 50 ? 50 : step;
+
+        Actions.update(step); // update tweens
+
+        app.navigator.update(step); // update the sceen and its objects
+
+    };
+
+    app.adjustCanvasPositionCentered = function (canvas) {
+
+        var x = app.windowWidth - app.canvasWidth;
+        var y = app.windowHeight - app.canvasHeight;
+
+        canvas.style.marginLeft = Math.ceil(x / 2) + "px";
+        canvas.style.marginTop = Math.ceil(y / 2) + "px";
+
+    };
+
+    app.adjustCanvasPositionPadding = function (canvas) {
+
+        var canvasPadding = Config.canvas_padding.split(' ');
+
+        canvas.style.marginLeft = Math.ceil(canvasPadding[3]) + "px";
+        canvas.style.marginTop = Math.ceil(canvasPadding[0]) + "px";
+
+    };
+
+
+    app.handleVisibility = function () {
+
+    };
+
+    app.resize = function () {
+
+        app.device.calculateSizes();
+
+        app.pixi.view.style.width = Math.ceil(app.canvasWidth) + "px";
+        app.pixi.view.style.height = Math.ceil(app.canvasHeight) + "px";
+        app.pixi.renderer.resize(app.width, app.height);
+
+        if (Config.window_mode === Config.MODE_CENTERED) {
+            app.adjustCanvasPositionCentered(app.pixi.view);
+        } else if (Config.window_mode === Config.MODE_PADDING) {
+            app.adjustCanvasPositionPadding(app.pixi.view);
+        }
+
+        app.navigator.onResizeScreens(app.width, app.height);
+
+        app.adjustToolbars();
+
+    };
+
+    app.adjustToolbars = function () {
+        var topToolbar = document.getElementById('topToolbar');
+        var sideToolbar = document.getElementById('sideToolbar');
+        var leftToolbar = document.getElementById('leftToolbar');
+
+        topToolbar.style.visibility = 'visible';
+        sideToolbar.style.visibility = 'visible';
+        leftToolbar.style.visibility = 'visible';
+
+        var canvasPadding = Config.canvas_padding.split(' ');
+
+        topToolbar.style.width = (app.device.windowSize().width - canvasPadding[1]) + 'px';
+        topToolbar.style.height = canvasPadding[0] + 'px';
+
+        sideToolbar.style.width = canvasPadding[1] + 'px';
+        sideToolbar.style.height = (app.device.windowSize().height) + 'px';
+
+        leftToolbar.style.width = canvasPadding[3] + 'px';
+        leftToolbar.style.height = (app.device.windowSize().height) + 'px';
+    };
+
+    app.checkRotation = function () {
+
+    };
+
+    app.showRotateDevice = function () {
+
+    };
+
+    app.hideRotateDevice = function () {
+
+    };
+        
+        
+        ////////////////////////////
+
+        app.width = 0; // it will have the interval width of the application screen
+        app.height = 0; //it will have the interval height of the application screen
+
+        app.canvasWidth = 0;
+        app.canvasHeight = 0;
+
+        app.windowWidth = 0;
+        app.windowHeight = 0;
+
+        app.device = new Device(app);
 
         var settings = {
             clearBeforeRender: Config.should_clear_stage,
             preserveDrawingBuffer: true,
             resolution: 1,
-            width: this.width,
-            height: this.height,
+            width: app.width,
+            height: app.height,
             backgroundColor: Config.background_color
         };
 
-        this.pixi = new PIXI.Application(settings);
+        app.pixi = new PIXI.Application(settings);
 
-        this.layoutCanvas();
+        app.layoutCanvas();
 
-        this.pixi.ticker.add(this.tick, this);
+        app.pixi.ticker.add(app.tick, app);
 
-        this.stage = this.pixi.stage;
-        this.screen = this.pixi.screen; // width and height
-        this.loader = this.pixi.loader;
+        app.stage = app.pixi.stage;
+        app.screen = app.pixi.screen; // width and height
+        app.loader = app.pixi.loader;
 
-        this.input = new Input(this, this.pixi.renderer.view);
+        app.input = new Input(app, app.pixi.renderer.view);
 
-        this.navigator = new HNavigator(this);
+        app.navigator = new HNavigator(app);
 
-        this.libraryImages = [];
+        app.libraryImages = [];
 
-        this.initialLoad(function () {
+        app.initialLoad(function () {
 
-            this.loadAssets();
+            app.loadAssets();
 
-            if (this._loadExtraAssets) {
-                this._loadExtraAssets();
+            if (app._loadExtraAssets) {
+                app._loadExtraAssets();
             }
 
             ajaxGet(ContentManager.baseURL + 'app/php/fonts.php', function (response) {
@@ -106,7 +257,7 @@
                                 app.navigator.add(screen);
                             }, 200);
 
-                        }, this);
+                        }, app);
                     });
 
 
@@ -120,158 +271,13 @@
 
         });
 
-        this.texturesBase64Cache = [];
+        app.texturesBase64Cache = [];
 
 
 
     };
 
-    App.prototype.addToLoader = function (resources) {
-
-        for (var i = 0; i < resources.length; i++) {
-            var resource = resources[i];
-
-            if (resource.children) {
-                this.addToLoader(resource.children);
-            } else if (resource.url) {
-                if (!resource.frame) {
-                    ContentManager.addImage(resource.name, ContentManager.baseURL + resource.url);
-                }
-
-            }
-
-        }
-
-    };
-
-    App.prototype.initialLoad = function (callback) {
-
-        ContentManager.addImage('_loading_bar_bg', 'initial/_loading_bar_bg.png');
-        ContentManager.addImage('_loading_bar_fg', 'initial/_loading_bar_fg.png');
-
-        ContentManager.downloadResources(function () {
-
-            // PIXI.loader.resources._editor_config.data
-
-            var screen = new LoadingScreen();
-            app.navigator.add(screen);
-
-            if (callback) {
-                callback.call(this);
-            }
-            callback = null;
-
-        }, this);
-
-    };
-
-    App.prototype.layoutCanvas = function () {
-        document.body.appendChild(this.pixi.view);
-
-        if (Config.window_mode !== Config.MODE_NONE) {
-            this.pixi.view.style.width = this.canvasWidth + "px";
-            this.pixi.view.style.height = this.canvasHeight + "px";
-        }
-
-        if (Config.window_mode === Config.MODE_CENTERED) {
-            this.adjustCanvasPositionCentered(this.pixi.view);
-        } else if (Config.window_mode === Config.MODE_PADDING) {
-            this.adjustCanvasPositionPadding(this.pixi.view);
-        }
-    };
-
-    App.prototype.tick = function (deltaTime) {
-
-        // elapsedMS
-        // deltaTime
-        // FPS
-        // lastTime
-
-        var step = this.pixi.ticker.elapsedMS;
-        step = step > 50 ? 50 : step;
-
-        Actions.update(step); // update tweens
-
-        this.navigator.update(step); // update the sceen and its objects
-
-    };
-
-    App.prototype.adjustCanvasPositionCentered = function (canvas) {
-
-        var x = this.windowWidth - this.canvasWidth;
-        var y = this.windowHeight - this.canvasHeight;
-
-        canvas.style.marginLeft = Math.ceil(x / 2) + "px";
-        canvas.style.marginTop = Math.ceil(y / 2) + "px";
-
-    };
-
-    App.prototype.adjustCanvasPositionPadding = function (canvas) {
-
-        var canvasPadding = Config.canvas_padding.split(' ');
-
-        canvas.style.marginLeft = Math.ceil(canvasPadding[3]) + "px";
-        canvas.style.marginTop = Math.ceil(canvasPadding[0]) + "px";
-
-    };
-
-
-    App.prototype.handleVisibility = function () {
-
-    };
-
-    App.prototype.resize = function () {
-
-        this.device.calculateSizes();
-
-        this.pixi.view.style.width = Math.ceil(this.canvasWidth) + "px";
-        this.pixi.view.style.height = Math.ceil(this.canvasHeight) + "px";
-        this.pixi.renderer.resize(this.width, this.height);
-
-        if (Config.window_mode === Config.MODE_CENTERED) {
-            this.adjustCanvasPositionCentered(this.pixi.view);
-        } else if (Config.window_mode === Config.MODE_PADDING) {
-            this.adjustCanvasPositionPadding(this.pixi.view);
-        }
-
-        this.navigator.onResizeScreens(this.width, this.height);
-
-        this.adjustToolbars();
-
-    };
-
-    App.prototype.adjustToolbars = function () {
-        var topToolbar = document.getElementById('topToolbar');
-        var sideToolbar = document.getElementById('sideToolbar');
-        var leftToolbar = document.getElementById('leftToolbar');
-
-        topToolbar.style.visibility = 'visible';
-        sideToolbar.style.visibility = 'visible';
-        leftToolbar.style.visibility = 'visible';
-
-        var canvasPadding = Config.canvas_padding.split(' ');
-
-        topToolbar.style.width = (app.device.windowSize().width - canvasPadding[1]) + 'px';
-        topToolbar.style.height = canvasPadding[0] + 'px';
-
-        sideToolbar.style.width = canvasPadding[1] + 'px';
-        sideToolbar.style.height = (app.device.windowSize().height) + 'px';
-
-        leftToolbar.style.width = canvasPadding[3] + 'px';
-        leftToolbar.style.height = (app.device.windowSize().height) + 'px';
-    };
-
-    App.prototype.checkRotation = function () {
-
-    };
-
-    App.prototype.showRotateDevice = function () {
-
-    };
-
-    App.prototype.hideRotateDevice = function () {
-
-    };
+   
 
     window.App = App;
 

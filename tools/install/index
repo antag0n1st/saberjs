@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>_TITLE</title>
         <meta charset="UTF-8" />
+        <title>_TITLE</title>
+        <meta name="description" content="_DESCRIPTION">
 		
 	<!--//PWA BEGIN-->
 

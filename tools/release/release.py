@@ -32,7 +32,10 @@ for filename in os.listdir(folder):
     except Exception as e:
         print('Failed to delete %s. Reason: %s' % (file_path, e))
 
+copy_and_overwrite('assets',release_dir+'/assets')
 
+if not os.path.exists(release_dir+'/assets/js/'):
+    os.makedirs(release_dir+'/assets/js/')
 
 #### create an index.html for release
 with open('index.html', 'r') as myfile:
@@ -41,15 +44,19 @@ with open('index.html', 'r') as myfile:
 with open('tools/scripts.html', 'r') as myfile:
     javascripts = myfile.read();
 
-with open('tools/release/pwa/worker-registration', 'r') as myfile:
-    worker_registration = myfile.read();
+if meta['PWA']:
 
-with open('tools/release/pwa/serviceworker', 'r') as myfile:
-    serviceworker = myfile.read();
+    with open('tools/release/pwa/worker-registration', 'r') as myfile:
+        worker_registration = myfile.read();
 
-serviceworker = serviceworker.replace("{version}",""+version_number);
+    with open('tools/release/pwa/serviceworker', 'r') as myfile:
+        serviceworker = myfile.read();
 
-data = data.replace("<!--//INCLUDE-PWA-->", worker_registration);
+    serviceworker = serviceworker.replace("{version}",""+version_number);
+
+    data = data.replace("<!--//INCLUDE-PWA-->", worker_registration);
+ 
+
 
 start_string = '<!--//SCRIPTS-BEGIN-->';
 end_string = '<!--//SCRIPTS-END-->';
@@ -77,22 +84,24 @@ myfile.close();
 print("Generated: "+filename)
 
 ### generate a service worker
-
-filename = release_dir+"/serviceworker.js";
-myfile = open(filename, 'w+');
-myfile.write(serviceworker);
-myfile.close();
-
-print("\nGenerated: "+filename);
+if meta['PWA']:
+    filename = release_dir+"/serviceworker.js";
+    myfile = open(filename, 'w+');
+    myfile.write(serviceworker);
+    myfile.close();
+    copyfile('workbox-sw.js', release_dir+'/workbox-sw.js')
 
 
 #### copy other files
-copy_and_overwrite('assets',release_dir+'/assets')
-copyfile('pixi.min.js', release_dir+'/pixi.min.js')
-copyfile('lib.min.js', release_dir+'/lib.min.js')
-copyfile('config.js', release_dir+'/config.js')
-copyfile('app.min.js', release_dir+'/app.min.js')
+
+
+copyfile('.htaccess', release_dir+'/.htaccess')
 
 copyfile('manifest.json', release_dir+'/manifest.json')
-copyfile('workbox-sw.js', release_dir+'/workbox-sw.js')
-### copyfile('serviceworker.js', release_dir+'/serviceworker.js')
+
+
+
+copyfile('pixi.min.js', release_dir+'/assets/js/pixi.min.js')
+copyfile('lib.min.js', release_dir+'/assets/js/lib.min.js')
+copyfile('config.js', release_dir+'/assets/js/config.js')
+copyfile('app.min.js', release_dir+'/assets/js/app.min.js')

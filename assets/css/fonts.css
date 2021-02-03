@@ -1,4 +1,19 @@
 @font-face { 
+	font-family: 'khand-bold'; 
+	src:  url('../fonts/khand-bold.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'khand-medium'; 
+	src:  url('../fonts/khand-medium.ttf') format('truetype'); 
+}
+
+@font-face { 
+	font-family: 'khand-regular'; 
+	src:  url('../fonts/khand-regular.ttf') format('truetype'); 
+}
+
+@font-face { 
 	font-family: 'sf-pro-display-black'; 
 	src:  url('../fonts/sf-pro-display-black.ttf') format('truetype'); 
 }

@@ -1,4 +1,4 @@
-(function (window, undefined) {
+(function (window, app , sharedObject, undefined) {
 
     function {start_screen_class_name}() {
         this.initialize();
@@ -131,4 +131,4 @@
 
     window.{start_screen_class_name} = {start_screen_class_name}; 
 
-}(window));
+}(window , app , sharedObject));

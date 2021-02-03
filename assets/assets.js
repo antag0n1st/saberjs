@@ -1,4 +1,4 @@
-App.prototype.loadAssets = function () {
+app.loadAssets = function () {
 
 
 

@@ -257,7 +257,7 @@
 
         html += HtmlElements.createSection('Editor').html;
 
-        html += '<div class="big  "><label>Preview: </label> <input class="form-control" style="" id="previewScreenInput" type="text" value="' + this.editor.previewScreenName + '" onkeyup="app.navigator.currentScreen.changePreviewScreen(\'preview-screen\',this.value,this,0,\'previewScreenInput\');"></div>';
+        html += '<div class="big  "><label>Preview: </label> <input class="form-control" style="" id="previewScreenInput" type="text" value="' + this.editor.previewScreenName + '" onkeyup="app.screen.changePreviewScreen(\'preview-screen\',this.value,this,0,\'previewScreenInput\');"></div>';
 
 
         var tintColor = store.get('tint-' + ContentManager.baseURL) || 0xffffff;

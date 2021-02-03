@@ -438,7 +438,7 @@
             o.points.removeElement(point);
 
             var contentLayer = this.parent;
-            var io = app.navigator.currentScreen.importer.importObjects([o], contentLayer);
+            var io = app.screen.importer.importObjects([o], contentLayer);
 
             this.removeFromParent();
 

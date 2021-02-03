@@ -269,7 +269,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>      
-            <form onsubmit="return app.navigator.currentScreen.htmlInterface.onAddLayoutBtn();" id="newLayoutForm" name="newLayoutForm">
+            <form onsubmit="return app.screen.htmlInterface.onAddLayoutBtn();" id="newLayoutForm" name="newLayoutForm">
                 <div class="modal-body">
                     <div class="form-group">
                         <input id="layoutNameInput" name="name" class="form-control" Placeholder="Name" />
@@ -302,7 +302,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>      
-            <form onsubmit="return app.navigator.currentScreen.onStyleFormSave(this);">
+            <form onsubmit="return app.screen.onStyleFormSave(this);">
                 <div class="modal-body">
                     <div class="form-group">
                         <input id="saveStyleInput" name="name" class="form-control" Placeholder="Name" />
@@ -328,7 +328,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>      
-            <form onsubmit="return app.navigator.currentScreen.onSelectStyleForm(this);">        
+            <form onsubmit="return app.screen.onSelectStyleForm(this);">        
                 <div class="modal-body">
                     <div class="form-group">
                         <select id="styleOptions" name="style" class="form-control">
@@ -367,7 +367,9 @@
 
         PIXI.utils.skipHello();
 
-        app = new App();
+        App.initialize();
+
+        //app = new App();
 
     }, false);
 </script>

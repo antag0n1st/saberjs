@@ -84,13 +84,13 @@
         html += ' id="' + id + '" ';
         html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' type="text" value="' + value + '" ' + event_string;
-        html += ' onkeyup="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
-        html += ' onwheel="app.navigator.currentScreen.propertiesBinder.onPropertyInputWheel(event,\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
+        html += ' onkeyup="app.screen.' + method + '(\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
+        html += ' onwheel="app.screen.propertiesBinder.onPropertyInputWheel(event,\'' + name + '\',this.value,this,' + inputType + ',\'' + feedbackID + '\' , [' + range[0] + ',' + range[1] + '] );" ';
         //"propertiesBinder.onPropertyChange";
         // onPropertyInputWheel
         html += ' />';
 
-        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.navigator.currentScreen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\'' + id + '\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
+        html += options.buttonAction ? '<span class="input-group-btn"><button onclick="app.screen.' + options.buttonAction + '(\'' + name + '\',document.getElementById(\'' + id + '\').value)" class="btn btn-info ' + options.buttonClass + '" type="button"></button></span>' : '';
 
 
         html += '</div>';
@@ -122,7 +122,7 @@
         html += ' id="' + id + '" ';
         html += ' title="' + tooltip + '" ';
         html += ' src="assets/images/icons/' + imageName + '.png" ';
-        html += ' onclick="app.navigator.currentScreen.' + method + '(' + argsString + ')" ';
+        html += ' onclick="app.screen.' + method + '(' + argsString + ')" ';
         html += '/>';
 
         return {html: html, id: id};
@@ -158,7 +158,7 @@
         html += ' id="' + id + '" ';
         html += ' style="' + style + '" ';
         html += ' type="button" ';
-        html += ' onclick="app.navigator.currentScreen.' + method + '(\'' + name + '\',this);" ';
+        html += ' onclick="app.screen.' + method + '(\'' + name + '\',this);" ';
         html += '>';
 
         html += '<i class="' + icon + '"></i> ';
@@ -231,7 +231,7 @@
         html += ' style="cursor:pointer;" ';
         html += ' id="' + id + '" ';
         html += ' type="checkbox" ';
-        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + HtmlElements.TYPE_CHECKBOX + ',null);" ';
+        html += ' onchange="app.screen.' + method + '(\'' + name + '\',this.value,this,' + HtmlElements.TYPE_CHECKBOX + ',null);" ';
         html += ' />';
 
         html += '</div>';
@@ -268,7 +268,7 @@
         html += '>';
         html += displayName + ': &nbsp; </label>';
 
-        html += '<input onchange="app.navigator.currentScreen.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
+        html += '<input onchange="app.screen.fileSelectHandler(event,this,\'' + name + '\')" type="file"  id="' + id + '" name="fileselect[]" multiple="multiple" />';
 
         html += "</div>";
 
@@ -313,7 +313,7 @@
         html += ' class="form-control" ';
         html += tooltip ? ' title="' + tooltip + '"' : '';
         html += ' id="' + id + '" ';
-        html += ' onchange="app.navigator.currentScreen.' + method + '(\'' + name + '\',this.value,this,' + HtmlElements.TYPE_DROPDOWN + ',null);" ';
+        html += ' onchange="app.screen.' + method + '(\'' + name + '\',this.value,this,' + HtmlElements.TYPE_DROPDOWN + ',null);" ';
         html += '>';
 
         for (var i = 0; i < items.length; i++) {
@@ -456,7 +456,7 @@
                 value = e.color.toHexString();
             }
 
-            eval('app.navigator.currentScreen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,' + HtmlElements.TYPE_COLORPICKER + ',null);');
+            eval('app.screen.' + picker.options.method + '(\'' + picker.options.name + '\',value,this,' + HtmlElements.TYPE_COLORPICKER + ',null);');
 
 
         });

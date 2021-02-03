@@ -108,7 +108,7 @@ function listFolderFiles($dir) {
 
 listFolderFiles($main_dir);
 
-$content = "App.prototype.loadAssets = function () {\n\n" . $content . " \n};";
+$content = "app.loadAssets = function () {\n\n" . $content . " \n};";
 
 file_put_contents('..' . DS . 'assets' . DS . 'assets.js', $content);
 

@@ -90,11 +90,11 @@ $data_strings = [
     'background_color_css' => str_replace('0x', "#", $background_color),
     'start_screen_file_name' => $start_screen_file_name,
     'start_screen_class_name' => $start_screen_class_name,
-    'server' => PUBLISH_SERVER , 
+    'server' => PUBLISH_SERVER,
     'user' => PUBLISH_USER,
     'pass' => PUBLISH_PASS,
-    'rsa' => PUBLISH_RSA , 
-    'publish_url' => PUBLISH_URL , 
+    'rsa' => PUBLISH_RSA,
+    'publish_url' => PUBLISH_URL,
     'publish_dir' => PUBLISH_SERVER_DIR,
     'register-service-worker' => '', // file_get_contents('tools/release/pwa/worker-registration')
     'version' => 1
@@ -110,12 +110,13 @@ $manifest_content = replaceContent(file_get_contents('tools/release/pwa/manifest
 $serviceworker_content = replaceContent(file_get_contents('tools/release/pwa/serviceworker'), $data_strings);
 
 $meta_content = json_encode([
-   "Title" => $name,
-   "Description"=> $name,
-   "Preview Image"=> "./assets/cover.jpg",
-   "Url"=> "./",
-   "Color"=> $background_color
-]);
+    "Title" => $name,
+    "Description" => $name,
+    "Preview Image" => "./assets/cover.jpg",
+    "Url" => "./",
+    "Color" => $background_color,
+    "PWA" => false
+        ]);
 
 chdir("..");
 
@@ -172,7 +173,7 @@ unlink($dir_name . '/assets/images/logo-white.png');
 file_put_contents($dir_name . '/.meta', $meta_content);
 file_put_contents($dir_name . '/config.js', $config_content);
 file_put_contents($dir_name . '/index.html', $index_content);
-file_put_contents($dir_name . '/app/screens/'.$start_screen_file_name.'.js', $screen_content);
+file_put_contents($dir_name . '/app/screens/' . $start_screen_file_name . '.js', $screen_content);
 file_put_contents($dir_name . '/assets/assets.js', $assets_content);
 file_put_contents($dir_name . '/release.bat', $release_content);
 file_put_contents($dir_name . '/publish.bat', $publish_content);

@@ -29,11 +29,11 @@
             // also attach the wheel event
             // onwheel
 
-            var event = eventName + '="' + "app.navigator.currentScreen.htmlInterface.textEditor.onPropertyChange('" + property + "',this);" + '"';
+            var event = eventName + '="' + "app.screen.htmlInterface.textEditor.onPropertyChange('" + property + "',this);" + '"';
 
             if (eventName === "onkeyup") {
                 // also bind the wheel event
-                event += " onwheel=\"app.navigator.currentScreen.htmlInterface.textEditor.onPropertyWheelChange('" + property + "',this,event);" + '"';
+                event += " onwheel=\"app.screen.htmlInterface.textEditor.onPropertyWheelChange('" + property + "',this,event);" + '"';
             }
 
             return event;

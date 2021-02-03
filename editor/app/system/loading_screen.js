@@ -39,10 +39,10 @@
         this.addChild(this.loadingBar);
 
         this.lastLoadedCount = 0;
-
-        this.setPositions();
         
         _loadingBar = this.loadingBar;
+
+        this.setPositions();
 
     };
 

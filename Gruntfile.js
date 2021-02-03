@@ -6,7 +6,7 @@ module.exports = function (grunt) {
 
         uglify: {
 			options: {
-				sourceMap :false
+				sourceMap : false
 				//beautify: true,
 				//mangle: false
 			},
@@ -14,6 +14,8 @@ module.exports = function (grunt) {
                 files: {
 
                     'lib.min.js': [
+                        
+                        "lib/objects.js",
 
                         "lib/external/howler.core.min.js",
                         "lib/external/sat.js",
@@ -27,6 +29,7 @@ module.exports = function (grunt) {
                         "lib/external/bezier/bezier.js",
                         "lib/external/bezier/poly_bezier.js",
 
+                        
                         "lib/utility/*.js",
 
                         "lib/tweens/actions.js",
