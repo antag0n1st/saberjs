@@ -49,7 +49,9 @@ Some github instructions:
 - see all remote addresses `git remote -v`
 - Set a remote address `git remote set-url origin git@github.com:antag0n1st/saberjs.git`
 - add a key to the agent , start the ssh agent , Run shell as administrator   
-`Set-Service -Name ssh-agent -StartupType Manual \n Start-Service ssh-agent \n ssh-add C:\Users\Antagonist\.ssh\id_rsa_personal`
+`Set-Service -Name ssh-agent -StartupType Manual`
+`Start-Service ssh-agent`
+`ssh-add C:\Users\Antagonist\.ssh\id_rsa_personal`
 
 use multiple accounts
 https://www.freecodecamp.org/news/manage-multiple-github-accounts-the-ssh-way-2dadc30ccaca/
