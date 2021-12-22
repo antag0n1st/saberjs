@@ -48,7 +48,9 @@ Some github instructions:
 - list all settings `git config --list`
 - see all remote addresses `git remote -v`
 - Set a remote address `git remote set-url origin git@github.com:antag0n1st/saberjs.git`
-- add a key to the agent , start the ssh agent , Run shell as administrator   
+
+add a key to the agent , start the ssh agent , Run shell as administrator   
+
 `Set-Service -Name ssh-agent -StartupType Manual`
 
 `Start-Service ssh-agent`
