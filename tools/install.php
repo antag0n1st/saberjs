@@ -78,6 +78,10 @@ $s = strtolower($start_screen);
 $start_screen_file_name = $s . '_screen';
 $start_screen_class_name = ucfirst($s) . 'Screen';
 
+$dash_dir = str_replace('/', '-', rtrim($dir_name , '/') );
+$_parts = explode('/', rtrim($dir_name , '/'));
+$root_folder =  array_pop($_parts);
+
 $data_strings = [
     'dir_name' => $dir_name,
     'name' => $name,
@@ -97,8 +101,13 @@ $data_strings = [
     'publish_url' => PUBLISH_URL,
     'publish_dir' => PUBLISH_SERVER_DIR,
     'register-service-worker' => '', // file_get_contents('tools/release/pwa/worker-registration')
-    'version' => 1
+    'version' => 1 , 
+    'PROJECT-NAME' => $root_folder , 
+    'DASH-PATH' => $dash_dir,
+    'FOLDER' => $root_folder,
+    'URL' => rtrim($dir_name , '/').'/'
 ];
+
 
 $config_content = replaceContent(file_get_contents('tools/install/config'), $data_strings);
 $index_content = replaceContent(file_get_contents('tools/install/index'), $data_strings);
@@ -108,6 +117,10 @@ $release_content = replaceContent(file_get_contents('tools/install/release'), $d
 $publish_content = replaceContent(file_get_contents('tools/install/publish'), $data_strings);
 $manifest_content = replaceContent(file_get_contents('tools/release/pwa/manifest'), $data_strings);
 $serviceworker_content = replaceContent(file_get_contents('tools/release/pwa/serviceworker'), $data_strings);
+
+$nb_project = replaceContent(file_get_contents('tools/nb-templates/project.xml'), $data_strings);
+$nb_project_properties = replaceContent(file_get_contents('tools/nb-templates/project.properties'), $data_strings);
+$nb_private_properties = replaceContent(file_get_contents('tools/nb-templates/private/private.properties'), $data_strings);
 
 $meta_content = json_encode([
     "Title" => $name,
@@ -162,7 +175,7 @@ unlink($dir_name . '/assets/localization/en.txt');
 
 // clear images
 
-unlink($dir_name . '/assets/images/_default_input.png');
+//unlink($dir_name . '/assets/images/_default_input.png');
 unlink($dir_name . '/assets/images/circle.png');
 unlink($dir_name . '/assets/images/circle-blur.png');
 unlink($dir_name . '/assets/images/dragon@2x.png');
@@ -186,3 +199,11 @@ copy('saberjs/workbox-sw.js', $dir_name . '/workbox-sw.js');
 
 file_put_contents($dir_name . '/manifest.json', $manifest_content);
 file_put_contents($dir_name . '/serviceworker.js', $serviceworker_content);
+
+// set netbeans project 
+mkdir($dir_name.'/nbproject', 0777, true);
+mkdir($dir_name.'/nbproject/private', 0777, true);
+
+file_put_contents($dir_name .'/nbproject/project.xml', $nb_project);
+file_put_contents($dir_name .'/nbproject/project.properties', $nb_project_properties);
+file_put_contents($dir_name .'/nbproject/private/private.properties', $nb_private_properties);

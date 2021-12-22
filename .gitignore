@@ -1,8 +1,6 @@
 /nbproject
-/system/config.js
 /node_modules
 /package-lock.json
-/config.js
 /release
 /tools/credentials.php
 /tools/install/credentials.php
