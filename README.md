@@ -40,3 +40,24 @@ Ranges:
 pyftsubset SF-Pro-Text-Regular.otf --unicodes="0x20-0x7E,0x41-0x5A,0x61-0x7A,0x30-0x39,0x20-0x2F,0x3A-0x40,0x5B-0x60,0x7B-0x7E,0x0024,0x00A2-0x00A5,0x20A0-0x20CF,0xD7,0x2013,0x2014,0x2018,0x2019,0x201C,0x201D,0x2022,0x2026,0x2032,0x2033,0x2122" --layout-features="" --flavor="ttf" --output-file="SF-Pro-Text-Regular.ttf"
 
 pyftsubset SF-Pro-Text-Regular.otf –-text-file="charset.txt"  --layout-features=""  --output-file="SF-Pro-Text-Regular.ttf"
+
+
+
+Some github instructions:
+// list all settings 
+git config --list
+// see all remote addresses
+git remote -v
+// Set a remote address
+git remote set-url origin git@github.com:antag0n1st/saberjs.git
+// add a key to the agent
+// start the ssh agent
+// Run shell as administrator 
+Set-Service -Name ssh-agent -StartupType Manual
+Start-Service ssh-agent
+ssh-add C:\Users\Antagonist\.ssh\id_rsa_personal
+
+
+
+
+
