@@ -58,6 +58,10 @@ Start-Service ssh-agent
 ssh-add C:\Users\Antagonist\.ssh\id_rsa_personal
 
 
+// use multiple accounts
+https://www.freecodecamp.org/news/manage-multiple-github-accounts-the-ssh-way-2dadc30ccaca/
+
+
 
 
 
