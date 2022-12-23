@@ -66,6 +66,9 @@
             TilingSpriteObject: {
                 icon: 'fa fa-th-list'
             },
+            MeshObject: {
+                icon: 'fa fa-th-list'
+            },
             PolygonObject: {
                 icon: 'fa fa-object-ungroup'
             },

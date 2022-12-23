@@ -16,12 +16,6 @@
         this.hasImage = true;
         this.canTransform = true;
 
-//        this._drawStretchLeft = true;
-//        this._drawStretchBottom = true;
-//
-//        this.canStretch = true;
-//        this._initialStretchSize = 0;
-
     };
 
 //    ImageObject.prototype._onStretchStarted = function (handleID) {

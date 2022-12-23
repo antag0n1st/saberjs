@@ -35,6 +35,11 @@
         }
 
         if (object) {
+            
+            if(this.editor.shortcuts.isAltPressed) {
+                object.onAltMouseDown(event,sender);
+                return;
+            }
 
             if (this.editor.shortcuts.isShiftPressed) {
                 this.editor.clickedObject = object;
@@ -52,6 +57,14 @@
                     }
                 }
 
+            } else if (!this.editor.selectionRectangle && this.editor.selectedObjects.length === 0) {
+                this.editor.deselectAllObjects();
+                //lets add the object to the selection
+                this.editor.isClickedInsideObject = true;
+                this.editor.isClickedInsideSameObject = true;
+                this.editor.clickedObject = object;
+                object.save();
+                this.editor.addObjectToSelection(this.editor.clickedObject);
             } else {
                 var isOneOfUs = false;
 
@@ -135,8 +148,6 @@
                 // dragging
 
                 this.editor.didDrag = true;
-
-
 
                 var dragBy = V.substruction(event.point, this.editor.mouseDownPosition);
                 dragBy.scale(1 / this.editor.activeLayer.scale.x);
@@ -227,7 +238,7 @@
         var dt = app.pixi.ticker.lastTime - this.editor.lastCickTime;
 
         if (dt < 300 && this.editor.isClickedInsideObject && this.editor.selectedObjects.length === 1) { // 
-            
+
             // double click
 
             var object = this.editor.selectedObjects[0];
@@ -235,13 +246,13 @@
             if (object instanceof LabelObject) {
                 this.editor.htmlInterface.htmlTopTools.showTextEdit(this.editor.selectedObjects[0]);
             } else {
-                
-                if(this.editor.htmlInterface.activeTabName !== 'properties'){
+
+                if (this.editor.htmlInterface.activeTabName !== 'properties') {
                     this.editor.htmlInterface.activateTab('properties');
                 } else {
                     this.editor.htmlInterface.activateTab('commonProperties');
                 }
-                
+
             }
 
         } else {
@@ -252,7 +263,6 @@
             this.editor.handlesClickedObject.onHandleUp(event, this.editor);
         } else if (this.editor.isClickedInsideObject) {
 
-
             // it can be selection if dragging did not take place
             if (!this.editor.didDrag) {
 
@@ -262,13 +272,9 @@
                     this.editor.deselectAllObjects();
                     //lets add the object to the selection
                     this.editor.addObjectToSelection(this.editor.clickedObject);
-
                 }
 
-
             } else {
-
-
 
                 var batch = new CommandBatch();
                 for (var i = 0; i < this.editor.selectedObjects.length; i++) {
@@ -276,8 +282,8 @@
                     var x = so.position.x;
                     var y = so.position.y;
                     so.position = so.originalPosition;
-                    
-                    if(this.editor.isSnaping){
+
+                    if (this.editor.isSnaping) {
                         x = Math.round(x / editorConfig.snapX) * editorConfig.snapX;
                         y = Math.round(y / editorConfig.snapY) * editorConfig.snapY;
                     }
@@ -299,12 +305,8 @@
         }
 
         this.editor.selectionRectangle = null;
-
         this.editor.propertiesBinder.bindSelected();
-
         this.editor.lastCickTime = app.pixi.ticker.lastTime;
-
-
 
     };
 

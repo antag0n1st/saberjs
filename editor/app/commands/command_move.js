@@ -21,7 +21,8 @@
     CommandMove.prototype.execute = function () {
         if (!this.isExecuted) {
             if (this.object.canMove) {
-                this.object.position.set(this.x, this.y);
+                this.object.x = this.x;
+                this.object.y = this.y;
             }
             this.isExecuted = true;
         }
@@ -30,7 +31,8 @@
     CommandMove.prototype.undo = function () {
         if (this.isExecuted) {
             if (this.object.canMove) {
-                this.object.position.set(this.previous_x, this.previous_y);
+                this.object.x = this.previous_x;
+                this.object.y = this.previous_y;
             }
             this.isExecuted = false;
         }

@@ -35,11 +35,13 @@ $_javascripts = [
     'app/objects/container_object.js',
     'app/objects/polygon_object.js',
     'app/objects/generic_point.js',
+    'app/objects/observable_generic_point.js',
     'app/objects/path_object.js',
     'app/objects/line_object.js',
     'app/objects/view_component_object.js',
     'app/objects/nine_slice_object.js',
     'app/objects/tiling_sprite_object.js',
+    'app/objects/mesh_object.js',
     'app/modes/mode_polygon.js',
     'app/modes/mode_select.js',
     'app/modes/mode_points.js',
@@ -52,7 +54,9 @@ $_javascripts = [
     'app/commands/command_move.js',
     'app/commands/command_property.js',
     'app/commands/command_scale.js',
+    'app/commands/command_update_points.js',
     'app/shortcuts.js',
+    '../lib/external/delaunator.min.js',
     'play_button.js',
     '../app/styles.js'
 ];

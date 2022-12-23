@@ -871,7 +871,7 @@
         layer.position.set(np.x, np.y);
 
         this.editor.updateAllSensors(layer.children);
-
+        this.editor.updateAllZoomChanged(layer.children, scale);
     };
 
     HtmlTopTools.prototype.zoomInAt = function (scale, zoomPoint, duration) {

@@ -8,9 +8,6 @@
     ModeBezier.prototype.initialize = function (editor) {
         this.editor = editor;
 
-
-        this.pathPoints = [];
-
         this.path = null;
 
         this.pathPosition = new V();
@@ -45,9 +42,9 @@
 
         }
 
+        // TODO check if any modification keys are pressed , CTRL or SHIFT or ALT
 
-        this.path.addPoint(new OV(p.x - this.pathPosition.x, p.y - this.pathPosition.y),this.path.lastPoint);
-        this.pathPoints.push(p);
+        this.path.addPoint(p.x - this.pathPosition.x, p.y - this.pathPosition.y, this.path.lastPoint);
 
 
     };
@@ -57,12 +54,10 @@
     };
 
     ModeBezier.prototype.onModeEnd = function () {
-    
-        if (this.pathPoints.length === 1) {
+
+        if (this.path && this.path.points.length === 1) {
             this.path.removeFromParent();
         }
-
-        this.pathPoints = [];
 
         this.path = null;
 

@@ -181,7 +181,9 @@
             var p = new V().copy(position);
             var angle = this.sumAllAngles();
             p.rotate(-angle + this.rotation);
-            this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
+            this.x = this.originalPosition.x + p.x;
+            this.y = this.originalPosition.y + p.y;
+            // this.position.set(this.originalPosition.x + p.x, this.originalPosition.y + p.y);
             this._onDragged();
         }
     };
@@ -1204,6 +1206,16 @@
         }
 
     };
+
+    Entity.prototype.onAltMouseDown = function (event, sender) {
+
+    };
+    
+    Entity.prototype.onZoomChanged = function (zoomLevel) {
+
+    };
+    
+    
 
     window.Entity = Entity;
 

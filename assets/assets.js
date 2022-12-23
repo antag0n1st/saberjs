@@ -2,6 +2,7 @@ app.loadAssets = function () {
 
 
 
+ContentManager.addFile('bezier','assets/data/bezier.json');
 ContentManager.addFile('gen','assets/data/gen.json');
 ContentManager.addFile('main_screen','assets/data/main_screen.json');
 ContentManager.addFile('menu','assets/data/menu.json');

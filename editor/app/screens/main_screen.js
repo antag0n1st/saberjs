@@ -60,7 +60,7 @@
         if (lines) {
             this.guideLines = JSON.parse(lines);
         }
-        
+
         this.isSnaping = store.get('isSnapping-' + ContentManager.baseURL) || false;
 
         /////////
@@ -158,7 +158,10 @@
         } else if (id === "TilingSpriteObject") {
             var object = new TilingSpriteObject();
             object.build();
-        } else if (id === "LabelObject") {
+        } else if (id === "MeshObject") {
+            var object = new MeshObject();
+            object.build();
+        }  else if (id === "LabelObject") {
             var object = new LabelObject('Text');
             object.build();
         } else if (id === "ContainerObject") {
@@ -350,7 +353,9 @@
 
             //  method of checking the selection needs to change
             var rectangle = object.getSensor();
-            if ((object._checkPolygon && object._checkPolygon(this.selectionRectangle)) || SAT.testPolygonPolygon(this.selectionRectangle, rectangle)) {
+            if (object.isTouchable &&
+                    ((object._checkPolygon && object._checkPolygon(this.selectionRectangle)) ||
+                            SAT.testPolygonPolygon(this.selectionRectangle, rectangle))) {
 
                 if (this.selectedObjects.length && this.selectedObjects[0].parent.id !== object.parent.id) {
                     continue;
@@ -395,7 +400,7 @@
 
     MainScreen.prototype.checkPointInObject = function (object, event, bottomFirst) {
 
-        if (!object.export || !object.visible) {
+        if (!object.export || !object.visible || !object.isTouchable) {
             return false;
         }
 
@@ -432,7 +437,7 @@
         for (var i = children.length - 1; i >= 0; i--) {
             var object = children[i];
 
-            if (!object.export || !object.visible) {
+            if (!object.export || !object.visible || !object.isTouchable) {
                 continue;
             }
 
@@ -458,7 +463,7 @@
 
             var object = children[i];
 
-            if (!object.export || !object.visible) {
+            if (!object.export || !object.visible || !object.isTouchable) {
                 continue;
             }
 
@@ -528,14 +533,20 @@
             }
         }
 
-        this.modes[this.mode].onMouseDown(event, sender);
+        if (event.propagate) {
+            this.modes[this.mode].onMouseDown(event, sender);
 
-        if (this._onMouseDown) {
-            this._onMouseDown(event, sender);
+            if (this._onMouseDown) {
+                this._onMouseDown(event, sender);
+            }
         }
+
     };
 
     MainScreen.prototype.onMouseMove = function (event, sender) {
+
+
+        // console.log("screen move");
 
         if (editorConfig.features.animator && this.animator && this.isPointInAnimator) {
             this.animator.onMouseMove(event, sender);
@@ -556,11 +567,13 @@
             return;
         }
 
-        this.modes[this.mode].onMouseMove(event, sender);
-
-        if (this._onMouseMove) {
-            this._onMouseMove(event, sender);
+        if (event.propagate) {
+            this.modes[this.mode].onMouseMove(event, sender);
+            if (this._onMouseMove) {
+                this._onMouseMove(event, sender);
+            }
         }
+
     };
 
     MainScreen.prototype.onMouseUp = function (event, sender) {
@@ -939,6 +952,16 @@
         }
 
     };
+    
+    MainScreen.prototype.updateAllZoomChanged = function (children,zoomLevel) {
+        for (var i = children.length - 1; i >= 0; i--) {
+            var object = children[i];
+            if (object.export) {
+                object.onZoomChanged(zoomLevel);
+                this.updateAllZoomChanged(object.children,zoomLevel);
+            }
+        }
+    };
 
     MainScreen.prototype.addLayer = function (name, factor, id, isInputContent) {
 
@@ -1303,7 +1326,7 @@
         Layout.hbox(children, parseInt(props.width), parseInt(props.xOffset), parseInt(props.yOffset), parseInt(props.spacing), props.alignment, props.wrap, parseInt(props.hSpacing));
 
     };
-
+    
     MainScreen.prototype.resetObjectsAnchor = function () {
 
         var batch = new CommandBatch();
@@ -1396,7 +1419,7 @@
                 object.applyStyle(style.style);
 
                 object.styleName = styleName;
-                
+
                 object.build();
             }
 

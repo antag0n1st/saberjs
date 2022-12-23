@@ -59,8 +59,8 @@
         var html = '';
 
         var opt0 = {name: 'id', value: object.id, class: 'big', displayName: 'ID', feedback: true};
-        var opt1 = {name: 'x', value: Math.roundDecimal(object.position.x, 2), class: 'small'};
-        var opt2 = {name: 'y', value: Math.roundDecimal(object.position.y, 2), class: 'small'};
+        var opt1 = {name: 'x', value: Math.roundDecimal(object.x, 2), class: 'small'};
+        var opt2 = {name: 'y', value: Math.roundDecimal(object.y, 2), class: 'small'};
         var opt3 = {name: 'scaleX', value: Math.roundDecimal(object.scale.x, 2), class: 'small', displayName: 'Scale X'};
         var opt4 = {name: 'scaleY', value: Math.roundDecimal(object.scale.y, 2), class: 'small', displayName: 'Scale Y'};
         var opt5 = {name: 'anchorX', value: Math.roundDecimal(object.anchor.x, 2), class: 'small', displayName: 'Anchor X'};
@@ -255,11 +255,11 @@
 
         } else if (property === 'x') {
             if (object.canMove) {
-                object.position.x = Number(value) || 0;
+                object.x = Number(value) || 0;
             }
         } else if (property === 'y') {
             if (object.canMove) {
-                object.position.y = Number(value) || 0;
+                object.y = Number(value) || 0;
             }
         } else if (property === 'scaleX') {
             object.scale.x = Number(value) || 0.01;

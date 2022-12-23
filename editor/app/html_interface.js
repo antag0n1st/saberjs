@@ -21,7 +21,6 @@
         this.createTabs();
         this.bindHTML();
 
-
         this.imagesLibrary = new HtmlLibrary(this.imageLibraryContent, this.editor, 'dropImage');
         this.imagesLibrary.heightOffset = -55;
 
@@ -37,6 +36,7 @@
             {name: "ViewComponentObject", url: 'assets/images/_view_icon.png'},
             {name: "NineSliceObject", url: 'assets/images/_nine_slice_icon.png'},
             {name: "TilingSpriteObject", url: 'assets/images/_tile_icon.png'},
+            {name: "MeshObject", url: 'assets/images/_mesh_icon.png'},
             {name: "GenericObject", url: 'assets/images/_cube.png'},
         ]);
 
